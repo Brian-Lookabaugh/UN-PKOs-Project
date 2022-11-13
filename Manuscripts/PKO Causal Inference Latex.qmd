@@ -4,7 +4,7 @@ format: pdf
 editor: visual
 ---
 
-### Introduction (placeholder)
+### Introduction
 
 -   Introduce problem of causal inference in peacebuilding research
 -   Introduce methods and case
