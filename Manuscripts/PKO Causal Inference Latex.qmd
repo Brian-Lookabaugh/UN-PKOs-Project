@@ -1,26 +1,59 @@
 ---
-title: "Untitled"
+title: "Causal Inference for Peacekeeping Research: A Synthetic Control Approach"
 format: pdf
 editor: visual
 ---
 
-## Quarto
+### Introduction (placeholder)
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+-   Introduce problem of causal inference in peacebuilding research
+-   Introduce methods and case
+-   Preview results
 
-## Running Code
+### The Literature on PKOs and Peacebuilding
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+-   Positive Effects
+-   Negative Effects
+-   No Effect
+-   Conditional Effects
+-   Segue to Causal Research
 
-```{r}
-1 + 1
-```
+### The State of Causal Research in the PKO Literature
 
-You can add options to executable code like this
+-   Justify the fixation on causal research in PKO studies and note that scholars use causal language in correlative studies
+-   Introduce the fundamental problem of causal inference
+-   Note that these methods are used within the context of tackling endogeneity instead of making causal inferences
+-   Note that matching does not solve causal inference issues
+-   Note that, when matching is used, IPW is not employed
+-   Commentary on the use of IV regression
+-   Discuss RCTs and Diff-in-diff research
+-   Segue to Synthetic Control Method
 
-```{r}
-#| echo: false
-2 * 2
-```
+### The Synthetic Control Method
 
-The `echo: false` option disables the printing of code (only output is displayed).
+-   Introduce the SCM in the literature and what it does
+-   Statistical inference with the SCM
+-   Robustness checks with the SCM
+-   Limitations of the SCM (see Abadie et al. 2021)
+
+### Case Selection and Background
+
+### Results
+
+-   Synthetic Weights
+-   Synthetic Compared to the Real
+-   The Causal Effect of the PKO in X Country
+-   Low-Level Death Gap Between Real and Synthetic Graph
+-   Robustness Check 1: Leave-One-Out Estimation
+-   Robustness Check 2: Alternative Predictors
+-   Inference 1: Artificial Timing of Event (in-time placebo)
+-   Inference 2: Treatment Applied to Non-Treated Units (in-space placebo) - With and Without Outliers
+-   Post/Pre- MSPE Graph
+
+### Conclusion
+
+-   Summary of the state of causal research
+-   Summary of results
+-   Limits of this study
+-   What Future Research Should Be
+-   Policy Applicability
