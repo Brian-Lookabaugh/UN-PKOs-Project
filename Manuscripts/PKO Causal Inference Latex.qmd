@@ -25,14 +25,14 @@ editor: visual
 -   Note that these methods are used within the context of tackling endogeneity instead of making causal inferences
 -   Note that matching does not solve causal inference issues
 -   Note that, when matching is used, IPW is not employed
+- Fixed effects is problematic because it omits controlling for valuable confounders since these confounders do not vary within-country units. And note the problems with using FE for causal inference.
 -   Commentary on the use of IV regression
--   Discuss RCTs and Diff-in-diff research
+-   Discuss RCTs and Diff-in-diff research. Parallel trends hard to justify.
 -   Segue to Synthetic Control Method
 
 ### The Synthetic Control Method
 
 -   Introduce the SCM in the literature and what it does
--   Explain Why I am not using Diff-in-Diff
 -   Statistical inference with the SCM
 -   Robustness checks with the SCM
 -   Limitations of the SCM (see Abadie et al. 2021)
