@@ -1,5 +1,6 @@
 ---
 title: "Causal Inference for Peacekeeping Research: A Synthetic Control Approach"
+abstract: "\\dropcap{M}uch of the peacebuilding literture focuses on causal relationships but neglects causal methods. In many instances, talk of 'correlation' and 'association' is insufficient with the avaliability of contemporary causal inference methods. This study furthers the study of peacebuilding by analyzing the impact of a U.N. peacekeeping operation (PKO) in X. Introducing the synthetic control method to the peacekeeping literature, I find X. Given the causal effect demonstrated by this study, the results from this analysis offer important insights for policymakers."
 format: pdf
 editor: visual
 ---
@@ -25,7 +26,7 @@ editor: visual
 -   Note that these methods are used within the context of tackling endogeneity instead of making causal inferences
 -   Note that matching does not solve causal inference issues
 -   Note that, when matching is used, IPW is not employed
-- Fixed effects is problematic because it omits controlling for valuable confounders since these confounders do not vary within-country units. And note the problems with using FE for causal inference.
+-   Fixed effects is problematic because it omits controlling for valuable confounders since these confounders do not vary within-country units. And note the problems with using FE for causal inference.
 -   Commentary on the use of IV regression
 -   Discuss RCTs and Diff-in-diff research. Parallel trends hard to justify.
 -   Segue to Synthetic Control Method
