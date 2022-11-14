@@ -32,6 +32,7 @@ editor: visual
 ### The Synthetic Control Method
 
 -   Introduce the SCM in the literature and what it does
+-   Explain Why I am not using Diff-in-Diff
 -   Statistical inference with the SCM
 -   Robustness checks with the SCM
 -   Limitations of the SCM (see Abadie et al. 2021)
