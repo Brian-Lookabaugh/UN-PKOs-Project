@@ -1,17 +1,29 @@
 ---
 title: "Causal Inference for Peacekeeping Research: A Synthetic Control Approach"
 abstract: "\\dropcap{M}uch of the peacebuilding literture focuses on causal relationships but neglects causal methods. In many instances, talk of 'correlation' and 'association' is insufficient with the avaliability of contemporary causal inference methods. This study furthers the study of peacebuilding by analyzing the impact of a U.N. peacekeeping operation (PKO) in X. Introducing the synthetic control method to the peacekeeping literature, I find X. Given the causal effect demonstrated by this study, the results from this analysis offer important insights for policymakers."
-format: pdf
-editor: visual
+first-author:
+  name: "Brian Lookabaugh"
+  affiliation: "University of North Texas"
+keywords: "Peacekeeping, peacebuilding, causal inference, synthetic control method"
+format: 
+  pdf: "(placeholder)"
+fontsize: 12pt
+papersize: letterpaper
+fontfamily: "(placeholder)"
+urlcolor: untgreen
+github: Causal-Impact-of-PKOs-on-Peace
+bibliography: "(placeholder)"
+double-spacing: true
+runninghead: Lookabaugh (2022)
 ---
 
-### Introduction
+# Introduction
 
 -   Introduce problem of causal inference in peacebuilding research
 -   Introduce methods and case
 -   Preview results
 
-### The Literature on PKOs and Peacebuilding
+# The Literature on PKOs and Peacebuilding
 
 -   Positive Effects
 -   Negative Effects
@@ -19,7 +31,7 @@ editor: visual
 -   Conditional Effects
 -   Segue to Causal Research
 
-### The State of Causal Research in the PKO Literature
+# The State of Causal Research in the PKO Literature
 
 -   Justify the fixation on causal research in PKO studies and note that scholars use causal language in correlative studies
 -   Introduce the fundamental problem of causal inference
@@ -31,16 +43,16 @@ editor: visual
 -   Discuss RCTs and Diff-in-diff research. Parallel trends hard to justify.
 -   Segue to Synthetic Control Method
 
-### The Synthetic Control Method
+# The Synthetic Control Method
 
 -   Introduce the SCM in the literature and what it does
 -   Statistical inference with the SCM
 -   Robustness checks with the SCM
 -   Limitations of the SCM (see Abadie et al. 2021)
 
-### Case Selection and Background
+# Case Selection and Background
 
-### Results
+# Results
 
 -   Synthetic Weights
 -   Synthetic Compared to the Real
@@ -52,7 +64,7 @@ editor: visual
 -   Inference 2: Treatment Applied to Non-Treated Units (in-space placebo) - With and Without Outliers
 -   Post/Pre- MSPE Graph
 
-### Conclusion
+# Conclusion
 
 -   Summary of the state of causal research
 -   Summary of results
