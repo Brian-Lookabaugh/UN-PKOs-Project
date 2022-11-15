@@ -1,26 +1,107 @@
 ---
-title: "Untitled"
-format: docx
-editor: visual
+title: "Causal Inference for Peacekeeping Research: A Synthetic Control Approach"
+abstract: "\\dropcap{M}uch of the peacebuilding literture focuses on causal relationships but neglects causal methods. In many instances, talk of 'correlation' and 'association' is insufficient with the avaliability of contemporary causal inference methods. This study furthers the study of peacebuilding by analyzing the impact of a U.N. peacekeeping operation (PKO) in X. Introducing the synthetic control method to the peacekeeping literature, I find X. Given the causal effect demonstrated by this study, the results from this analysis offer important insights for policymakers."
+author:
+  - "Brian Lookabaugh"
+  - "University of North Texas"
+format: 
+  docx:
+    toc: false
+    reference-doc: (placeholder)
 ---
 
-## Quarto
+```{r formatting setup, include=FALSE}
+knitr::opts_chunk$set(
+  cache = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  echo = FALSE,
+  comment = ' ',
+  fig.align = "center"
+)
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+# Load Required Libraries
+pacman::p_load(
+  "tidyverse",
+  install = FALSE
+)
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
+# Set Base Theme Settings for Plotting
+theme_set(plot_theme(
+  yaxis_size = 32,
+  xaxis_size = 32,
+  title_size = 40,
+  strip_size = 26,
+  subtitle_size = 30,
+  x_axis_face = "bold",
+  y_axis_face = "bold",
+  strip_face = "bold",
+  axis_text_size = 25,
+  plot.background = element_rect(fill = "white", color = "white"),
+  axis.text = element_text(size = 20),
+  axis.line.x.bottom = element_line(colour = "black"),
+  axis.line.y.left = element_line(colour = "black"),
+  legend_text_size = 30
+))
 ```
 
-You can add options to executable code like this
+# Introduction
 
-```{r}
-#| echo: false
-2 * 2
-```
+-   Introduce problem of causal inference in peacebuilding research
+-   Introduce methods and case
+-   Preview results
 
-The `echo: false` option disables the printing of code (only output is displayed).
+# The Literature on PKOs and Peacebuilding
+
+-   Positive Effects
+
+Overwhelmingly, decades of research have suggested a general conflict-reducing effect of third-party peacekeeping operations (PKOs) (Walter et al. 2021). 
+
+-   Negative Effects
+
+-   No Effect
+
+-   Conditional Effects
+
+-   Segue to Causal Research
+
+# The State of Causal Research in the PKO Literature
+
+-   Justify the fixation on causal research in PKO studies and note that scholars use causal language in correlative studies
+-   Introduce the fundamental problem of causal inference
+-   Note that these methods are used within the context of tackling endogeneity instead of making causal inferences
+-   Note that matching does not solve causal inference issues
+-   Note that, when matching is used, IPW is not employed
+-   Fixed effects is problematic because it omits controlling for valuable confounders since these confounders do not vary within-country units. And note the problems with using FE for causal inference.
+-   Commentary on the use of IV regression and regression discontinuity.
+-   Discuss RCTs and Diff-in-diff research. Parallel trends hard to justify.
+-   Segue to Synthetic Control Method
+
+# The Synthetic Control Method
+
+-   Introduce the SCM in the literature and what it does
+-   Statistical inference with the SCM
+-   Robustness checks with the SCM
+-   Limitations of the SCM (see Abadie et al. 2021)
+
+# Case Selection and Background
+
+# Results
+
+-   Synthetic Weights
+-   Synthetic Compared to the Real
+-   The Causal Effect of the PKO in X Country
+-   Low-Level Death Gap Between Real and Synthetic Graph
+-   Robustness Check 1: Leave-One-Out Estimation
+-   Robustness Check 2: Alternative Predictors
+-   Inference 1: Artificial Timing of Event (in-time placebo)
+-   Inference 2: Treatment Applied to Non-Treated Units (in-space placebo) - With and Without Outliers
+-   Post/Pre- MSPE Graph
+
+# Conclusion
+
+-   Summary of the state of causal research
+-   Summary of results
+-   Limits of this study
+-   What Future Research Should Be
+-   Policy Applicability
