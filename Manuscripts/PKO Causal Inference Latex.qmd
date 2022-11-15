@@ -26,9 +26,15 @@ runninghead: Lookabaugh (2022)
 # The Literature on PKOs and Peacebuilding
 
 -   Positive Effects
+
+Overwhelmingly, decades of research have suggested a general conflict-reducing effect of third-party peacekeeping operations (PKOs) (Walter et al. 2021). 
+
 -   Negative Effects
+
 -   No Effect
+
 -   Conditional Effects
+
 -   Segue to Causal Research
 
 # The State of Causal Research in the PKO Literature
