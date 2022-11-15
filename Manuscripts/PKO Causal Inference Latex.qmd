@@ -39,7 +39,7 @@ runninghead: Lookabaugh (2022)
 -   Note that matching does not solve causal inference issues
 -   Note that, when matching is used, IPW is not employed
 -   Fixed effects is problematic because it omits controlling for valuable confounders since these confounders do not vary within-country units. And note the problems with using FE for causal inference.
--   Commentary on the use of IV regression
+-   Commentary on the use of IV regression and regression discontinuity.
 -   Discuss RCTs and Diff-in-diff research. Parallel trends hard to justify.
 -   Segue to Synthetic Control Method
 
