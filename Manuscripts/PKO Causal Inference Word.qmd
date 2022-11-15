@@ -7,7 +7,15 @@ author:
 format: 
   docx:
     toc: false
-    reference-doc: (placeholder)
+    reference-doc: (this determines font and formatting)
+fontsize: 12pt
+bibliography: (placeholder)
+linkcolor: "#00853E"
+citecolor: "#00853E"
+crossref: 
+  tbl-prefix: ""
+  fig-prefix: ""
+  eq-prefix: ""
 ---
 
 ```{r formatting setup, include=FALSE}
@@ -55,7 +63,11 @@ theme_set(plot_theme(
 
 -   Positive Effects
 
-Overwhelmingly, decades of research have suggested a general conflict-reducing effect of third-party peacekeeping operations (PKOs) (Walter et al. 2021). 
+Overwhelmingly, two decades of research have suggested a general conflict-reducing effect of third-party peacekeeping operations (PKOs) (Fortna and Howard 2008, Dorussen 2014, Walter et al. 2021). Indeed, this relationship has been established across a wide variety of operationalizations of peace, such as the rule of law (Blair 2019), economic recovery (Bove et al. 2021), inter-ethnic trust (Mironova and Whitt 2015), battle deaths (Vivalt 2015), the risk of conflict onset (Hegre et al. 2018), the risk of conflict recurrence (Fortna 2004, Quinn et al. 2007, Collier et al. 2008, Mason et al. 2011), and mass killings (Melander 2009). PKOs have been theorized to promote peace through their capacities to stop ongoing violence, to prevent formerly warring parties from re-engaging in conflict, and to address structural causes of violence.
+
+In this first aspect of peace promotion, PKOs are theorized to serve as a "buffer" between groups engaged in ongoing violence. If a physical buffer is placed between warring parties, the chances of accidental engagement between groups that might disrupt the conflict termination process decreases. For those groups that may not be committed to the conflict termination process, PKOs make the process of reneging on ceasefires much more costly as PKOs can monitor which actors are violating a ceasefire. In addition, the mere presence of a PKO serving as a buffer can eliminate tactical advantages a reneging party may have had as the element of a surprise is spoiled by PKOs who publicly report violations of ceasefires. Given that PKOs often serve as buffers, reneging parties run the risk of armed confrontation with peacekeeping forces, which itself contains international costs on reputation.
+
+In the post-conflict environment, PKOs are thought to 
 
 -   Negative Effects
 
