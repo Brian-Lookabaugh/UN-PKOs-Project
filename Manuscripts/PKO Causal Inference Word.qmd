@@ -77,18 +77,16 @@ Undoubtedly, the literature analyzing the effects of peacekeeping on peace has l
 
 # The State of Causal Research in the PKO Literature
 
-- Briefly introduce causal inference
--   Justify the fixation on causal research in PKO studies and note that scholars use causal language in correlative studies
-- Models are sensitive to specification
-- Models are not DAG-informed
--   Introduce the fundamental problem of causal inference
--   Note that these methods are used within the context of tackling endogeneity instead of making causal inferences
--   Note that matching does not solve causal inference issues
--   Note that, when matching is used, IPW is not employed
--   Fixed effects is problematic because it omits controlling for valuable confounders since these confounders do not vary within-country units. And note the problems with using FE for causal inference.
--   Commentary on the use of IV regression and regression discontinuity.
--   Discuss RCTs and Diff-in-diff research. Parallel trends hard to justify.
--   Segue to Synthetic Control Method
+While causal language in very much present in the PKO literature, causal methods are much less represented. Oftentimes, studies that do not employ a research design oriented towards making causal inferences will use causal terminology such "significantly reduce the risk of further conflict" (Collier et al. 2008, p. 473), "decreased the risk of another war" (Fortna 2004, p. 283), "sustain the peace" (Quinn et al. 2007, p. 183), and "reduces violence against noncombatants" (Hultman et al. 2013, p. 10) when referring to the alleged effects of PKOs on peace and violence. At first glance, this may seem to be simply a semantic quibble. However, we should be cautious of using causal language when using correlative methods. Kocher's (2014) critique of Hultman et al. (2013) demonstrates the need for such caution. While Hultman et al.'s (2013) work suggested a causal effect linking PKOs to the reduction of civilian casualties, Kocher's (2014) re-analysis found that such a causal interpretation was inaccurate given that one-sided violence had decreased on average prior to the onset of PKOs. Further, Kocher (2014) likewise demonstrated that much of the size of the effect between PKOs and violence against civilians was explained by the single case of Rwanda in 1994. Instances such as this should warrant caution of causal interpretations of regression coefficients, which require strong assumptions, such as strict exogeneity and a lack of omitted confounding variables, that are rarely met in the peacekeeping literature.
+
+# RCTs and IV Regression
+That is not to say, however, that causal research is *impossible* in the peacekeeping literature.
+
+# Critiques of IV, Matching, and Critiques of Matching
+
+# Fixed Effects and Its Issues (omission of the PKO variable itself, FE only controls for time-invariant variables so we still have issues with confoundness)
+
+# Quasi-Experimental Design
 
 # The Synthetic Control Method
 
