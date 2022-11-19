@@ -91,6 +91,10 @@ One particularly well-suited method for the study of the pacifying effects of PK
 
 # The Synthetic Control Method
 
+A useful way to view the synthetic control method is as a robust tool to assist in making causal inferences from case studies (Abadie et al. 2015). Conventional case study approaches face serious problems with causal inference due to the myriad of issues that arise when a researcher selects a comparison unit to examine the difference between the treated and non-treated unit. Researchers can do their best and apply their substantive knowledge on units to select cases that are highly similar to each other in an effort to isolate the causal impact of the treatment. However, no two units are alike, especially in the comparative politics and international relations literatures where the level of aggregation concerns complex units such as countries. As a result, any difference in outcome between treated and non-treated units could be caused by the difference in known characteristics in which the units were compared on and/or the difference between the units with respect to unspecified confounding factors.
+
+The synthetic control method addresses these issues by comparing the real treated unit to a synthetic version of the unit that *differs only in the exposure to the treatment*. In this way, the SCM is an excellent tool for assessing the counter-factual question of what the outcome for the unit would have looked like in an alternative scenario where the treatment not occurred. The causal effect of the treatment is the difference in the outcome between the treated and synthetic unit following exposure to the treatment. Confidence in the synthetic unit as a legitimate representation of the real unit assuming no treatment is obtained by the synthetic unit's ability to mimic the variations in outcome of the real unit pre-treatment. The synthetic unit is able to do this due to the method of its construction, relying on matching techniques  
+
 -   Introduce the SCM in the literature and what it does and why it is good for PKO literature
 - How does it compare with the other methods?
 -   Statistical inference with the SCM
