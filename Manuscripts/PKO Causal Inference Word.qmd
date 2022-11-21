@@ -97,9 +97,6 @@ The synthetic control method addresses these issues by comparing the real treate
 
 A number of assumptions should be met to utilize the synthetic control method (Abadie 2021). Fortunately, the nature of the question and data availability render the study of the pacifying effects of peacekeeping easily applicable to this method. *First*, if the treatment is comparatively small in scope (and, as follows, will likely generate a small causal effect), the SCM may be unable to detect this small effect, especially if the outcome of interest is highly volatile given that the causal effect could be absorbed by noise in the data. For the study of peacekeeping, I do not expect this to be an issue given the size in scope of the treatment. *Second*, for the construction of a synthetic unit, a large donor pool of similar units not exposed to the treatment is required. Given that many post-conflict countries never received a PKO during the prior conflict, this is not a concern for this project. *Third*, it is problematic if actors within a unit alter their behavior in anticipation of receiving treatment. While actors within a country have the capacity to anticipate the onset of a PKO, this anticipatory factor is unlikely to effect *post-conflict* dynamics as PKOs are often sent *during* conflict and any such anticipatory effects are likely to be observed within this time frame. *Fourth*, the treatment should ideally not interfere with the outcome of other non-treated units, lest these non-treated units used to create the synthetic unit be tainted with spillover effects from the treatment. While one could make a case that PKOs have a broadly pacifying effect globally, extant literature does not suggest such an effect. Further, on practical grounds, it seems unlikely that the onset of a PKO for a particular case has the capacity to significantly impact the prospects for post-conflict peace globally. *Fifth*, the treated case analyzed with this method should not be an extreme case with respect to the outcome, as it will be difficult to create a synthetic unit to match the treated unit. *Sixth*, ample data must be available for both the pre- and post-treatment periods to demonstrate the fit of the synthetic unit pre-treatment and to assess the full causal impact post-treatment. Given the availability of PKO and conflict-related data across time, this should not be a concern for this literature. *Lastly*, the SCM requires data to be aggregated at a large levels, such as country-year or state-year levels. Again, this is not an issue with this inquiry given that most research in this domain is conducted at the country-year level.
 
--   Statistical inference with the SCM
--   Robustness checks with the SCM
--   Sensitivity Analysis
 -   Limitations of the SCM (see Abadie et al. 2021)
 
 # Case Selection and Background
@@ -107,14 +104,15 @@ A number of assumptions should be met to utilize the synthetic control method (A
 # Results
 
 -   Synthetic Weights
--   Synthetic Compared to the Real
+-   Synthetic Compared to the Real Table
 -   The Causal Effect of the PKO in X Country
 -   Low-Level Death Gap Between Real and Synthetic Graph
+-   Statistical Inference
+-   Post/Pre- MSPE Graph
 -   Robustness Check 1: Leave-One-Out Estimation
 -   Robustness Check 2: Alternative Predictors
--   Inference 1: Artificial Timing of Event (in-time placebo)
--   Inference 2: Treatment Applied to Non-Treated Units (in-space placebo) - With and Without Outliers
--   Post/Pre- MSPE Graph
+-   Robustness Check 3: In-time placebo
+-   Robustness Check 4: In-place placebo
 -   Sensitivity Analysis
 
 # Conclusion
