@@ -18,7 +18,7 @@ crossref:
   eq-prefix: ""
 ---
 
-```{r formatting setup, include=FALSE}
+```{r Formatting Setup, include=FALSE}
 knitr::opts_chunk$set(
   cache = TRUE,
   message = FALSE,
@@ -106,16 +106,50 @@ In order to execute the synthetic control method, a case or series of cases must
 
 # Results
 
--   Synthetic Weights
--   Synthetic Compared to the Real Table
--   The Causal Effect of the PKO in X Country
--   Low-Level Death Gap Between Real and Synthetic Graph
--   Statistical Inference
--   Post/Pre- MSPE Graph
--   Robustness Check 1: Leave-One-Out Estimation
--   Robustness Check 2: Alternative Predictors
--   Robustness Check 3: In-time placebo
--   Robustness Check 4: In-place placebo
+```{r Data Collection and Cleaning}
+
+```
+
+```{r Synthetic Weights Table}
+
+```
+
+```{r Difference Between Real and Synthetic Table}
+
+```
+
+```{r Causal Effect Graph}
+
+```
+
+```{r Difference in Outcome Between Real and Synthetic Graph}
+
+```
+
+```{r Statistical Inference Graph}
+
+```
+
+```{r Post/Pre- MSPE Graph}
+
+```
+
+```{r Leave-One-Out Graph}
+
+```
+
+```{r Alternative Predictors Graph}
+
+```
+
+```{r In-Time Placebo Graph}
+
+```
+
+```{r In-Place Placebo Graph}
+
+```
+
 -   Sensitivity Analysis
 
 # Conclusion
