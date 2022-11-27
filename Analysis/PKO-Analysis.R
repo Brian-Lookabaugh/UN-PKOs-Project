@@ -5,7 +5,7 @@
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
   "tidysynth", # Tidy Implementation of the Synthetic Control Method
-  "DescTools", # Carrying Values of Observations Forward
+  "DescTools", # Carrying Values of Observations Forward (LOCF)
   "sf", # Maps
   "rnaturalearth", # Maps
   "rnaturalearthdata", # Maps
@@ -27,8 +27,6 @@ ucdp <- ucdp %>%
   mutate(gwno_a = as.numeric(gwno_a)) %>% # Convert the country code to a numeric
   filter(type_of_conflict == 3 & cumulative_intensity == 1) %>%
   mutate(civ_war = 1) %>%
-  # Drop European Outlier
-  # Drop Coups (Thyne 2017)
   
   # Collapse Data Into Country-Year Units
   group_by(gwno_a, year) %>%
@@ -54,13 +52,23 @@ ucdp <- ucdp %>%
   mutate(civ_war = if_else( # Replace NA Civil War Values With 0
     is.na(civ_war), 0, civ_war
   )) %>%
-  select(-c(version, prior_civ_war))
 
-# Drop Cases Where Conflict Never Ends
-
-# Generate Conflict Recurrence Variable
-
-# Generate Conflict Termination Variable
+# Generate Conflict Recurrence and Termination Variables
+  group_by(ccode) %>%
+  mutate(lag_civ_war = lag(civ_war, n = 1, order_by = ccode)) %>%
+  ungroup() %>%
+  mutate(recur = if_else(
+    civ_war == 1 & lag_civ_war == 0, 1, 0
+  )) %>%
+  mutate(recur = if_else(
+    is.na(recur), 0, recur
+  )) %>%
+  mutate(termination = if_else(
+    civ_war == 0 & lag_civ_war == 1, 1, 0
+  )) %>%
+  mutate(termination = if_else(
+    is.na(termination), 0, termination
+  ))
 
 # Merge Relevant UCDP Information (War Outcome, Conflict Intensity)
 
