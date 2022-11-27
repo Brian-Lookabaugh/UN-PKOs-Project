@@ -8,7 +8,7 @@ pacman::p_load(
   "sf", # Maps
   "rnaturalearth", # Maps
   "rnaturalearthdata", # Maps
-install = FALSE
+  install = FALSE
 )
 
 ############################################################
@@ -17,11 +17,12 @@ install = FALSE
 
 ## UCDP Data
 
-load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp_221.RData")
+load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp_prio_acd_221.RData")
+ucdp <- ucdp_prio_acd_221
 
 # Drop Non-Civil War Cases (1K Threshold)
 
-ucdp_221 <- ucdp_221 %>%
+ucdp <- ucdp %>%
   filter(type_of_conflict == 3)
 
 # Collapse Data Into Country-Year Units
