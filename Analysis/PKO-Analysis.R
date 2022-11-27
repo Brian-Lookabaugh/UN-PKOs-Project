@@ -7,7 +7,8 @@ pacman::p_load(
   "tidysynth", # Tidy Implementation of the Synthetic Control Method
   "sf", # Maps
   "rnaturalearth", # Maps
-  "rnaturalearthdata" # Maps
+  "rnaturalearthdata", # Maps
+install = FALSE
 )
 
 ############################################################
@@ -16,9 +17,12 @@ pacman::p_load(
 
 ## UCDP Data
 
-ucdp <-
+load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp_221.RData")
 
 # Drop Non-Civil War Cases (1K Threshold)
+
+ucdp_221 <- ucdp_221 %>%
+  filter(type_of_conflict == 3)
 
 # Collapse Data Into Country-Year Units
 
