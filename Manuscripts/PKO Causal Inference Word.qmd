@@ -103,52 +103,6 @@ In order to execute the synthetic control method, a case or series of cases must
 
 # Results
 
-```{r Data Collection and Cleaning}
-
-```
-
-```{r Synthetic Weights Table}
-
-```
-
-```{r Difference Between Real and Synthetic Table}
-
-```
-
-```{r Causal Effect Graph}
-
-```
-
-```{r Difference in Outcome Between Real and Synthetic Graph}
-
-```
-
-```{r Statistical Inference Graph}
-
-```
-
-```{r Post/Pre- MSPE Graph}
-
-```
-
-```{r Leave-One-Out Graph}
-
-```
-
-```{r Alternative Predictors Graph}
-
-```
-
-```{r In-Time Placebo Graph}
-
-```
-
-```{r In-Place Placebo Graph}
-
-```
-
--   Sensitivity Analysis
-
 # Conclusion
 
 -   Summary of the state of causal research
