@@ -70,7 +70,10 @@ ucdp <- ucdp %>%
     is.na(termination), 0, termination
   ))
 
-# Merge Relevant UCDP Information (War Outcome, Conflict Intensity)
+# Merge UCDP One-Sided Violence Data
+
+load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp-onesided-221.RData")
+osv <- ucdp_onesided_221
 
 # Clean Up Data
 
@@ -81,8 +84,14 @@ pko <-
 ## V-Dem Data
 
 vdem <- 
+  
+## Military Capacity Data
+  
+mil_per_data <- 
 
 ## (Dependent Variable Data)
+  
+var <- 
 
 ## Merge Data Together
 
