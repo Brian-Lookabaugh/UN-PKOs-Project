@@ -97,7 +97,7 @@ vdem <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/sel
 
 vdem <- vdem %>%
   rename(ccode = COWcode) %>%
-  select(ccode, year, v2x_polyarchy, e_peinfmor, e_peaveduc, e_pop, e_gdppc)
+  select(ccode, country_name, year, v2x_polyarchy, e_peinfmor, e_peaveduc, e_pop, e_gdppc)
 
 ucdp <- left_join(ucdp, vdem,
                   by = c("ccode", "year"))
@@ -140,6 +140,81 @@ world_sf <- world_sf %>%
     sovereignt, "Republic of Serbia", "Serbia"))
 
 # Merge Earth Data With Synth Data Set
+
+map_data <- ucdp %>%
+  left_join(world_sf, by = c("country_name" = "sovereignt")) %>%
+  # Drop Antarctica and European Outliers
+  filter(name_long != "Antarctica")
+
+# Start Creating the Map
+
+pko_map <- map_data %>% 
+  ggplot() +
+  geom_sf(
+    aes(geometry = geometry, fill = as.factor((ever_pko))),
+    color = "black",
+    size = .2,
+    na.rm = T
+  ) +
+  
+# Adjust Color Scales
+  
+  scale_fill_viridis_c(
+    begin = 0.1,
+    end = 1,
+    option = "mako",
+    na.value = "light gray",
+    limits = c(0, 1)
+  ) +
+  
+# Legend and Margins Customization
+  
+  theme(
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(), 
+    axis.text.y=element_blank(),  
+    axis.ticks.y=element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_text(size = 8, family = "serif", vjust = 1),
+    legend.key.height = unit(0.25, 'cm'),
+    legend.text = element_text(size = 6, family = "serif"),
+    legend.key.width = unit(1, 'cm'),
+    plot.margin = unit(c(-1, -0.7, -1, -0.7), "cm")
+  ) +
+  
+# Add Labels
+  
+  labs(
+    fill = "PKO Presence"
+  )
+
+# Save the Map
+
+ggsave(
+  "pko_map.png",
+  width = 6,
+  height = 4,
+  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
+)
+
+# Save a Version of the Map With the Embedded Title
+
+pko_map_title <- pko_map + 
+  labs(title = "PKO Presence Around the World") +
+  theme(
+    plot.title = element_text(
+      size = 10, family = "serif", face = "bold", hjust = 0.5
+    )
+  )
+ggsave(
+  "pko_map_title.png",
+  width = 6,
+  height = 4,
+  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
+)
 
 ########################################################
 ########--------Synthetic Control Set-Up--------########
