@@ -89,6 +89,9 @@ ucdp <- ucdp %>%
   mutate(ever_pko = pko_pres) %>% # Simply a Dummy for Whether a PKO Was Present In a Country At All (For Visualizations)
   fill(ever_pko, .direction = "downup") %>%
   fill(ever_pko, .direction = "updown") %>%
+  mutate(ever_pko = if_else(
+    is.na(ever_pko), 0, ever_pko
+  )) %>%
   ungroup()
 
 ## V-Dem Data
@@ -142,16 +145,24 @@ world_sf <- world_sf %>%
 # Merge Earth Data With Synth Data Set
 
 map_data <- ucdp %>%
-  left_join(world_sf, by = c("country_name" = "sovereignt")) %>%
-  # Drop Antarctica and European Outliers
+  full_join(world_sf, by = c("country_name" = "sovereignt")) %>%
+  # Drop Antarctica
   filter(name_long != "Antarctica")
+
+# Create Text PKO Data
+
+map_data <- map_data %>%
+  mutate(ever_pko_txt = case_when(
+    ever_pko == 1 ~ "PKO",
+    ever_pko == 0 ~ "No PKO"
+  ))
 
 # Start Creating the Map
 
 pko_map <- map_data %>% 
-  ggplot() +
+  ggplot() + 
   geom_sf(
-    aes(geometry = geometry, fill = as.factor((ever_pko))),
+    aes(geometry = geometry, fill = ever_pko_txt),
     color = "black",
     size = .2,
     na.rm = T
@@ -159,12 +170,11 @@ pko_map <- map_data %>%
   
 # Adjust Color Scales
   
-  scale_fill_viridis_c(
-    begin = 0.1,
-    end = 1,
-    option = "mako",
-    na.value = "light gray",
-    limits = c(0, 1)
+  scale_fill_viridis_d(
+    na.translate = FALSE,
+    begin = 0.90,
+    end = 0.50,
+    option = "mako"
   ) +
   
 # Legend and Margins Customization
@@ -185,32 +195,15 @@ pko_map <- map_data %>%
     plot.margin = unit(c(-1, -0.7, -1, -0.7), "cm")
   ) +
   
-# Add Labels
+  # Add Labels
   
   labs(
-    fill = "PKO Presence"
-  )
+    fill = "")
 
 # Save the Map
 
 ggsave(
   "pko_map.png",
-  width = 6,
-  height = 4,
-  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
-)
-
-# Save a Version of the Map With the Embedded Title
-
-pko_map_title <- pko_map + 
-  labs(title = "PKO Presence Around the World") +
-  theme(
-    plot.title = element_text(
-      size = 10, family = "serif", face = "bold", hjust = 0.5
-    )
-  )
-ggsave(
-  "pko_map_title.png",
   width = 6,
   height = 4,
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
