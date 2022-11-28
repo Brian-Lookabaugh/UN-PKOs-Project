@@ -82,9 +82,14 @@ pko <-
 
 ## V-Dem Data
 
-vdem <- 
-  
-# Re-Code Coups as Non-Civil Wars
+vdem <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/selectedvdemdata.csv")
+
+vdem <- vdem %>%
+  rename(ccode = COWcode) %>%
+  select(ccode, year, v2x_polyarchy, e_peinfmor, e_peaveduc, e_pop, e_gdppc)
+
+ucdp <- left_join(ucdp, vdem,
+                  by = c("ccode", "year"))
   
 ## Military Capacity Data
   
