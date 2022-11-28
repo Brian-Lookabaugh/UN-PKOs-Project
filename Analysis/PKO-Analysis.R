@@ -118,9 +118,9 @@ ucdp <- left_join(ucdp, mil_per,
   
 var <- 
 
-## Merge Data Together and Clean Final Dataset (Rename)
+## Final Data Cleaning (Rename)
 
-synth_data <- 
+synth_data <- ucdp %>%
 
 ###################################################################
 ########--------Generate a Map of PKO Distribution---------########
