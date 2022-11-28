@@ -78,7 +78,18 @@ osv <- ucdp_onesided_221
 
 ## PKO Data
 
-pko <- 
+pko <- read_dta("Data/formattedmullenbach2013pkodata.dta")
+
+ucdp <- left_join(ucdp, pko,
+                  by = c("ccode", "year"))
+
+ucdp <- ucdp %>%
+  group_by(ccode) %>%
+  mutate(pko_pres = LOCF(PKO)) %>% # Dummy for If a PKO Was Present In a Country in the Past
+  mutate(ever_pko = pko_pres) %>% # Simply a Dummy for Whether a PKO Was Present In a Country At All (For Visualizations)
+  fill(ever_pko, .direction = "downup") %>%
+  fill(ever_pko, .direction = "updown") %>%
+  ungroup()
 
 ## V-Dem Data
 
