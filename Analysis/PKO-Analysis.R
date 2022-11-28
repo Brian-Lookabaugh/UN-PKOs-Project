@@ -126,6 +126,21 @@ synth_data <- ucdp %>%
 ########--------Generate a Map of PKO Distribution---------########
 ###################################################################
 
+# Load the Earth Spatial Polygons
+
+world_sf <- rnaturalearth::ne_countries(
+  scale = "medium",
+  returnclass = "sf"
+)
+
+# Rename Country IDs for Merging That Don't Match
+
+world_sf <- world_sf %>%
+  mutate(sovereignt = str_replace(
+    sovereignt, "Republic of Serbia", "Serbia"))
+
+# Merge Earth Data With Synth Data Set
+
 ########################################################
 ########--------Synthetic Control Set-Up--------########
 ########################################################
