@@ -6,6 +6,7 @@ pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
   "tidysynth", # Tidy Implementation of the Synthetic Control Method
   "DescTools", # Carrying Values of Observations Forward (LOCF)
+  "haven", # Importing Data from Stata
   "sf", # Maps
   "rnaturalearth", # Maps
   "rnaturalearthdata", # Maps
@@ -75,25 +76,33 @@ ucdp <- ucdp %>%
 load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp-onesided-221.RData")
 osv <- ucdp_onesided_221
 
-# Clean Up Data
-
 ## PKO Data
 
-pko <-
+pko <- 
 
 ## V-Dem Data
 
 vdem <- 
   
+# Re-Code Coups as Non-Civil Wars
+  
 ## Military Capacity Data
   
-mil_per_data <- 
+mil_per <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/NMC-60-abridged.csv")
+
+mil_per <- mil_per %>%
+  filter(milper != -9) %>%
+  mutate(lmilper = log(milper + 1)) %>%
+  select(ccode, year, lmilper)
+
+ucdp <- left_join(ucdp, mil_per,
+                  by = c("ccode", "year"))
 
 ## (Dependent Variable Data)
   
 var <- 
 
-## Merge Data Together
+## Merge Data Together and Clean Final Dataset (Rename)
 
 synth_data <- 
 
