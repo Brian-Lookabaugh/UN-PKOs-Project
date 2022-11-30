@@ -71,11 +71,6 @@ ucdp <- ucdp %>%
     is.na(termination), 0, termination
   ))
 
-# Merge UCDP One-Sided Violence Data
-
-load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp-onesided-221.RData")
-osv <- ucdp_onesided_221
-
 ## PKO Data
 
 pko <- read_dta("Data/formattedmullenbach2013pkodata.dta")
@@ -120,13 +115,13 @@ mil_per <- mil_per %>%
 ucdp <- left_join(ucdp, mil_per,
                   by = c("ccode", "year"))
 
-## Merge Ethnic Fractionalization Data?
+## Merge Ethnic Power Relations Data
 
 eth <- 
 
-## (Dependent Variable Data)
+## Merge Global Terrorism Data
   
-var <- 
+gtd <- 
 
 ## Final Data Cleaning (Rename)
 
