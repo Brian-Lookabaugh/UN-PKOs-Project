@@ -100,7 +100,9 @@ vdem <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/sel
 vdem <- vdem %>%
   rename(ccode = COWcode) %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
-  mutate(lpop = log(e_pop))
+  mutate(lpop = log(e_pop)) %>%
+  mutate(l_wb_pop = log(e_wb_pop)) %>%
+  mutate(l_mi_pop = log(e_mipopula))
 
 ucdp <- left_join(ucdp, vdem,
                   by = c("ccode", "year"))
@@ -158,10 +160,10 @@ ucdp <- left_join(ucdp, gtd_combined,
 ## Final Data Cleaning
 
 synth_data <- ucdp %>%
-  select(-c(stateabb, version, prior_civ_war, lag_civ_war, PKO, e_pt_coup, e_pop, e_gdppc)) %>% # Remove Unnecessary Columns
+  select(-c(stateabb, version, prior_civ_war, lag_civ_war, PKO, e_pt_coup, e_pop, e_wb_pop, e_mipopula, e_gdppc)) %>% # Remove Unnecessary Columns
   select(country_name, ccode, year, deaths, event_count, pko_pres, ever_pko, everything()) %>% # Ordering Rows
+  rename(democracy = v2x_polyarchy, imr = e_peinfmor, educ = e_peaveduc)
   
-
 ###################################################################
 ########--------Generate a Map of PKO Distribution---------########
 ###################################################################
