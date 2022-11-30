@@ -86,6 +86,9 @@ ucdp <- left_join(ucdp, pko,
 ucdp <- ucdp %>%
   group_by(ccode) %>%
   mutate(pko_pres = LOCF(PKO)) %>% # Dummy for If a PKO Was Present In a Country in the Past
+  mutate(pko_pres = if_else(
+    is.na(pko_pres), 0, pko_pres
+  )) %>%
   mutate(ever_pko = pko_pres) %>% # Simply a Dummy for Whether a PKO Was Present In a Country At All (For Visualizations)
   fill(ever_pko, .direction = "downup") %>%
   fill(ever_pko, .direction = "updown") %>%
@@ -116,6 +119,8 @@ mil_per <- mil_per %>%
 
 ucdp <- left_join(ucdp, mil_per,
                   by = c("ccode", "year"))
+
+## Merge Ethnic Fractionalization Data?
 
 ## (Dependent Variable Data)
   
