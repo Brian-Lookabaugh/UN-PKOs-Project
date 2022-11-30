@@ -98,7 +98,9 @@ vdem <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/sel
 
 vdem <- vdem %>%
   rename(ccode = COWcode) %>%
-  select(ccode, country_name, year, v2x_polyarchy, e_peinfmor, e_peaveduc, e_pop, e_gdppc)
+  mutate(lgdppc = log(e_gdppc + 1)) %>%
+  mutate(lpop = log(e_pop)) %>%
+  select(ccode, country_name, year, v2x_polyarchy, e_peinfmor, e_peaveduc, lpop, lgdppc)
 
 ucdp <- left_join(ucdp, vdem,
                   by = c("ccode", "year"))
@@ -114,10 +116,6 @@ mil_per <- mil_per %>%
 
 ucdp <- left_join(ucdp, mil_per,
                   by = c("ccode", "year"))
-
-## Merge Ethnic Power Relations Data
-
-eth <- 
 
 ## Merge Global Terrorism Data
   
