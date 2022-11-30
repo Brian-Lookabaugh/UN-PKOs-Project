@@ -7,6 +7,7 @@ pacman::p_load(
   "tidysynth", # Tidy Implementation of the Synthetic Control Method
   "DescTools", # Carrying Values of Observations Forward (LOCF)
   "haven", # Importing Data from Stata
+  "readxl", # Importing Data from Excel
   "sf", # Maps
   "rnaturalearth", # Maps
   "rnaturalearthdata", # Maps
@@ -99,8 +100,7 @@ vdem <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/sel
 vdem <- vdem %>%
   rename(ccode = COWcode) %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
-  mutate(lpop = log(e_pop)) %>%
-  select(ccode, country_name, year, v2x_polyarchy, e_peinfmor, e_peaveduc, lpop, lgdppc)
+  mutate(lpop = log(e_pop))
 
 ucdp <- left_join(ucdp, vdem,
                   by = c("ccode", "year"))
@@ -119,11 +119,48 @@ ucdp <- left_join(ucdp, mil_per,
 
 ## Merge Global Terrorism Data
   
-gtd <- 
+gtd <- read_excel("Data/selectedgtddata.xlsx")
 
-## Final Data Cleaning (Rename)
+gtd_deaths <- gtd %>% # Collapse Data to Get the Number of Casualties
+  group_by(country_txt, iyear) %>%
+  summarise(deaths = sum(nkill, na.rm = TRUE)) %>%
+  ungroup()
+
+gtd_count <- gtd %>% # Collapse Data to Get the Number of Events
+  group_by(country_txt, iyear) %>%
+  summarise(event_count = n_distinct(eventid, na.rm = TRUE)) %>%
+  ungroup()
+
+gtd_combined <- inner_join(gtd_deaths, gtd_count,
+                           by = c("country_txt", "iyear")) %>%
+  mutate(country_txt = str_replace( # Rename Country Names for Merging
+    country_txt, "Bosnia-Herzegovina", "Bosnia and Herzegovina"
+  )) %>%
+  mutate(country_txt = str_replace(
+    country_txt, "Mynanmar", "Burma/Myanmar"
+  )) %>%
+  mutate(country_txt = str_replace(
+    country_txt, "Vietnam", "Republic of Vietnam"
+  )) %>%
+  mutate(country_txt = str_replace(
+    country_txt, "Serbia-Montenegro", "Serbia"
+  )) %>%
+  mutate(country_txt = str_replace(
+    country_txt, "Soviet Union", "Russia"
+  )) %>%
+  mutate(country_txt = str_replace(
+    country_txt, "Yugoslavia", "Serbia"
+  ))
+
+ucdp <- left_join(ucdp, gtd_combined,
+                  by = c("country_name" = "country_txt", "year" = "iyear"))
+
+## Final Data Cleaning
 
 synth_data <- ucdp %>%
+  select(-c(stateabb, version, prior_civ_war, lag_civ_war, PKO, e_pt_coup, e_pop, e_gdppc)) %>% # Remove Unnecessary Columns
+  select(country_name, ccode, year, deaths, event_count, pko_pres, ever_pko, everything()) %>% # Ordering Rows
+  
 
 ###################################################################
 ########--------Generate a Map of PKO Distribution---------########
