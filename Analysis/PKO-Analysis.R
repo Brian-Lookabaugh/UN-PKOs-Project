@@ -122,6 +122,8 @@ ucdp <- left_join(ucdp, mil_per,
 
 ## Merge Ethnic Fractionalization Data?
 
+eth <- 
+
 ## (Dependent Variable Data)
   
 var <- 
@@ -218,22 +220,76 @@ ggsave(
 ########--------Synthetic Control Set-Up--------########
 ########################################################
 
+scm_object <- synth_data %>%
+  
+## Create the Synthetic Control Object
+  
+  synthetic_control(outcome = ,
+                    unit = ,
+                    time = ,
+                    i_unit = ,
+                    i_time = ,
+                    generate_placebos = T
+                    ) %>%
+  
+## Generate Average Predictors
+  
+  generate_predictor(time_window = ,
+                     X...
+                     ) %>%
+  
+## Generate Weights
+  
+  generate_weights(optimization_window = ,
+                   margin_ipop = , sigf_ipop = , bound_ipop = 
+  ) %>%
+
+## Generate the Synthetic Control
+  
+  generate_control()
+
 #####################################################################
 ########--------Synthetic Control Graphics and Tables--------########
 #####################################################################
 
 ## Time Series Plot
 
+ts_plot <- scm_object %>%
+  plot_trends()
+
 ## Difference in Synthetic and Observed Plot
+
+diff_plot <- scm_object %>%
+  plot_differences()
 
 ## Unit and Variable Weights Plot
 
+w_plot <- scm_object %>%
+  plot_weights()
+
 ## Table Comparing Synthetic to Observed
+
+scm_object %>%
+  grab_balance_table()
 
 ## Unit Placebos
 
+placebo <- scm_object %>%
+  plot_placebos()
+
 ## Unit Placebos With Extreme Values
+
+placebo_ext <- scm_object %>%
+  plot_placebos(prune = FALSE)
+
+## Time Placebo
 
 ## Post/Pre-MSPE
 
+mspe_plot <- scm_object %>%
+  plot_mspe_ratio()
+
 ## Tables With Significance of Unit Treatments
+
+scm_object %>%
+  grab_signficance()
