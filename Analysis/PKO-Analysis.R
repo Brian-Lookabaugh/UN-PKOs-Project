@@ -81,13 +81,6 @@ ucdp <- left_join(ucdp, pko,
 
 ucdp <- ucdp %>%
   group_by(ccode) %>%
-  mutate(lag_pko = lag(PKO, n = 1, order_by = ccode)) %>% # Dummy for If a PKO Was Present In a Country in the Past
-  mutate(lag_pko = if_else( # Replace NA Lag PKO Values With 0
-    is.na(lag_pko), 0, lag_pko
-  )) %>%
-  mutate(pko_onset = if_else(
-    PKO == 1 & lag_pko != 1, 1, 0
-  )) %>%
   mutate(pko_pres = LOCF(PKO)) %>% 
   mutate(pko_pres = if_else(
     is.na(pko_pres), 0, pko_pres
