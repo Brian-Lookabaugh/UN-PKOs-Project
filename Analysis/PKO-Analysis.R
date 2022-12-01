@@ -40,22 +40,21 @@ ucdp <- ucdp %>%
 states <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/system2016.csv")
 
 ucdp <- full_join(ucdp, states,
-                   by = c("gwno_a" = "ccode", "year"))
-
-# Drop Cases That Have Never Experienced a Civil War
-
-ucdp <- ucdp %>%
+                   by = c("gwno_a" = "ccode", "year")) %>%
+  
+# Generate Prior Civil War Variable
+  
   rename(ccode = gwno_a) %>%
   arrange(ccode, year) %>%
   group_by(ccode) %>%
   mutate(prior_civ_war = LOCF(civ_war)) %>%
   ungroup() %>%
-  filter(prior_civ_war == 1) %>%
   mutate(civ_war = if_else( # Replace NA Civil War Values With 0
     is.na(civ_war), 0, civ_war
   )) %>%
 
 # Generate Conflict Recurrence and Termination Variables
+  
   group_by(ccode) %>%
   mutate(lag_civ_war = lag(civ_war, n = 1, order_by = ccode)) %>%
   ungroup() %>%
@@ -160,8 +159,8 @@ ucdp <- left_join(ucdp, gtd_combined,
 ## Final Data Cleaning
 
 synth_data <- ucdp %>%
-  select(-c(stateabb, version, prior_civ_war, lag_civ_war, PKO, e_pt_coup, e_pop, e_wb_pop, e_mipopula, e_gdppc)) %>% # Remove Unnecessary Columns
-  select(country_name, ccode, year, deaths, event_count, pko_pres, ever_pko, pko_onset, everything()) %>% # Ordering Rows
+  select(-c(stateabb, version, lag_civ_war, PKO, e_pt_coup, e_pop, e_wb_pop, e_mipopula, e_gdppc)) %>% # Remove Unnecessary Columns
+  select(country_name, ccode, year, deaths, event_count, pko_pres, ever_pko, everything()) %>% # Ordering Rows
   rename(democracy = v2x_polyarchy, imr = e_peinfmor, educ = e_peaveduc)
   
 ###################################################################
