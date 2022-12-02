@@ -20,7 +20,7 @@ pacman::p_load(
 
 ## UCDP Data
 
-load("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/ucdp_prio_acd_221.RData")
+load("Data/ucdp_prio_acd_221.RData")
 ucdp <- ucdp_prio_acd_221
 
 # Drop Non-Civil War Cases (1K Threshold)
@@ -37,9 +37,9 @@ ucdp <- ucdp %>%
 
 # Merge COW Country-Year Data
 
-states <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/system2016.csv")
+states <- read.csv("Data/system2016.csv")
 
-ucdp <- full_join(ucdp, states,
+synth_data <- full_join(ucdp, states,
                    by = c("gwno_a" = "ccode", "year")) %>%
   
 # Generate Prior Civil War Variable
@@ -75,10 +75,8 @@ ucdp <- full_join(ucdp, states,
 
 pko <- read_dta("Data/formattedmullenbach2013pkodata.dta")
 
-ucdp <- left_join(ucdp, pko,
-                  by = c("ccode", "year"))
-
-ucdp <- ucdp %>%
+synth_data <- left_join(synth_data, pko,
+                  by = c("ccode", "year")) %>%
   group_by(ccode) %>%
   mutate(pko_pres = LOCF(PKO)) %>% 
   mutate(pko_pres = if_else(
@@ -94,7 +92,7 @@ ucdp <- ucdp %>%
 
 ## V-Dem Data
 
-vdem <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/selectedvdemdata.csv")
+vdem <- read.csv("Data/selectedvdemdata.csv")
 
 vdem <- vdem %>%
   rename(ccode = COWcode) %>%
@@ -103,19 +101,19 @@ vdem <- vdem %>%
   mutate(l_wb_pop = log(e_wb_pop)) %>%
   mutate(l_mi_pop = log(e_mipopula))
 
-ucdp <- left_join(ucdp, vdem,
+synth_data <- left_join(synth_data, vdem,
                   by = c("ccode", "year"))
   
 ## Military Capacity Data
   
-mil_per <- read.csv("C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Data/NMC-60-abridged.csv")
+mil_per <- read.csv("Data/NMC-60-abridged.csv")
 
 mil_per <- mil_per %>%
   filter(milper != -9) %>%
   mutate(lmilper = log(milper + 1)) %>%
   select(ccode, year, lmilper)
 
-ucdp <- left_join(ucdp, mil_per,
+synth_data <- left_join(synth_data, mil_per,
                   by = c("ccode", "year"))
 
 ## Merge Global Terrorism Data
@@ -124,7 +122,7 @@ gtd <- read_excel("Data/selectedgtddata.xlsx")
 
 gtd_deaths <- gtd %>% # Collapse Data to Get the Number of Casualties
   group_by(country_txt, iyear) %>%
-  summarise(deaths = sum(nkill, na.rm = TRUE)) %>%
+  summarise(terr_deaths = sum(nkill, na.rm = TRUE)) %>%
   ungroup()
 
 gtd_count <- gtd %>% # Collapse Data to Get the Number of Events
@@ -153,14 +151,40 @@ gtd_combined <- inner_join(gtd_deaths, gtd_count,
     country_txt, "Yugoslavia", "Serbia"
   ))
 
-ucdp <- left_join(ucdp, gtd_combined,
+synth_data <- left_join(synth_data, gtd_combined,
                   by = c("country_name" = "country_txt", "year" = "iyear"))
+
+## Experiment With SCAD Data
+
+scad_africa <- read.csv("Data/SCAD2018Africa_Final.csv")
+
+scad_africa <- scad_africa %>%
+  group_by(ccode, styr) %>%
+  filter(ndeath >= 0) %>% # Remove NA Values
+  summarise(ll_deaths = sum(ndeath, na.rm = TRUE)) %>%
+  ungroup()
+
+synth_data <- left_join(synth_data, scad_africa,
+                  by = c("ccode", "year" = "styr"))
+
+scad_latam <- read.csv("Data/SCAD2018LatinAmerica_Final.csv")
+
+scad_latam <- scad_latam %>%
+  group_by(ccode, styr) %>%
+  filter(ndeath >= 0) %>%
+  summarise(ll_deaths = sum(ndeath, na.rm = TRUE)) %>%
+  ungroup()
+
+synth_data <- left_join(synth_data, scad_latam,
+                  by = c("ccode", "year" = "styr")) %>%
+  unite(ll_deaths, ll_deaths.x:ll_deaths.y, na.rm = TRUE) %>% # Combine SCAD Africa/LATAM Low-Level Deaths Values
+  mutate(ll_deaths = as.numeric(ll_deaths)) # Re-Convert to Numeric
 
 ## Final Data Cleaning
 
-synth_data <- ucdp %>%
+synth_data <- synth_data %>%
   select(-c(stateabb, version, lag_civ_war, PKO, e_pt_coup, e_pop, e_wb_pop, e_mipopula, e_gdppc)) %>% # Remove Unnecessary Columns
-  select(country_name, ccode, year, deaths, event_count, pko_pres, ever_pko, everything()) %>% # Ordering Rows
+  select(country_name, ccode, year, terr_deaths, event_count, ll_deaths, pko_pres, ever_pko, everything()) %>% # Ordering Rows
   rename(democracy = v2x_polyarchy, imr = e_peinfmor, educ = e_peaveduc)
   
 ###################################################################
