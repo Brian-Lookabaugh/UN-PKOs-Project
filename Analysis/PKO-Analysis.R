@@ -154,7 +154,7 @@ gtd_combined <- inner_join(gtd_deaths, gtd_count,
 synth_data <- left_join(synth_data, gtd_combined,
                   by = c("country_name" = "country_txt", "year" = "iyear"))
 
-## Experiment With SCAD Data
+## Merge SCAD Data
 
 scad_africa <- read.csv("Data/SCAD2018Africa_Final.csv")
 
@@ -171,7 +171,7 @@ scad_latam <- read.csv("Data/SCAD2018LatinAmerica_Final.csv")
 
 scad_latam <- scad_latam %>%
   group_by(ccode, styr) %>%
-  filter(ndeath >= 0) %>%
+  filter(ndeath >= 0) %>% 
   summarise(ll_deaths = sum(ndeath, na.rm = TRUE)) %>%
   ungroup()
 
