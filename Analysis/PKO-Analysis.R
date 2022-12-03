@@ -348,3 +348,7 @@ mspe_plot <- scm_object %>%
 
 scm_object %>%
   grab_signficance()
+
+# Robustness Check 1: Leave-One-Out
+
+# Robustness Check 2: Alternative Predictors
