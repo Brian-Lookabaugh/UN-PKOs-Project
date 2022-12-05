@@ -183,7 +183,7 @@ synth_data <- left_join(synth_data, scad_latam,
 ## Final Data Cleaning
 
 synth_data <- synth_data %>%
-  select(-c(stateabb, version, lag_civ_war, PKO, e_pt_coup, e_pop, e_wb_pop, e_mipopula, e_gdppc)) %>% # Remove Unnecessary Columns
+  select(-c(stateabb, version, lag_civ_war, PKO, e_pt_coup, e_gdppc)) %>% # Remove Unnecessary Columns
   select(country_name, ccode, year, terr_deaths, event_count, ll_deaths, pko_pres, ever_pko, everything()) %>% # Ordering Rows
   rename(democracy = v2x_polyarchy, imr = e_peinfmor, educ = e_peaveduc)
   
@@ -279,24 +279,28 @@ scm_object <- synth_data %>%
   
 ## Create the Synthetic Control Object
   
-  synthetic_control(outcome = ,
-                    unit = ,
-                    time = ,
-                    i_unit = ,
-                    i_time = ,
+  synthetic_control(outcome = event_count,
+                    unit = ccode,
+                    time = year,
+                    i_unit = "Guatemala",
+                    i_time = 1997,
                     generate_placebos = T
                     ) %>%
   
 ## Generate Average Predictors
   
-  generate_predictor(time_window = ,
-                     X...
+  generate_predictor(time_window = 1980:1997,
+                     mn_lgdppc = mean(lgdppc, na.rm = T),
+                     mn_imr = mean(imr, na.rm = T),
+                     mn_educ = mean(educ, na.rm = T),
+                     mn_democ = mean(democracy, na.rm = T),
+                     mn_lmilper = mean(lmilper, na.rm = T)
                      ) %>%
   
 ## Generate Weights
   
-  generate_weights(optimization_window = ,
-                   margin_ipop = , sigf_ipop = , bound_ipop = 
+  generate_weights(optimization_window = 1980:1997,
+                   margin_ipop = .02, sigf_ipop = 7, bound_ipop = 6
   ) %>%
 
 ## Generate the Synthetic Control
