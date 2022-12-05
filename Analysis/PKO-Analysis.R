@@ -275,6 +275,11 @@ ggsave(
 ########--------Synthetic Control Set-Up--------########
 ########################################################
 
+# Remove NA Values in Predictor Variables
+
+synth_data <-synth_data %>%
+  filter(lgdppc != "NA" & imr != "NA" & educ != "NA" & democracy != "NA" & lmilper != "NA" & event_count != "NA")
+
 scm_object <- synth_data %>%
   
 ## Create the Synthetic Control Object
@@ -289,7 +294,7 @@ scm_object <- synth_data %>%
   
 ## Generate Average Predictors
   
-  generate_predictor(time_window = 1980:1997,
+  generate_predictor(time_window = 1974:1997,
                      mn_lgdppc = mean(lgdppc, na.rm = T),
                      mn_imr = mean(imr, na.rm = T),
                      mn_educ = mean(educ, na.rm = T),
@@ -299,9 +304,7 @@ scm_object <- synth_data %>%
   
 ## Generate Weights
   
-  generate_weights(optimization_window = 1980:1997,
-                   margin_ipop = .02, sigf_ipop = 7, bound_ipop = 6
-  ) %>%
+  generate_weights(optimization_window = 1974:1997) %>%
 
 ## Generate the Synthetic Control
   
