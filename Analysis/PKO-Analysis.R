@@ -275,10 +275,16 @@ ggsave(
 ########--------Synthetic Control Set-Up--------########
 ########################################################
 
+# Generate Per Capita Variables for Synthetic Control Outcome
+
+synth_data <- synth_data %>%
+  mutate(event_pc = (event_count / e_pop)) %>%
+  mutate(terr_deaths_pc = (terr_deaths / e_pop))
+
 # Remove NA Values in Predictor Variables
 
 synth_data <-synth_data %>%
-  filter(lgdppc != "NA" & imr != "NA" & educ != "NA" & democracy != "NA" & lmilper != "NA" & event_count != "NA")
+  filter(event_count != "NA")
 
 scm_object <- synth_data %>%
   
