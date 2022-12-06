@@ -11,6 +11,7 @@ pacman::p_load(
   "sf", # Maps
   "rnaturalearth", # Maps
   "rnaturalearthdata", # Maps
+  "zoo", # Interpolating Missing Data
   install = FALSE
 )
 
@@ -185,7 +186,9 @@ synth_data <- left_join(synth_data, scad_latam,
 synth_data <- synth_data %>%
   select(-c(stateabb, version, lag_civ_war, PKO, e_pt_coup, e_gdppc)) %>% # Remove Unnecessary Columns
   select(country_name, ccode, year, terr_deaths, event_count, ll_deaths, pko_pres, ever_pko, everything()) %>% # Ordering Rows
-  rename(democracy = v2x_polyarchy, imr = e_peinfmor, educ = e_peaveduc)
+  rename(democracy = v2x_polyarchy, imr = e_peinfmor) %>%
+  # Filter Countries That Have No Predictor/Outcome Values
+  filter(country_name != "NA")
   
 ###################################################################
 ########--------Generate a Map of PKO Distribution---------########
@@ -275,16 +278,38 @@ ggsave(
 ########--------Synthetic Control Set-Up--------########
 ########################################################
 
-# Generate Per Capita Variables for Synthetic Control Outcome
+## Interpolate Missing Data
 
 synth_data <- synth_data %>%
-  mutate(event_pc = (event_count / e_pop)) %>%
-  mutate(terr_deaths_pc = (terr_deaths / e_pop))
+  group_by(ccode) %>%
+  mutate(int_pop = na.approx(e_pop)) %>%
+  mutate(int_democ = na.approx(democracy)) %>%
+  mutate(int_imr = na.approx(imr)) %>%
+  mutate(int_lgdppc = na.approx(lgdppc)) %>%
+  mutate(int_lmilper = na.approx(lmilper)) %>%
+  ungroup()
 
-# Remove NA Values in Predictor Variables
+# Generate Last Observed Data Transformation to Reduce Missingness
 
-synth_data <-synth_data %>%
-  filter(event_count != "NA")
+synth_data <- synth_data %>%
+  group_by(ccode) %>%
+  mutate(rep_pop = replace_na(e_pop, mean(e_pop, na.rm = T))) %>%
+  mutate(rep_democ = replace_na(democracy, mean(democracy, na.rm = T))) %>%
+  mutate(rep_imr = replace_na(imr, mean(imr, na.rm = T))) %>%
+  mutate(rep_lgdppc = replace_na(lgdppc, mean(lgdppc, na.rm = T))) %>%
+  mutate(rep_lmilper = replace_na(lmilper, mean(lmilper, na.rm = T))) %>%
+  # Drop Rows Where NA Values Are Still Present
+  filter(rep_democ != "NaN" 
+         & rep_imr != "NaN") %>%
+  ungroup()
+
+## Generate Per Capita Variables for Synthetic Control Outcome
+
+synth_data <- synth_data %>%
+  mutate(event_pc = (event_count / imp_pop)) %>%
+  mutate(terr_deaths_pc = (terr_deaths / imp_pop))
+
+## Create the Synthetic Unit
 
 scm_object <- synth_data %>%
   
@@ -301,11 +326,10 @@ scm_object <- synth_data %>%
 ## Generate Average Predictors
   
   generate_predictor(time_window = 1974:1997,
-                     mn_lgdppc = mean(lgdppc, na.rm = T),
-                     mn_imr = mean(imr, na.rm = T),
-                     mn_educ = mean(educ, na.rm = T),
-                     mn_democ = mean(democracy, na.rm = T),
-                     mn_lmilper = mean(lmilper, na.rm = T)
+                     mn_lgdppc = mean(rep_lgdppc, na.rm = T),
+                     mn_imr = mean(rep_imr, na.rm = T),
+                     mn_democ = mean(rep_democ, na.rm = T),
+                     mn_lmilper = mean(rep_lmilper, na.rm = T)
                      ) %>%
   
 ## Generate Weights
