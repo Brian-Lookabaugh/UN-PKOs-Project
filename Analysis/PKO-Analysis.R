@@ -11,7 +11,6 @@ pacman::p_load(
   "sf", # Maps
   "rnaturalearth", # Maps
   "rnaturalearthdata", # Maps
-  "zoo", # Interpolating Missing Data
   install = FALSE
 )
 
@@ -188,7 +187,9 @@ synth_data <- synth_data %>%
   select(country_name, ccode, year, terr_deaths, event_count, ll_deaths, pko_pres, ever_pko, everything()) %>% # Ordering Rows
   rename(democracy = v2x_polyarchy, imr = e_peinfmor) %>%
   # Filter Countries That Have No Predictor/Outcome Values
-  filter(country_name != "NA")
+  filter(country_name != "NA") %>%
+  # Filer Countries That Have Never Experienced Conflict
+  filter(prior_civ_war != "NA")
   
 ###################################################################
 ########--------Generate a Map of PKO Distribution---------########
@@ -278,30 +279,31 @@ ggsave(
 ########--------Synthetic Control Set-Up--------########
 ########################################################
 
-## Interpolate Missing Data
+## Generate Last Observed Data Transformation to Reduce Missingness
 
 synth_data <- synth_data %>%
   group_by(ccode) %>%
-  mutate(int_pop = na.approx(e_pop)) %>%
-  mutate(int_democ = na.approx(democracy)) %>%
-  mutate(int_imr = na.approx(imr)) %>%
-  mutate(int_lgdppc = na.approx(lgdppc)) %>%
-  mutate(int_lmilper = na.approx(lmilper)) %>%
-  ungroup()
-
-# Generate Last Observed Data Transformation to Reduce Missingness
-
-synth_data <- synth_data %>%
-  group_by(ccode) %>%
-  mutate(rep_pop = replace_na(e_pop, mean(e_pop, na.rm = T))) %>%
-  mutate(rep_democ = replace_na(democracy, mean(democracy, na.rm = T))) %>%
-  mutate(rep_imr = replace_na(imr, mean(imr, na.rm = T))) %>%
-  mutate(rep_lgdppc = replace_na(lgdppc, mean(lgdppc, na.rm = T))) %>%
-  mutate(rep_lmilper = replace_na(lmilper, mean(lmilper, na.rm = T))) %>%
-  # Drop Rows Where NA Values Are Still Present
-  filter(rep_democ != "NaN" 
-         & rep_imr != "NaN") %>%
-  ungroup()
+  mutate(rep_pop = e_pop) %>%
+    fill(rep_pop, .direction = "downup") %>%
+    fill(rep_pop, .direction = "updown") %>%
+  mutate(rep_democ = democracy) %>%
+    fill(rep_democ, .direction = "downup") %>%
+    fill(rep_democ, .direction = "updown") %>%
+  mutate(rep_imr = imr) %>%
+    fill(rep_imr, .direction = "downup") %>%
+    fill(rep_imr, .direction = "updown") %>%
+  mutate(rep_lgdppc = lgdppc) %>%
+    fill(rep_lgdppc, .direction = "downup") %>%
+    fill(rep_lgdppc, .direction = "updown") %>%
+  mutate(rep_lmilper = lmilper) %>%
+    fill(rep_lmilper, .direction = "downup") %>%
+    fill(rep_lmilper, .direction = "updown") %>%
+  mutate(rep_events = event_count) %>%
+    fill(rep_events, .direction = "downup") %>%
+    fill(rep_events, .direction = "updown") %>%
+  ungroup() %>%
+  # Filter Remaining Countries That Have No Information on Outcome and Predictor Values
+  filter(rep_events != "NA" & rep_imr != "NA")
 
 ## Generate Per Capita Variables for Synthetic Control Outcome
 
@@ -315,7 +317,7 @@ scm_object <- synth_data %>%
   
 ## Create the Synthetic Control Object
   
-  synthetic_control(outcome = event_count,
+  synthetic_control(outcome = rep_events,
                     unit = ccode,
                     time = year,
                     i_unit = "Guatemala",
