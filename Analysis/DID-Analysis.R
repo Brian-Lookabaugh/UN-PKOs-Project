@@ -7,9 +7,6 @@ pacman::p_load(
   "DescTools", # Carrying Values of Observations Forward (LOCF)
   "haven", # Importing Data from Stata
   "readxl", # Importing Data from Excel
-  "sf", # Maps
-  "rnaturalearth", # Maps
-  "rnaturalearthdata", # Maps
   install = FALSE
 )
 
@@ -17,26 +14,33 @@ pacman::p_load(
 ###############---------Data Collection and Cleaning---------###############
 ############################################################################
 
-# Load Geo-Coded Data
+# Load Geo-Coded PKO Data
 
 # Load GTD Data
 
-# Load PKO Data
+############################################################################
+###############----------------------DAG---------------------###############
+############################################################################
+
+pacman::p_load(
+  "daggity",
+  "ggdag",
+  install = FALSE
+)
 
 ############################################################################
 ###############------------Map of PKO Distribution-----------###############
 ############################################################################
 
-
+pacman::p_load(
+  "sf", 
+  "rnaturalearth", 
+  "rnaturalearthdata", 
+  install = FALSE
+)
 
 ############################################################################
-###############-----------Difference-in-Differences----------###############
+###############-------Difference-in-Differences Analysis-----###############
 ############################################################################
 
-# Plot and Test Parallell Trends Assumption
 
-# Estimate the DiD Effect
-
-# Robustness Checks
-
-# Sensitivity Analysis
