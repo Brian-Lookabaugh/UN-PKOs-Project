@@ -16,18 +16,6 @@ pacman::p_load(
 
 # Load Geo-Coded PKO Data
 
-# Load GTD Data
-
-############################################################################
-###############----------------------DAG---------------------###############
-############################################################################
-
-pacman::p_load(
-  "daggity",
-  "ggdag",
-  install = FALSE
-)
-
 ############################################################################
 ###############------------Map of PKO Distribution-----------###############
 ############################################################################
@@ -42,5 +30,27 @@ pacman::p_load(
 ############################################################################
 ###############-------Difference-in-Differences Analysis-----###############
 ############################################################################
+
+pacman::p_load()
+
+## Testing Parallel Trends Assumption
+
+# Graph of Trend
+
+# Placebo Test
+
+# Statistical Test
+
+## Regression Models
+
+# Base Model (M1): Two Time Periods, Binary Treatment, No Controls
+
+# M2: Base Model With Controls
+
+# M3: Base Model With Multiple Time Periods
+
+# M4: Base Model With Continuous Treatment
+
+## Sensitivity Analysis
 
 
