@@ -45,13 +45,11 @@ pacman::p_load()
 
 ## Regression Models
 
-# Base Model (M1): Two Time Periods, Binary Treatment, No Controls
+# Base Model (M1)
 
-# M2: Base Model With IPW
+# M2: Base Model With Controls (Matched and Covariates?)
 
-# M3: Base Model With Controls
-
-# M4: Base Model With Multiple Time Periods
+# M3: Base Model With IPW
 
 ## Sensitivity Analysis
 
