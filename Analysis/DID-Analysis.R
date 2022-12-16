@@ -53,8 +53,6 @@ pacman::p_load()
 
 # M4: Base Model With Multiple Time Periods
 
-# M5: Base Model With Continuous Treatment
-
 ## Sensitivity Analysis
 
 
