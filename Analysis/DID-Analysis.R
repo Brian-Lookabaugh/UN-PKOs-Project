@@ -41,8 +41,6 @@ pacman::p_load()
 
 # Placebo Test
 
-# Statistical Test
-
 ## Regression Models
 
 # Base Model (M1)
