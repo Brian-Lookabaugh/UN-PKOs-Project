@@ -16,6 +16,10 @@ pacman::p_load(
 
 # Load and Clean UCDP Georeferenced Event Data (GED)
 
+load("Data/ucdp_ged_22_1.RData")
+ged <- GEDEvent_v22_1
+rm(GEDEvent_v22_1)
+
 # Load and Clean UCDP Managing Intrastate Conflict (MIC) Africa Data
 
 ############################################################################
