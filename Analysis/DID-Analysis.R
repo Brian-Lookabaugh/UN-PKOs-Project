@@ -4,9 +4,6 @@
 
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
-  "DescTools", # Carrying Values of Observations Forward (LOCF)
-  "haven", # Importing Data from Stata
-  "readxl", # Importing Data from Excel
   install = FALSE
 )
 
@@ -22,86 +19,87 @@ rm(GEDEvent_v22_1)
 
 # Collapse the Data to Grid-Year Level and Get Sums and Counts of Battle Deaths and 
 # Lethal Events For Different Types of Violence 
-# (Aggregate, State-Based, Non-State Based, and OSV)
+# (Aggregate, State-Based, Non-State Based, and OSV - One Sided Violence)
 
-agg_deaths <- ged %>%
+agg <- ged %>%
   group_by(priogrid_gid, year) %>%
-  summarise(agg_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE)) %>%
+  summarise(agg_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            agg_event = n_distinct(id, na.rm = TRUE)) %>%
   ungroup()
 
-agg_events <- ged %>%
-  group_by(priogrid_gid, year) %>%
-  summarise(agg_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
-
-sb_deaths <- ged %>%
+sb <- ged %>%
   group_by(priogrid_gid, year) %>%
   filter(type_of_violence == 1) %>%
-  summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE)) %>%
+  summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            sb_event = n_distinct(id, na.rm = TRUE)) %>%
   ungroup()
 
-sb_events <- ged %>%
-  group_by(priogrid_gid, year) %>%
-  filter(type_of_violence == 1) %>%
-  summarise(sb_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
-
-nsb_deaths <- ged %>%
+nsb <- ged %>%
   group_by(priogrid_gid, year) %>%
   filter(type_of_violence == 2) %>%
-  summarise(nsb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE)) %>%
+  summarise(nsb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            nsb_event = n_distinct(id, na.rm = TRUE)) %>%
   ungroup()
 
-nsb_events <- ged %>%
-  group_by(priogrid_gid, year) %>%
-  filter(type_of_violence == 2) %>%
-  summarise(nsb_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
-
-osv_deaths <- ged %>%
+osv <- ged %>%
   group_by(priogrid_gid, year) %>%
   filter(type_of_violence == 3) %>%
-  summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE)) %>%
-  ungroup()
-
-osv_events <- ged %>%
-  group_by(priogrid_gid, year) %>%
-  filter(type_of_violence == 3) %>%
-  summarise(osv_event = n_distinct(id, na.rm = TRUE)) %>%
+  summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            osv_event = n_distinct(id, na.rm = TRUE)) %>%
   ungroup()
 
 # Merge The Collapsed Data
 
-ged_col <- full_join(agg_deaths, agg_events,
+ged_col <- full_join(agg, sb,
                      by = c("priogrid_gid", "year")) %>%
-  full_join(sb_deaths,
+  full_join(nsb,
             by = c("priogrid_gid", "year")) %>%
-  full_join(sb_events,
-            by = c("priogrid_gid", "year")) %>%
-  full_join(nsb_deaths,
-            by = c("priogrid_gid", "year")) %>%
-  full_join(nsb_events,
-            by = c("priogrid_gid", "year")) %>%
-  full_join(osv_deaths,
-            by = c("priogrid_gid", "year")) %>%
-  full_join(osv_events,
+  full_join(osv,
             by = c("priogrid_gid", "year"))
+
+# Merge Country Information Back In From Base GED Data Set
+
+ged <- ged %>%
+  select(priogrid_gid, year, country)
+
+ged_col <- left_join(ged_col, ged,
+                       by = c("priogrid_gid", "year"))
+
+ged_col <- ged_col %>%
+  distinct(priogrid_gid, .keep_all = TRUE)
 
 # Remove Individual Collapsed Data Sets
 
-rm(agg_deaths)
-rm(agg_events)
-rm(sb_deaths)
-rm(sb_events)
-rm(nsb_deaths)
-rm(nsb_events)
-rm(osv_deaths)
-rm(osv_events)
+rm(agg)
+rm(sb)
+rm(nsb)
+rm(osv)
 
 # Load, Clean, and Merge Geo-PKO Data
 
-geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv", col_types = cols(.default="c"))
+geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
 
+pko_ged <- full_join(ged_col, geo_pko,
+                     by = c("priogrid_gid" = "prioid", "year"))
+
+pko_ged <- pko_ged %>%
+  
+  # Create the Treated/Non-Treated Variable
+  mutate(treated = if_else(
+    is.na(mission), 0, 1
+  )) %>%
+  
+  # Create the Before/After Treatment Variable
+  group_by(mission) %>%
+  
+  ungroup() %>%
+  
+  # Filter X Country
+  filter() %>%
+  
+  # Select Important Columns to Reduce Size of Data Set
+  select()
+  
 
 ############################################################################
 ###############------------Map of PKO Distribution-----------###############
