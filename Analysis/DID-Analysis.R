@@ -83,20 +83,14 @@ pko_ged <- full_join(ged_col, geo_pko,
                      by = c("priogrid_gid" = "prioid", "year"))
 
 pko_ged <- pko_ged %>%
-  
+  # Filter X Country
+  filter() %>%
   # Create the Treated/Non-Treated Variable
   mutate(treated = if_else(
     is.na(mission), 0, 1
   )) %>%
-  
   # Create the Before/After Treatment Variable
-  group_by(mission) %>%
-  
-  ungroup() %>%
-  
-  # Filter X Country
-  filter() %>%
-  
+  mutate() %>%
   # Select Important Columns to Reduce Size of Data Set
   select()
   
