@@ -17,7 +17,7 @@ load("Data/ucdp_ged_22_1.RData")
 ged <- GEDEvent_v22_1
 rm(GEDEvent_v22_1)
 
-# Collapse the Data to Grid-Year Level and Get Sums and Counts of Battle Deaths and 
+# Collapse the Data to Region-Year Level and Get Sums and Counts of Battle Deaths and 
 # Lethal Events For Different Types of Violence 
 # (Aggregate, State-Based, Non-State Based, and OSV - One Sided Violence)
 
@@ -85,6 +85,8 @@ pko_ged <- full_join(ged_col, geo_pko,
 pko_ged <- pko_ged %>%
   # Filter X Country
   filter() %>%
+  # Collapse the Data to Region-Year Level
+  group_by() %>%
   # Create the Treated/Non-Treated Variable
   mutate(treated = if_else(
     is.na(mission), 0, 1
