@@ -33,6 +33,8 @@ pko_dag <- dagify(peace ~ pko + democ + nat_res + gov_cap + pop + eth_frac + dev
                              pop = "Population", eth_frac = "Ethnic Diversity", 
                              dev = "Development"))
 
+adjustmentSets(pko_dag)
+
 # Convert DAG Object Into a Tidy Frame for Plotting
 
 tidy_pko_dag <- pko_dag %>%
@@ -76,7 +78,7 @@ rm(GEDEvent_v22_1)
 
 # State-Based Violence
 sb <- ged %>%
-  group_by(country_id, year) %>%
+  group_by(country, gwnoa, year) %>%
   filter(type_of_violence == 1) %>%
   summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
             sb_event = n_distinct(id, na.rm = TRUE)) %>%
@@ -84,7 +86,7 @@ sb <- ged %>%
 
 # Non-State Based Violence
 nsb <- ged %>%
-  group_by(country_id, year) %>%
+  group_by(country, gwnoa, year) %>%
   filter(type_of_violence == 2) %>%
   summarise(nsb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
             nsb_event = n_distinct(id, na.rm = TRUE)) %>%
@@ -92,7 +94,7 @@ nsb <- ged %>%
 
 # OSV
 osv <- ged %>%
-  group_by(country_id, year) %>%
+  group_by(country, year) %>%
   filter(type_of_violence == 3) %>%
   summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
             osv_event = n_distinct(id, na.rm = TRUE)) %>%
@@ -101,14 +103,44 @@ osv <- ged %>%
 # Merge the Collapsed Data
 
 ged_col <- full_join(sb, nsb,
-                     by = c("country_id", "year")) %>%
+                     by = c("country", "year")) %>%
   full_join(osv,
-            by = c("country_id", "year"))
+            by = c("country", "year"))
 
 # Remove Older Data Sets
 rm(sb)
 rm(nsb)
 rm(osv)
+
+# Load and Clean Geo-PKO Data
+
+geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
+
+# Collapse the Data to State-Year Level and Get Sums of PKO Troops
+
+geo_pko <- geo_pko %>%
+  mutate_at(c('no.troops'), as.numeric) %>% # Convert Troop Count to Numeric
+  filter(no.troops != "unknown", na.rm = TRUE) %>% # Remove Unknown Values
+  group_by(country, year) %>% 
+  summarise(pko_troops = sum(no.troops, na.rm = TRUE)) %>%
+  mutate(pko = 1) %>% # Create a Variable Denoting the Presence of a PKO 
+  ungroup()
+
+# Merge the Geo-PKO Data With the UCDP GED Data
+
+ged_pko <- full_join(ged_col, geo_pko,
+                     by = c('country', 'year'))
+
+# Clean Up the Merged Data
+
+ged_pko <- ged_pko %>%
+  mutate(pko = if_else( # Replace NA Values for PKO With 0
+    is.na(pko), 0, 1
+  )) %>%
+  mutate(pko_troops = if_else(
+    is.na(pko_troops), 0, pko_troops)) # Replace NA Value for PKO Troops With 0
+
+# Load and Clean V-Dem Data
 
 ############################################################################
 ###############--------------IPW/Matching Set-Up-------------###############
