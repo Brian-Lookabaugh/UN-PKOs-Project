@@ -64,21 +64,75 @@ ggsave(
 ###############---------Data Collection and Cleaning---------###############
 ############################################################################
 
+# Load and Clean UCDP Georeferenced Data (GED)
+
+load("Data/ucdp_ged_22_1.RData")
+ged <- GEDEvent_v22_1
+rm(GEDEvent_v22_1)
+
+# Collapse the Data to State-Year Level and Get Sums and Counts of Battle Deaths and 
+# Lethal Events For Different Types of Violence 
+# (State-Based, Non-State Based, and OSV - One Sided Violence)
+
+# State-Based Violence
+sb <- ged %>%
+  group_by(country_id, year) %>%
+  filter(type_of_violence == 1) %>%
+  summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            sb_event = n_distinct(id, na.rm = TRUE)) %>%
+  ungroup()
+
+# Non-State Based Violence
+nsb <- ged %>%
+  group_by(country_id, year) %>%
+  filter(type_of_violence == 2) %>%
+  summarise(nsb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            nsb_event = n_distinct(id, na.rm = TRUE)) %>%
+  ungroup()
+
+# OSV
+osv <- ged %>%
+  group_by(country_id, year) %>%
+  filter(type_of_violence == 3) %>%
+  summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            osv_event = n_distinct(id, na.rm = TRUE)) %>%
+  ungroup()
+
+# Merge the Collapsed Data
+
+ged_col <- full_join(sb, nsb,
+                     by = c("country_id", "year")) %>%
+  full_join(osv,
+            by = c("country_id", "year"))
+
+# Remove Older Data Sets
+rm(sb)
+rm(nsb)
+rm(osv)
 
 ############################################################################
 ###############--------------IPW/Matching Set-Up-------------###############
 ############################################################################
 
-### Aggregate Deaths
-# IPW: Dummy PKO Treatment, ATE
+#######-------State-Based-------#######
 
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Deaths
+
+# IPW: Dummy PKO Treatment, ATE, Events
+
+# IPW: Continuous PKO Treatment, ATE, Deaths
+
+# IPW: Continuous PKO Treatment, ATE, Events
 
 # Inspect for Extreme Weights
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Events
 
 # Graph Weights
 
@@ -86,16 +140,25 @@ ggsave(
 
 # Density Plots
 
-### State-Based Deaths
-# IPW: Dummy PKO Treatment, ATE
+#######-------Non-State Based-------#######
 
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Deaths
+
+# IPW: Dummy PKO Treatment, ATE, Events
+
+# IPW: Continuous PKO Treatment, ATE, Deaths
+
+# IPW: Continuous PKO Treatment, ATE, Events
 
 # Inspect for Extreme Weights
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Events
 
 # Graph Weights
 
@@ -103,33 +166,25 @@ ggsave(
 
 # Density Plots
 
-### Non-State Based Deaths
-# IPW: Dummy PKO Treatment, ATE
+#######-------One-Sided Violence-------#######
 
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Deaths
 
-# Inspect for Extreme Weights
+# IPW: Dummy PKO Treatment, ATE, Events
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# IPW: Continuous PKO Treatment, ATE, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE
-
-# Graph Weights
-
-# Balancing Tables
-
-# Density Plots
-
-### One-Sided Violence
-# IPW: Dummy PKO Treatment, ATE
-
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Continuous PKO Treatment, ATE, Events
 
 # Inspect for Extreme Weights
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Events
 
 # Graph Weights
 
@@ -141,61 +196,79 @@ ggsave(
 ###############-------------IPW/Matching Analysis------------###############
 ############################################################################
 
-### Aggregate Deaths
-# IPW: Dummy PKO Treatment, ATE
+#######-------State-Based-------#######
 
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Events
 
-# Matching: CEM, Dummy PKO Treatment, ATE
+# IPW: Continuous PKO Treatment, ATE, Deaths
 
-# Covariate Adjustment
+# IPW: Continuous PKO Treatment, ATE, Events
 
-# Plot Effects
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
-# Regression Table
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
 
-### State-Based Deaths
-# IPW: Dummy PKO Treatment, ATE
+# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
 
-# IPW: Continuous PKO Treatment, ATE
+# Matching: CEM, Dummy PKO Treatment, ATE, Events
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# Covariate Adjustment, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE
-
-# Covariate Adjustment
+# Covariate Adjustment, Events
 
 # Plot Effects
 
 # Regression Table
 
-### Non-State Based Deaths
-# IPW: Dummy PKO Treatment, ATE
+#######-------Non-State Based-------#######
 
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Events
 
-# Matching: CEM, Dummy PKO Treatment, ATE
+# IPW: Continuous PKO Treatment, ATE, Deaths
 
-# Covariate Adjustment
+# IPW: Continuous PKO Treatment, ATE, Events
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Events
+
+# Covariate Adjustment, Deaths
+
+# Covariate Adjustment, Events
 
 # Plot Effects
 
 # Regression Table
 
-### One-Sided Violence
-# IPW: Dummy PKO Treatment, ATE
+#######-------One-Sided Violence-------#######
 
-# IPW: Continuous PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE
+# IPW: Dummy PKO Treatment, ATE, Events
 
-# Matching: CEM, Dummy PKO Treatment, ATE
+# IPW: Continuous PKO Treatment, ATE, Deaths
 
-# Covariate Adjustment
+# IPW: Continuous PKO Treatment, ATE, Events
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATE, Events
+
+# Covariate Adjustment, Deaths
+
+# Covariate Adjustment, Events
 
 # Plot Effects
 
@@ -204,8 +277,6 @@ ggsave(
 ############################################################################
 ###############-------------Sensitivity Analysis-------------###############
 ############################################################################
-
-### Aggregate Deaths
 
 ### State-Based Deaths
 
