@@ -167,13 +167,6 @@ rm(osv)
 
 merged <- left_join(prio, ged_col,
                     by = c("ccode" = "gwnoa", "year"))
-
-# Filter Cases Where There Is No Information on State-Based, Non-State Based
-# And OSV Deaths and Events
-merged <- merged %>%
-  filter(sb_event != "NA" | sb_death != "NA" |
-         nsb_event != "NA" | nsb_death != "NA" |
-         osv_event != "NA" | osv_death != "NA")
   
 # Load and Clean Geo-PKO Data
 
@@ -203,7 +196,43 @@ merged <- merged %>%
   mutate(pko_troops = if_else(
     is.na(pko_troops), 0, pko_troops)) # Replace NA Value for PKO Troops With 0
 
-# Load and Clean V-Dem Data
+# Load and Merge V-Dem Data
+
+vdem <- readr::read_csv("Data/selected_vdem_v12.csv")
+
+merged <- left_join(merged, vdem,
+                    by = c("ccode" = "COWcode", "year"))
+
+# Load and Clean COW's Military Personnel Data
+
+cow <- readr::read_csv("Data/cow_nmc_v4.csv")
+
+cow <- cow %>%
+  filter(milper != -9) # Remove NA Values
+
+merged <- left_join(merged, cow,
+                    by = c("ccode", "year"))
+
+# Final Data Cleaning and Organization
+merged <- merged %>% 
+  # Generate Logged Values
+  mutate(lgdppc = log(e_gdppc)) %>%
+  mutate(lpop = log(e_pop)) %>%
+  mutate(lmilper = log(milper + 1)) %>%
+  # Convert Outcome Variables to Numeric
+  mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
+              as.numeric) %>%
+  # Keep Select Variables
+  select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
+         pko, pko_troops, e_total_resources_income_pc, lgdppc, lpop, lmilper)
+
+# Remove Older Data Sets
+rm(prio)
+rm(ged)
+rm(ged_col)
+rm(geo_pko)
+rm(vdem)
+rm(cow)
 
 ############################################################################
 ###############--------------IPW/Matching Set-Up-------------###############
