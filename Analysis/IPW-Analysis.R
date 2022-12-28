@@ -66,19 +66,59 @@ ggsave(
 ###############---------Data Collection and Cleaning---------###############
 ############################################################################
 
+pacman::p_load(
+  "DescTools", # LOCF Command
+  "countrycode", # Importing COW/GWN Codes for Non-State Based Violence Data
+  install = FALSE
+)
+
+# Load UCDP/PRIO Armed Conflict Data Set to Isolate Cases of 
+# Civil War and Post-Civil War States
+
+prio <- readr::read_csv("Data/ucdp-prio-acd-221.csv")
+
+prio <- prio %>%
+  mutate(gwno_a = as.numeric(gwno_a)) %>% # Convert the country code to a numeric
+  filter(type_of_conflict == 3) %>% # Filter Cases of Civil War
+  mutate(civ_war = 1) %>% # Filter Civil War Variable
+  group_by(gwno_a, year) %>%
+  summarise(civ_war = max(civ_war)) %>% # Collapse Data to Country-Year Level
+  ungroup()
+
+# Merge This Data With COW States Data to Identify All Country-Years
+
+cow <- readr::read_csv("Data/system2016_cow.csv")
+
+prio <- left_join(cow, prio,
+                  by = c("ccode" = "gwno_a", "year"))
+
+# Generate Prior War Variable So We Can Isolate Post-Conflict Cases
+# In Addition to Conflict-Cases
+
+prio <- prio %>%
+  arrange(ccode, year) %>%
+  group_by(ccode) %>%
+  mutate(ev_civwar = LOCF(civ_war)) %>%
+  ungroup() %>%
+  mutate(ev_civwar = if_else(
+    is.na(ev_civwar), 0, ev_civwar
+  )) %>%
+  filter(ev_civwar == 1)
+
 # Load and Clean UCDP Georeferenced Data (GED)
 
 load("Data/ucdp_ged_22_1.RData")
 ged <- GEDEvent_v22_1
 rm(GEDEvent_v22_1)
 
-# Collapse the Data to State-Year Level and Get Sums and Counts of Battle Deaths and 
+# Collapse the GED Data to State-Year Level and Get Sums and Counts of Battle Deaths and 
 # Lethal Events For Different Types of Violence 
 # (State-Based, Non-State Based, and OSV - One Sided Violence)
 
 # State-Based Violence
 sb <- ged %>%
-  group_by(country, gwnoa, year) %>%
+  mutate(gwnoa = as.numeric(gwnoa)) %>%
+  group_by(gwnoa, year) %>%
   filter(type_of_violence == 1) %>%
   summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
             sb_event = n_distinct(id, na.rm = TRUE)) %>%
@@ -86,15 +126,26 @@ sb <- ged %>%
 
 # Non-State Based Violence
 nsb <- ged %>%
-  group_by(country, gwnoa, year) %>%
+  group_by(gwnoa, country, year) %>%
   filter(type_of_violence == 2) %>%
   summarise(nsb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
             nsb_event = n_distinct(id, na.rm = TRUE)) %>%
   ungroup()
+  
+# Assign Cow Codes to Non-State Based Incidents
+
+nsb <- nsb %>%
+  mutate(gwnoa = countrycode(
+    nsb$country, "country.name", "gwn"
+  )) %>%
+  mutate(gwnoa = if_else(
+    country == "Serbia (Yugoslavia)", 345, gwnoa # Replace NA Values for Yugoslavia
+  ))
 
 # OSV
 osv <- ged %>%
-  group_by(country, year) %>%
+  mutate(gwnoa = as.numeric(gwnoa)) %>%
+  group_by(gwnoa, year) %>%
   filter(type_of_violence == 3) %>%
   summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
             osv_event = n_distinct(id, na.rm = TRUE)) %>%
@@ -103,15 +154,27 @@ osv <- ged %>%
 # Merge the Collapsed Data
 
 ged_col <- full_join(sb, nsb,
-                     by = c("country", "year")) %>%
+                     by = c("gwnoa", "year")) %>%
   full_join(osv,
-            by = c("country", "year"))
+            by = c("gwnoa", "year"))
 
 # Remove Older Data Sets
 rm(sb)
 rm(nsb)
 rm(osv)
 
+# Merge the GED Data With the UCDP/PRIO Data
+
+merged <- left_join(prio, ged_col,
+                    by = c("ccode" = "gwnoa", "year"))
+
+# Filter Cases Where There Is No Information on State-Based, Non-State Based
+# And OSV Deaths and Events
+merged <- merged %>%
+  filter(sb_event != "NA" | sb_death != "NA" |
+         nsb_event != "NA" | nsb_death != "NA" |
+         osv_event != "NA" | osv_death != "NA")
+  
 # Load and Clean Geo-PKO Data
 
 geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
@@ -119,21 +182,21 @@ geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
 # Collapse the Data to State-Year Level and Get Sums of PKO Troops
 
 geo_pko <- geo_pko %>%
-  mutate_at(c('no.troops'), as.numeric) %>% # Convert Troop Count to Numeric
+  mutate_at(c("no.troops"), as.numeric) %>% # Convert Troop Count to Numeric
   filter(no.troops != "unknown", na.rm = TRUE) %>% # Remove Unknown Values
-  group_by(country, year) %>% 
+  group_by(cow_code, year) %>% 
   summarise(pko_troops = sum(no.troops, na.rm = TRUE)) %>%
   mutate(pko = 1) %>% # Create a Variable Denoting the Presence of a PKO 
   ungroup()
 
 # Merge the Geo-PKO Data With the UCDP GED Data
 
-ged_pko <- full_join(ged_col, geo_pko,
-                     by = c('country', 'year'))
+merged <- left_join(merged, geo_pko,
+                     by = c("ccode" = "cow_code", "year"))
 
 # Clean Up the Merged Data
 
-ged_pko <- ged_pko %>%
+merged <- merged %>%
   mutate(pko = if_else( # Replace NA Values for PKO With 0
     is.na(pko), 0, 1
   )) %>%
@@ -151,10 +214,6 @@ ged_pko <- ged_pko %>%
 # IPW: Dummy PKO Treatment, ATE, Deaths
 
 # IPW: Dummy PKO Treatment, ATE, Events
-
-# IPW: Continuous PKO Treatment, ATE, Deaths
-
-# IPW: Continuous PKO Treatment, ATE, Events
 
 # Inspect for Extreme Weights
 
@@ -178,10 +237,6 @@ ged_pko <- ged_pko %>%
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
-# IPW: Continuous PKO Treatment, ATE, Deaths
-
-# IPW: Continuous PKO Treatment, ATE, Events
-
 # Inspect for Extreme Weights
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
@@ -203,10 +258,6 @@ ged_pko <- ged_pko %>%
 # IPW: Dummy PKO Treatment, ATE, Deaths
 
 # IPW: Dummy PKO Treatment, ATE, Events
-
-# IPW: Continuous PKO Treatment, ATE, Deaths
-
-# IPW: Continuous PKO Treatment, ATE, Events
 
 # Inspect for Extreme Weights
 
@@ -234,10 +285,6 @@ ged_pko <- ged_pko %>%
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
-# IPW: Continuous PKO Treatment, ATE, Deaths
-
-# IPW: Continuous PKO Treatment, ATE, Events
-
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
@@ -260,10 +307,6 @@ ged_pko <- ged_pko %>%
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
-# IPW: Continuous PKO Treatment, ATE, Deaths
-
-# IPW: Continuous PKO Treatment, ATE, Events
-
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
@@ -285,10 +328,6 @@ ged_pko <- ged_pko %>%
 # IPW: Dummy PKO Treatment, ATE, Deaths
 
 # IPW: Dummy PKO Treatment, ATE, Events
-
-# IPW: Continuous PKO Treatment, ATE, Deaths
-
-# IPW: Continuous PKO Treatment, ATE, Events
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
