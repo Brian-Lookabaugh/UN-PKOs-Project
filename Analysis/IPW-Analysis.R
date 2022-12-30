@@ -219,6 +219,7 @@ merged <- merged %>%
   mutate(lgdppc = log(e_gdppc)) %>%
   mutate(lpop = log(e_pop)) %>%
   mutate(lmilper = log(milper + 1)) %>%
+  mutate(logres = log(e_total_resources_income_pc + 1)) %>%
   # Convert Outcome Variables to Numeric
   mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
               as.numeric) %>%
