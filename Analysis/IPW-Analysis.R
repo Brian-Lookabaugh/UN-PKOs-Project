@@ -244,6 +244,10 @@ rm(cow)
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
+# IPW: Count PKO Treatment, ATE, Deaths
+
+# IPW: Count PKO Treatment, ATE, Events
+
 # Inspect for Extreme Weights
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
@@ -266,6 +270,10 @@ rm(cow)
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
+# IPW: Count PKO Treatment, ATE, Deaths
+
+# IPW: Count PKO Treatment, ATE, Events
+
 # Inspect for Extreme Weights
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
@@ -287,6 +295,10 @@ rm(cow)
 # IPW: Dummy PKO Treatment, ATE, Deaths
 
 # IPW: Dummy PKO Treatment, ATE, Events
+
+# IPW: Count PKO Treatment, ATE, Deaths
+
+# IPW: Count PKO Treatment, ATE, Events
 
 # Inspect for Extreme Weights
 
@@ -314,6 +326,10 @@ rm(cow)
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
+# IPW: Count PKO Treatment, ATE, Deaths
+
+# IPW: Count PKO Treatment, ATE, Events
+
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
@@ -336,6 +352,10 @@ rm(cow)
 
 # IPW: Dummy PKO Treatment, ATE, Events
 
+# IPW: Dummy Count Treatment, ATE, Deaths
+
+# IPW: Dummy Count Treatment, ATE, Events
+
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
@@ -357,6 +377,10 @@ rm(cow)
 # IPW: Dummy PKO Treatment, ATE, Deaths
 
 # IPW: Dummy PKO Treatment, ATE, Events
+
+# IPW: Count PKO Treatment, ATE, Deaths
+
+# IPW: Count PKO Treatment, ATE, Events
 
 # Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
 
