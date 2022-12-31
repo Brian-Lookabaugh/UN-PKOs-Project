@@ -216,16 +216,22 @@ merged <- left_join(merged, cow,
 # Final Data Cleaning and Organization
 merged <- merged %>% 
   # Generate Logged Values
-  mutate(lgdppc = log(e_gdppc)) %>%
-  mutate(lpop = log(e_pop)) %>%
-  mutate(lmilper = log(milper + 1)) %>%
-  mutate(logres = log(e_total_resources_income_pc + 1)) %>%
+  mutate(lgdppc = log(e_gdppc), na.rm = TRUE) %>%
+  mutate(lpop = log(e_pop), na.rm = TRUE) %>%
+  mutate(milper = ifelse( # Dealing With Values Less Than 1 For Log-Transformation
+    milper < 1, milper + 1, milper
+  ), na.rm = TRUE) %>%
+  mutate(lmilper = log(milper)) %>% 
+  mutate(e_total_resources_income_pc = if_else(
+    e_total_resources_income_pc < 1, e_total_resources_income_pc + 1, e_total_resources_income_pc
+  )) %>%
+  mutate(lnatres = log(e_total_resources_income_pc)) %>%
   # Convert Outcome Variables to Numeric
   mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
               as.numeric) %>%
   # Keep Select Variables
   select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
-         pko, pko_troops, e_total_resources_income_pc, lgdppc, lpop, lmilper)
+         pko, pko_troops, lnatres, lgdppc, lpop, lmilper)
 
 # Remove Older Data Sets
 rm(prio)
