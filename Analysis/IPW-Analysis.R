@@ -241,81 +241,57 @@ rm(cow)
 
 #######-------State-Based-------#######
 
-# IPW: Dummy PKO Treatment, ATE, Deaths
+# IPW: Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy PKO Treatment, ATE, Events
-
-# IPW: Count PKO Treatment, ATE, Deaths
-
-# IPW: Count PKO Treatment, ATE, Events
+# IPW: Dummy PKO Treatment, ATT, Events
 
 # Inspect for Extreme Weights
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
 
-# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE, Events
-
-# Graph Weights
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
 
 # Balancing Tables
-
-# Density Plots
 
 #######-------Non-State Based-------#######
 
-# IPW: Dummy PKO Treatment, ATE, Deaths
+# IPW: Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy PKO Treatment, ATE, Events
-
-# IPW: Count PKO Treatment, ATE, Deaths
-
-# IPW: Count PKO Treatment, ATE, Events
+# IPW: Dummy PKO Treatment, ATT, Events
 
 # Inspect for Extreme Weights
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
 
-# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE, Events
-
-# Graph Weights
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
 
 # Balancing Tables
-
-# Density Plots
 
 #######-------One-Sided Violence-------#######
 
-# IPW: Dummy PKO Treatment, ATE, Deaths
+# IPW: Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy PKO Treatment, ATE, Events
-
-# IPW: Count PKO Treatment, ATE, Deaths
-
-# IPW: Count PKO Treatment, ATE, Events
+# IPW: Dummy PKO Treatment, ATT, Events
 
 # Inspect for Extreme Weights
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
 
-# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: CEM, Dummy PKO Treatment, ATE, Events
-
-# Graph Weights
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
 
 # Balancing Tables
-
-# Density Plots
 
 ############################################################################
 ###############-------------IPW/Matching Analysis------------###############
@@ -323,21 +299,17 @@ rm(cow)
 
 #######-------State-Based-------#######
 
-# IPW: Dummy PKO Treatment, ATE, Deaths
+# IPW: Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy PKO Treatment, ATE, Events
+# IPW: Dummy PKO Treatment, ATT, Events
 
-# IPW: Count PKO Treatment, ATE, Deaths
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Count PKO Treatment, ATE, Events
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
-
-# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
-
-# Matching: CEM, Dummy PKO Treatment, ATE, Events
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
 
 # Covariate Adjustment, Deaths
 
@@ -349,21 +321,17 @@ rm(cow)
 
 #######-------Non-State Based-------#######
 
-# IPW: Dummy PKO Treatment, ATE, Deaths
+# IPW: Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy PKO Treatment, ATE, Events
+# IPW: Dummy PKO Treatment, ATT, Events
 
-# IPW: Dummy Count Treatment, ATE, Deaths
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy Count Treatment, ATE, Events
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
-
-# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
-
-# Matching: CEM, Dummy PKO Treatment, ATE, Events
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
 
 # Covariate Adjustment, Deaths
 
@@ -375,21 +343,17 @@ rm(cow)
 
 #######-------One-Sided Violence-------#######
 
-# IPW: Dummy PKO Treatment, ATE, Deaths
+# IPW: Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Dummy PKO Treatment, ATE, Events
+# IPW: Dummy PKO Treatment, ATT, Events
 
-# IPW: Count PKO Treatment, ATE, Deaths
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
 
-# IPW: Count PKO Treatment, ATE, Events
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Deaths
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATE, Events
-
-# Matching: CEM, Dummy PKO Treatment, ATE, Deaths
-
-# Matching: CEM, Dummy PKO Treatment, ATE, Events
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
 
 # Covariate Adjustment, Deaths
 
