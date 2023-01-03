@@ -71,7 +71,7 @@ nsb <- ged %>%
             nsb_event = n_distinct(id, na.rm = TRUE)) %>%
   ungroup()
 
-# Assign Cow Codes to Non-State Based Incidents
+# Assign COW Codes to Non-State Based Incidents
 
 nsb <- nsb %>%
   mutate(gwnoa = countrycode(
@@ -168,14 +168,18 @@ merged <- merged %>%
     e_total_resources_income_pc < 1, e_total_resources_income_pc + 1, e_total_resources_income_pc
   )) %>%
   mutate(lnatres = log(e_total_resources_income_pc)) %>%
+  # Replace NA Values for Civil War Variable With 0
+  mutate(civ_war = if_else(
+    is.na(civ_war), 0, civ_war
+  )) %>%
   # Convert Outcome Variables to Numeric
   mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
             as.numeric) %>%
   # Keep Select Variables
   select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
-         pko, pko_troops, lnatres, lgdppc, lpop, lmilper) %>%
+         pko, pko_troops, lnatres, lgdppc, lpop, lmilper, civ_war) %>%
   # Remove NA Values for Covariates
-  filter_at(vars(lnatres, lgdppc, lpop, lmilper), all_vars(!is.na(.)))
+  filter_at(vars(lnatres, lgdppc, lpop, lmilper, civ_war), all_vars(!is.na(.)))
 
 # Remove Older Data Sets
 rm(prio)

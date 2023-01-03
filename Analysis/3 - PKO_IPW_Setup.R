@@ -15,7 +15,7 @@ options(scipen = 999)
 
 #######-------IPW-------#######
 # Generate the Weights
-pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper,
+pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_War,
                         data = merged,
                         estimand = "ATT",
                         method = "ps")
@@ -30,7 +30,7 @@ merged <- merged %>%
 
 #######-------Mahalanobis Distance Matching-------#######
 # Generate the Matches
-m_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper,
+m_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      data = merged,
                      method = "nearest",
                      estimand = "ATT",
@@ -42,7 +42,7 @@ m_matched <- match.data(m_matched)
 
 #######-------Coarsened Exact Matching-------#######
 
-c_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper,
+c_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      data = merged,
                      method = "cem",
                      estimand = "ATT")
