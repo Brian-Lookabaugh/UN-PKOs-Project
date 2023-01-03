@@ -4,76 +4,47 @@
 
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
+  "broom", # Converting Model Output to Data Frames
+  "WeightIt", # IPW
+  "MatchIt", # Matching
+  install = FALSE
 )
 
-#######-------Aggregate-------#######
+#######-------IPW-------#######
+# Generate the Weights
+pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper,
+                        data = merged,
+                        estimand = "ATT",
+                        method = "ps")
 
-# IPW: Dummy PKO Treatment, ATT, Deaths
+# Merge the Weights Into the Data Set
+merged <- merged %>%
+  mutate(ipw = pko_weights$weights)
 
-# IPW: Dummy PKO Treatment, ATT, Events
+# Trim Extreme Weights
 
-# Inspect for Extreme Weights
+# Balancing
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
+#######-------Mahalanobis Distance Matching-------#######
+# Generate the Matches
+m_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper,
+                     data = merged,
+                     method = "nearest",
+                     estimand = "ATT",
+                     distance = "mahalanobis")
 
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
+m_matched <- match.data(m_matched)
 
-# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
+# Balancing
 
-# Matching: CEM, Dummy PKO Treatment, ATT, Events
+#######-------Coarsened Exact Matching-------#######
 
-# Balancing Tables
+c_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper,
+                     data = merged,
+                     method = "cem",
+                     estimand = "ATT")
 
-#######-------State-Based-------#######
+c_matched <- match.data(c_matched)
 
-# IPW: Dummy PKO Treatment, ATT, Deaths
+# Balancing
 
-# IPW: Dummy PKO Treatment, ATT, Events
-
-# Inspect for Extreme Weights
-
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
-
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
-
-# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
-
-# Matching: CEM, Dummy PKO Treatment, ATT, Events
-
-# Balancing Tables
-
-#######-------Non-State Based-------#######
-
-# IPW: Dummy PKO Treatment, ATT, Deaths
-
-# IPW: Dummy PKO Treatment, ATT, Events
-
-# Inspect for Extreme Weights
-
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
-
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
-
-# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
-
-# Matching: CEM, Dummy PKO Treatment, ATT, Events
-
-# Balancing Tables
-
-#######-------One-Sided Violence-------#######
-
-# IPW: Dummy PKO Treatment, ATT, Deaths
-
-# IPW: Dummy PKO Treatment, ATT, Events
-
-# Inspect for Extreme Weights
-
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
-
-# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
-
-# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
-
-# Matching: CEM, Dummy PKO Treatment, ATT, Events
-
-# Balancing Tables

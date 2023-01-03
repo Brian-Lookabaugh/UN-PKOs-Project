@@ -53,14 +53,7 @@ ged <- ged %>%
 
 # Collapse the GED Data to State-Year Level and Get Sums and Counts of Battle Deaths and 
 # Lethal Events For Different Types of Violence 
-# (Aggregate, State-Based, Non-State Based, and OSV - One Sided Violence)
-
-# Aggregate Violence
-agg <- ged %>%
-  group_by(gwnoa, year) %>%
-  summarise(agg_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
-            agg_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
+# (State-Based, Non-State Based, and OSV - One Sided Violence)
 
 # State-Based Violence
 sb <- ged %>%
@@ -101,8 +94,6 @@ osv <- ged %>%
 ged_col <- full_join(sb, nsb,
                      by = c("gwnoa", "year")) %>%
   full_join(osv,
-            by = c("gwnoa", "year")) %>%
-  full_join(agg,
             by = c("gwnoa", "year"))
 
 # Remove Older Data Sets
@@ -181,8 +172,10 @@ merged <- merged %>%
   mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
             as.numeric) %>%
   # Keep Select Variables
-  select(ccode, year, agg_death, agg_event, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
-         pko, pko_troops, lnatres, lgdppc, lpop, lmilper)
+  select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
+         pko, pko_troops, lnatres, lgdppc, lpop, lmilper) %>%
+  # Remove NA Values for Covariates
+  filter_at(vars(lnatres, lgdppc, lpop, lmilper), all_vars(!is.na(.)))
 
 # Remove Older Data Sets
 rm(prio)
