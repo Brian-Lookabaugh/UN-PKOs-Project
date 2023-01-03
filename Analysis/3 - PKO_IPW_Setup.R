@@ -10,6 +10,9 @@ pacman::p_load(
   install = FALSE
 )
 
+# Disable Scientific Notation
+options(scipen = 999)
+
 #######-------IPW-------#######
 # Generate the Weights
 pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper,
