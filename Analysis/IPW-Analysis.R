@@ -111,13 +111,22 @@ load("Data/ucdp_ged_22_1.RData")
 ged <- GEDEvent_v22_1
 rm(GEDEvent_v22_1)
 
+ged <- ged %>%
+  mutate(gwnoa = as.numeric(gwnoa))
+
 # Collapse the GED Data to State-Year Level and Get Sums and Counts of Battle Deaths and 
 # Lethal Events For Different Types of Violence 
-# (State-Based, Non-State Based, and OSV - One Sided Violence)
+# (Aggregate, State-Based, Non-State Based, and OSV - One Sided Violence)
+
+# Aggregate Violence
+agg <- ged %>%
+  group_by(gwnoa, year) %>%
+  summarise(agg_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
+            agg_event = n_distinct(id, na.rm = TRUE)) %>%
+  ungroup()
 
 # State-Based Violence
 sb <- ged %>%
-  mutate(gwnoa = as.numeric(gwnoa)) %>%
   group_by(gwnoa, year) %>%
   filter(type_of_violence == 1) %>%
   summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
@@ -144,7 +153,6 @@ nsb <- nsb %>%
 
 # OSV
 osv <- ged %>%
-  mutate(gwnoa = as.numeric(gwnoa)) %>%
   group_by(gwnoa, year) %>%
   filter(type_of_violence == 3) %>%
   summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
@@ -156,9 +164,12 @@ osv <- ged %>%
 ged_col <- full_join(sb, nsb,
                      by = c("gwnoa", "year")) %>%
   full_join(osv,
+            by = c("gwnoa", "year")) %>%
+  full_join(agg,
             by = c("gwnoa", "year"))
 
 # Remove Older Data Sets
+rm(agg)
 rm(sb)
 rm(nsb)
 rm(osv)
@@ -233,7 +244,7 @@ merged <- merged %>%
   mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
               as.numeric) %>%
   # Keep Select Variables
-  select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
+  select(ccode, year, agg_death, agg_event, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
          pko, pko_troops, lnatres, lgdppc, lpop, lmilper)
 
 # Remove Older Data Sets
@@ -247,6 +258,24 @@ rm(cow)
 ############################################################################
 ###############--------------IPW/Matching Set-Up-------------###############
 ############################################################################
+
+#######-------Aggregate-------#######
+
+# IPW: Dummy PKO Treatment, ATT, Deaths
+
+# IPW: Dummy PKO Treatment, ATT, Events
+
+# Inspect for Extreme Weights
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
+
+# Balancing Tables
 
 #######-------State-Based-------#######
 
@@ -305,6 +334,28 @@ rm(cow)
 ############################################################################
 ###############-------------IPW/Matching Analysis------------###############
 ############################################################################
+
+#######-------Aggregate-------#######
+
+# IPW: Dummy PKO Treatment, ATT, Deaths
+
+# IPW: Dummy PKO Treatment, ATT, Events
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Deaths
+
+# Matching: Mahalanobis Distance, Dummy PKO Treatment, ATT, Events
+
+# Matching: CEM, Dummy PKO Treatment, ATT, Deaths
+
+# Matching: CEM, Dummy PKO Treatment, ATT, Events
+
+# Covariate Adjustment, Deaths
+
+# Covariate Adjustment, Events
+
+# Plot Effects
+
+# Regression Table
 
 #######-------State-Based-------#######
 
