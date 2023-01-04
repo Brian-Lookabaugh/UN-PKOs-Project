@@ -33,61 +33,14 @@ pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
 merged_ipw <- merged %>%
   mutate(ipw = pko_weights$weights)
 
-# Balancing (Numerical and Graphic Evaluation)
-bal.tab(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war, # Not Weighted 
-        data = merged,
-        estimand = "ATT",
-        thresholds = c(m = .05))
-
-bal.tab(pko_weights, # Weighted
-        stats = c("m", "v"),
-        thresholds = c(m = .05))
-
-# Generating New Names for Confounders for Visualization
-v_names <- data.frame(old = c("lnatres", "lgdppc", "lpop", "lmilper", "civ_war"),
-                      new = c("Natural Resources per capita", 
-                              "GDP per capita", "Population", "Military Personnel per capita",
-                              "Civil War")
-)
-
-ipw_lplot <- love.plot(pko_weights, binary = "std", threshold = .05, 
-                       drop.distance = TRUE, # Removing Propensity Score from Viz
-                       var.order = "unadjusted", var.names = v_names,
-                       colors = c("#862781", "#e34e65"))
-
-ggsave(
-  "ipw_lplot.png",
-  width = 6,
-  height = 4,
-  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
-)
-
 #######-------Mahalanobis Distance Matching-------#######
 # Generate the Matches
 merged_mmatch <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      data = merged,
                      method = "nearest",
                      estimand = "ATT",
-                     distance = "mahalanobis")
-
-# Balancing (Numerical and Graphic Evaluation)
-bal.tab(merged_mmatch, # Matched
-        stats = c("m", "v"),
-        thresholds = c(m = .05))
-
-mmatch_lplot <- love.plot(merged_mmatch, binary = "std", threshold = .05,
-                       var.order = "unadjusted", var.names = v_names,
-                       colors = c("#862781", "#e34e65"))
-
-ggsave(
-  "mmatch_lplot.png",
-  width = 6,
-  height = 4,
-  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
-)
-
-# Include Only the Matched Data
-merged_mmatch <- match.data(merged_mmatch)
+                     distance = "mahalanobis",
+                     replace = TRUE)
 
 #######-------Coarsened Exact Matching-------#######
 
@@ -96,22 +49,80 @@ merged_cmatch <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      method = "cem",
                      estimand = "ATT")
 
-# Balancing (Numerical and Graphic Evaluation)
-bal.tab(merged_cmatch, # Matched
+# Assess Balance
+bal.tab(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war, # Not Weighted/Matched
+        data = merged,
+        estimand = "ATT",
+        thresholds = c(m = .05))
+
+bal.tab(pko_weights, # IPW Weighted
         stats = c("m", "v"),
         thresholds = c(m = .05))
 
-cmatch_lplot <- love.plot(merged_cmatch, binary = "std", threshold = .05,
-                          var.order = "unadjusted", var.names = v_names,
-                          colors = c("#862781", "#e34e65"))
+bal.tab(merged_mmatch, # NN Matched
+        stats = c("m", "v"),
+        thresholds = c(m = .05))
+
+bal.tab(merged_cmatch, # CEM Matched
+        stats = c("m", "v"),
+        thresholds = c(m = .05))
+
+# Generating New Names for Confounders for Visualization
+v_names <- data.frame(old = c("lnatres", "lgdppc", "lpop", "lmilper", "civ_war"),
+                      new = c("Natural Resources pc", 
+                              "GDP pc", "Population", "Military Personnel pc",
+                              "Civil War")
+)
+
+# Covariate Balance Plots
+cb_lplot <- love.plot(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
+                      data = merged, estimand = "ATT",
+                      weights = list(w1 = get.w(pko_weights),
+                                     w2 = get.w(merged_mmatch),
+                                     w3 = get.w(merged_cmatch)),
+                      abs = TRUE,
+                      stars = "raw",
+                      line = TRUE,
+                      thresholds = c(m = .05),
+                      var.order = "unadjusted",
+                      var.names = v_names,
+                      colors = c("#440154", "#2d708e", "#52c569", "#c2df23"),
+                      sample.names = c("Original", "IPW", "NN Matching", "CEM")
+                      ) +
+  labs(caption = "* indicates the reporting of raw difference in means") +
+  theme(plot.caption.position = "plot")
 
 ggsave(
-  "cmatch_lplot.png",
+  "cb_lplot.png",
   width = 6,
   height = 4,
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
 )
 
-# Include Only the Matched Data
+# Density and Bar Plots (Not for Paper, just EDA)
+
+# IPW
+ipw_den_gdp <- bal.plot(pko_weights, var.name = "lgdppc", which = "both")
+ipw_den_milper <- bal.plot(pko_weights, var.name = "lmilper", which = "both")
+ipw_den_natres <- bal.plot(pko_weights, var.name = "lnatres", which = "both")
+ipw_den_pop <- bal.plot(pko_weights, var.name = "lpop", which = "both")
+ipw_bar_civ <- bal.plot(pko_weights, var.name = "civ_war", which = "both")
+
+# NN Matching
+mmatch_den_gdp <- bal.plot(merged_mmatch, var.name = "lgdppc", which = "both")
+mmatch_den_milper <- bal.plot(merged_mmatch, var.name = "lmilper", which = "both")
+mmatch_den_natres <- bal.plot(merged_mmatch, var.name = "lnatres", which = "both")
+mmatch_den_pop <- bal.plot(merged_mmatch, var.name = "lpop", which = "both")
+mmatch_bar_civ <- bal.plot(merged_mmatch, var.name = "civ_war", which = "both")
+
+# CEM
+cmatch_den_gdp <- bal.plot(merged_cmatch, var.name = "lgdppc", which = "both")
+cmatch_den_milper <- bal.plot(merged_cmatch, var.name = "lmilper", which = "both")
+cmatch_den_natres <- bal.plot(merged_cmatch, var.name = "lnatres", which = "both")
+cmatch_den_pop <- bal.plot(merged_cmatch, var.name = "lpop", which = "both")
+cmatch_bar_civ <- bal.plot(merged_cmatch, var.name = "civ_war", which = "both")
+
+# Convert Matches to Data Set
+merged_mmatch <- match.data(merged_mmatch)
 merged_cmatch <- match.data(merged_cmatch)
 

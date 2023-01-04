@@ -96,8 +96,14 @@ ged_col <- full_join(sb, nsb,
   full_join(osv,
             by = c("gwnoa", "year"))
 
+# Replace NA Values With 0
+
+ged_col <- ged_col %>%
+  mutate_at(c('sb_death', 'sb_event', 'nsb_death', 'nsb_event',
+              'osv_death', 'osv_event'),
+            ~replace_na(.,0))
+
 # Remove Older Data Sets
-rm(agg)
 rm(sb)
 rm(nsb)
 rm(osv)
@@ -178,7 +184,10 @@ merged <- merged %>%
   # Keep Select Variables
   select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
          pko, pko_troops, lnatres, lgdppc, lpop, lmilper, civ_war) %>%
-  # Remove NA Values for Covariates
+  # Remove NA Values for Outcome Variables With Missingness in All Variables
+  filter_at(vars(sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event),
+            all_vars(!is.na(.))) %>%
+  # Remove NA Values for Covariates With Missingness in All Variables
   filter_at(vars(lnatres, lgdppc, lpop, lmilper, civ_war), all_vars(!is.na(.)))
 
 # Remove Older Data Sets
