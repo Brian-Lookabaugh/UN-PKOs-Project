@@ -7,15 +7,24 @@ pacman::p_load(
   "broom", # Converting Model Output to Data Frames
   "WeightIt", # IPW
   "MatchIt", # Matching
+  "cobalt", # Assessing Balance
   install = FALSE
 )
 
-# Disable Scientific Notation
-options(scipen = 999)
-
 #######-------IPW-------#######
+# Generate Propensity Scores Manually to Investigate Extreme Propensity Scores
+prop_pko_model <- glm(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
+                      family = binomial(link = "logit"),
+                      data = merged)
+
+merged <- augment_columns(prop_pko_model, merged,
+                             type.predict = "response") %>%
+  rename(propensity = .fitted) %>%
+  # Filter Propensity Scores Less than 0.05 (There are None > 0.95)
+  filter(propensity >= 0.05)
+
 # Generate the Weights
-pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_War,
+pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                         data = merged,
                         estimand = "ATT",
                         method = "ps")
@@ -24,9 +33,8 @@ pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_War,
 merged <- merged %>%
   mutate(ipw = pko_weights$weights)
 
-# Trim Extreme Weights
+# Balancing (Numerical and Graphic Evaluation)
 
-# Balancing
 
 #######-------Mahalanobis Distance Matching-------#######
 # Generate the Matches
@@ -36,9 +44,10 @@ m_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      estimand = "ATT",
                      distance = "mahalanobis")
 
-m_matched <- match.data(m_matched)
+# Balancing (Numerical and Graphic Evaluation)
 
-# Balancing
+# Include Only the Matched Data
+m_matched <- match.data(m_matched)
 
 #######-------Coarsened Exact Matching-------#######
 
@@ -47,7 +56,8 @@ c_matched <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      method = "cem",
                      estimand = "ATT")
 
-c_matched <- match.data(c_matched)
+# Balancing (Numerical and Graphic Evaluation)
 
-# Balancing
+# Include Only the Matched Data
+c_matched <- match.data(c_matched)
 
