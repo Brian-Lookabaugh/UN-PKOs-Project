@@ -99,42 +99,57 @@ ggsave(
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
 )
 
-# Density and Bar Plots (Not for Paper, just EDA)
+# Density and Bar Plots
 
 # GDP per capita
 gdp_den <- bal.plot(pko ~ lgdppc, data = merged,
          weights = list(NN = merged_mmatch,
                         CEM = merged_cmatch,
                         IPW = pko_weights),
-         var.name = "lgdppc", which = "both")
+         var.name = "lgdppc", which = "both") +
+  labs(title = "Distributional Balance for GDP per capita",
+       x = "Log(GDP per capita)") +
+  scale_fill_discrete(name = "PKO")
 
 # Military Personnel per capita
 milper_den <- bal.plot(pko ~ lmilper, data = merged,
                     weights = list(NN = merged_mmatch,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
-                    var.name = "lmilper", which = "both")
+                    var.name = "lmilper", which = "both") +
+  labs(title = "Distributional Balance for Military Personnel per capita",
+       x = "Log(Military Personnel per capita)") +
+  scale_fill_discrete(name = "PKO")
 
 # Natural Resources per capita
 natres_den <- bal.plot(pko ~ lnatres, data = merged,
                     weights = list(NN = merged_mmatch,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
-                    var.name = "lnatres", which = "both")
+                    var.name = "lnatres", which = "both") +
+  labs(title = "Distributional Balance for Natural Resources per capita",
+       x = "Log(Natural Resources per capita)") +
+  scale_fill_discrete(name = "PKO")
 
 # Population
 pop_den <- bal.plot(pko ~ lpop, data = merged,
                     weights = list(NN = merged_mmatch,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
-                    var.name = "lpop", which = "both")
+                    var.name = "lpop", which = "both") +
+  labs(title = "Distributional Balance for Population",
+       x = "Population") +
+  scale_fill_discrete(name = "PKO")
 
 # Civil War
 civ_bar <- bal.plot(pko ~ civ_war, data = merged,
                     weights = list(NN = merged_mmatch,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
-                    var.name = "civ_war", which = "both")
+                    var.name = "civ_war", which = "both") +
+  labs(title = "Distributional Balance for Civil War",
+       x = "Civil War") +
+  scale_fill_discrete(name = "PKO")
 
 # Convert Matches to Data Set
 merged_mmatch <- match.data(merged_mmatch)
