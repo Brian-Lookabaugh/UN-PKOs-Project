@@ -101,26 +101,40 @@ ggsave(
 
 # Density and Bar Plots (Not for Paper, just EDA)
 
-# IPW
-ipw_den_gdp <- bal.plot(pko_weights, var.name = "lgdppc", which = "both")
-ipw_den_milper <- bal.plot(pko_weights, var.name = "lmilper", which = "both")
-ipw_den_natres <- bal.plot(pko_weights, var.name = "lnatres", which = "both")
-ipw_den_pop <- bal.plot(pko_weights, var.name = "lpop", which = "both")
-ipw_bar_civ <- bal.plot(pko_weights, var.name = "civ_war", which = "both")
+# GDP per capita
+gdp_den <- bal.plot(pko ~ lgdppc, data = merged,
+         weights = list(NN = merged_mmatch,
+                        CEM = merged_cmatch,
+                        IPW = pko_weights),
+         var.name = "lgdppc", which = "both")
 
-# NN Matching
-mmatch_den_gdp <- bal.plot(merged_mmatch, var.name = "lgdppc", which = "both")
-mmatch_den_milper <- bal.plot(merged_mmatch, var.name = "lmilper", which = "both")
-mmatch_den_natres <- bal.plot(merged_mmatch, var.name = "lnatres", which = "both")
-mmatch_den_pop <- bal.plot(merged_mmatch, var.name = "lpop", which = "both")
-mmatch_bar_civ <- bal.plot(merged_mmatch, var.name = "civ_war", which = "both")
+# Military Personnel per capita
+milper_den <- bal.plot(pko ~ lmilper, data = merged,
+                    weights = list(NN = merged_mmatch,
+                                   CEM = merged_cmatch,
+                                   IPW = pko_weights),
+                    var.name = "lmilper", which = "both")
 
-# CEM
-cmatch_den_gdp <- bal.plot(merged_cmatch, var.name = "lgdppc", which = "both")
-cmatch_den_milper <- bal.plot(merged_cmatch, var.name = "lmilper", which = "both")
-cmatch_den_natres <- bal.plot(merged_cmatch, var.name = "lnatres", which = "both")
-cmatch_den_pop <- bal.plot(merged_cmatch, var.name = "lpop", which = "both")
-cmatch_bar_civ <- bal.plot(merged_cmatch, var.name = "civ_war", which = "both")
+# Natural Resources per capita
+natres_den <- bal.plot(pko ~ lnatres, data = merged,
+                    weights = list(NN = merged_mmatch,
+                                   CEM = merged_cmatch,
+                                   IPW = pko_weights),
+                    var.name = "lnatres", which = "both")
+
+# Population
+pop_den <- bal.plot(pko ~ lpop, data = merged,
+                    weights = list(NN = merged_mmatch,
+                                   CEM = merged_cmatch,
+                                   IPW = pko_weights),
+                    var.name = "lpop", which = "both")
+
+# Civil War
+civ_bar <- bal.plot(pko ~ civ_war, data = merged,
+                    weights = list(NN = merged_mmatch,
+                                   CEM = merged_cmatch,
+                                   IPW = pko_weights),
+                    var.name = "civ_war", which = "both")
 
 # Convert Matches to Data Set
 merged_mmatch <- match.data(merged_mmatch)
