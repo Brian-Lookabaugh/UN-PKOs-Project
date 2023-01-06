@@ -184,9 +184,6 @@ merged <- merged %>%
   # Keep Select Variables
   select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
          pko, pko_troops, lnatres, lgdppc, lpop, lmilper, civ_war) %>%
-  # Remove NA Values for Outcome Variables With Missingness in All Variables
-  filter_at(vars(sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event),
-            all_vars(!is.na(.))) %>%
   # Remove NA Values for Covariates With Missingness in All Variables
   filter_at(vars(lnatres, lgdppc, lpop, lmilper, civ_war), all_vars(!is.na(.)))
 
