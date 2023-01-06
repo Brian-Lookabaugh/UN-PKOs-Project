@@ -108,7 +108,7 @@ gdp_den <- bal.plot(pko ~ lgdppc, data = merged,
                         CEM = merged_cmatch,
                         IPW = pko_weights),
          var.name = "lgdppc", which = "both") +
-  labs(title = "", x = "Log(GDP per capita)") +
+  labs(title = "Distributional Balances for Covariates", x = "Log(GDP per capita)") +
   scale_fill_discrete(name = "PKO")
 
 # Military Personnel per capita
@@ -151,8 +151,9 @@ civ_bar <- bal.plot(pko ~ civ_war, data = merged,
   scale_fill_discrete(name = "PKO") +
   theme(legend.position = "none")
 
+# Create the Combined Plot With a Customized Title
+
 combined <- ggarrange(gdp_den, milper_den, natres_den, pop_den, civ_bar,
-                      labels = c("Distributional Balance for Covariates"),
                       ncol = 1, nrow = 5)
 
 ggsave(
@@ -161,6 +162,10 @@ ggsave(
   height = 8,
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
 )
+
+# Create a K-S Love Plot
+
+
 
 # Convert Matches to Data Set
 merged_mmatch <- match.data(merged_mmatch)
