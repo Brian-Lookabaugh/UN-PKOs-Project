@@ -165,7 +165,26 @@ ggsave(
 
 # Create a K-S Love Plot
 
+ks_plot <- love.plot(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
+                     data = merged, estimand = "ATT",
+                     stats = "ks.statistics",
+                     weights = list(w1 = get.w(pko_weights),
+                                    w2 = get.w(merged_mmatch),
+                                    w3 = get.w(merged_cmatch)),
+                     abs = TRUE,
+                     line = TRUE,
+                     thresholds = c(m = .05),
+                     var.order = "unadjusted",
+                     var.names = v_names,
+                     colors = c("#440154", "#2d708e", "#52c569", "#c2df23"),
+                     sample.names = c("Original", "IPW", "NN Matching", "CEM"))
 
+ggsave(
+  "ks_plot.png",
+  width = 6,
+  height = 4,
+  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
+)
 
 # Convert Matches to Data Set
 merged_mmatch <- match.data(merged_mmatch)
