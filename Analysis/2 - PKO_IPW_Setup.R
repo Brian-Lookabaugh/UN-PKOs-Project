@@ -8,6 +8,7 @@ pacman::p_load(
   "WeightIt", # IPW
   "MatchIt", # Matching
   "cobalt", # Assessing Balance
+  "ggpubr", # Combining Plots Together
   install = FALSE
 )
 
@@ -107,8 +108,7 @@ gdp_den <- bal.plot(pko ~ lgdppc, data = merged,
                         CEM = merged_cmatch,
                         IPW = pko_weights),
          var.name = "lgdppc", which = "both") +
-  labs(title = "Distributional Balance for GDP per capita",
-       x = "Log(GDP per capita)") +
+  labs(title = "", x = "Log(GDP per capita)") +
   scale_fill_discrete(name = "PKO")
 
 # Military Personnel per capita
@@ -117,9 +117,9 @@ milper_den <- bal.plot(pko ~ lmilper, data = merged,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
                     var.name = "lmilper", which = "both") +
-  labs(title = "Distributional Balance for Military Personnel per capita",
-       x = "Log(Military Personnel per capita)") +
-  scale_fill_discrete(name = "PKO")
+  labs(title = "", y = "", x = "Log(Military Personnel per capita)") +
+  scale_fill_discrete(name = "PKO") +
+  theme(legend.position = "none") # Removing Legend for Combined Graphic
 
 # Natural Resources per capita
 natres_den <- bal.plot(pko ~ lnatres, data = merged,
@@ -127,9 +127,9 @@ natres_den <- bal.plot(pko ~ lnatres, data = merged,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
                     var.name = "lnatres", which = "both") +
-  labs(title = "Distributional Balance for Natural Resources per capita",
-       x = "Log(Natural Resources per capita)") +
-  scale_fill_discrete(name = "PKO")
+  labs(title = "", y = "", x = "Log(Natural Resources per capita)") +
+  scale_fill_discrete(name = "PKO") +
+  theme(legend.position = "none")
 
 # Population
 pop_den <- bal.plot(pko ~ lpop, data = merged,
@@ -137,9 +137,9 @@ pop_den <- bal.plot(pko ~ lpop, data = merged,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
                     var.name = "lpop", which = "both") +
-  labs(title = "Distributional Balance for Population",
-       x = "Population") +
-  scale_fill_discrete(name = "PKO")
+  labs(title = "", y = "", x = "Population") +
+  scale_fill_discrete(name = "PKO") +
+  theme(legend.position = "none")
 
 # Civil War
 civ_bar <- bal.plot(pko ~ civ_war, data = merged,
@@ -147,9 +147,20 @@ civ_bar <- bal.plot(pko ~ civ_war, data = merged,
                                    CEM = merged_cmatch,
                                    IPW = pko_weights),
                     var.name = "civ_war", which = "both") +
-  labs(title = "Distributional Balance for Civil War",
-       x = "Civil War") +
-  scale_fill_discrete(name = "PKO")
+  labs(title = "", y = "", x = "Civil War") +
+  scale_fill_discrete(name = "PKO") +
+  theme(legend.position = "none")
+
+combined <- ggarrange(gdp_den, milper_den, natres_den, pop_den, civ_bar,
+                      labels = c("Distributional Balance for Covariates"),
+                      ncol = 1, nrow = 5)
+
+ggsave(
+  "comb_den_plots.png",
+  width = 6,
+  height = 8,
+  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
+)
 
 # Convert Matches to Data Set
 merged_mmatch <- match.data(merged_mmatch)
