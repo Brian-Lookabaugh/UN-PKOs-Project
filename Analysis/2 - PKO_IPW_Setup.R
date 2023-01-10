@@ -12,7 +12,8 @@ pacman::p_load(
   install = FALSE
 )
 
-#######-------IPW-------#######
+#######-------Inverse Probability Weighting-------#######
+# Conflict-Level
 # Generate Propensity Scores Manually to Investigate Extreme Propensity Scores
 prop_pko_model <- glm(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                       family = binomial(link = "logit"),
@@ -34,8 +35,10 @@ pko_weights <- weightit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
 merged_ipw <- merged %>%
   mutate(ipw = pko_weights$weights)
 
+# Post-Conflict Level
+
 #######-------Mahalanobis Distance Matching-------#######
-# Generate the Matches
+# Conflict-Level
 merged_mmatch <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      data = merged,
                      method = "nearest",
@@ -43,14 +46,18 @@ merged_mmatch <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      distance = "mahalanobis",
                      replace = TRUE)
 
-#######-------Coarsened Exact Matching-------#######
+# Post-Conflict Level
 
+#######-------Coarsened Exact Matching-------#######
+# Conflict-Level
 merged_cmatch <- matchit(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      data = merged,
                      method = "cem",
                      estimand = "ATT")
 
-# Assess Balance
+# Post-Conflict Level
+
+# Assess Balance (Conflict-Level)
 bal.tab(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war, # Not Weighted/Matched
         data = merged,
         estimand = "ATT",
@@ -68,14 +75,18 @@ bal.tab(merged_cmatch, # CEM Matched
         stats = c("m", "v"),
         thresholds = c(m = .05))
 
-# Generating New Names for Confounders for Visualization
+# Assess Balance (Post-Conflict Level)
+
+# Generate New Names for Confounders for Visualization (Conflict-Level)
 v_names <- data.frame(old = c("lnatres", "lgdppc", "lpop", "lmilper", "civ_war"),
                       new = c("Natural Resources pc", 
                               "GDP pc", "Population", "Military Personnel pc",
                               "Civil War")
 )
 
-# Covariate Balance Plots
+# Generate New Names for Confounders (Post-Conflict Level)
+
+# Covariate Balance Plots (Conflict-Level)
 cb_lplot <- love.plot(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                       data = merged, estimand = "ATT",
                       weights = list(w1 = get.w(pko_weights),
@@ -100,7 +111,9 @@ ggsave(
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
 )
 
-# Density and Bar Plots
+# Covariate Balance Plots (Post-Conflict Level)
+
+# Density and Bar Plots (Conflict-Level)
 
 # GDP per capita
 gdp_den <- bal.plot(pko ~ lgdppc, data = merged,
@@ -163,7 +176,9 @@ ggsave(
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
 )
 
-# Create a K-S Love Plot
+# Density and Bar Plots (Post-Conflict Level)
+
+# Create a K-S Love Plot (Conflict-Level)
 
 ks_plot <- love.plot(pko ~ lnatres + lgdppc + lpop + lmilper + civ_war,
                      data = merged, estimand = "ATT",
@@ -185,6 +200,8 @@ ggsave(
   height = 4,
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/PKO/Graphics"
 )
+
+# Create a K-S Love Plot (Post-Conflict Level)
 
 # Convert Matches to Data Set
 merged_mmatch <- match.data(merged_mmatch)
