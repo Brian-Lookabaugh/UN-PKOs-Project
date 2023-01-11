@@ -4,198 +4,163 @@
 
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
-  "DescTools", # LOCF Command
-  "countrycode", # Importing COW/GWN Codes for Non-State Based Violence Data
+  "DescTools", # LOCF (Last Observation Carried Forward) Command
   install = FALSE
 )
 
-# Load UCDP/PRIO Armed Conflict Data Set to Isolate Cases of 
-# Civil War and Post-Civil War States
+#######-------Conflict-Level Data-------#######
 
-prio <- readr::read_csv("Data/ucdp-prio-acd-221.csv")
+# Load UCDP/PRIO Armed Conflict Data Set to Isolate Cases of Civil War
+ucdp <- readr::read_csv("Data/ucdp-prio-acd-221.csv")
 
-prio <- prio %>%
-  mutate(gwno_a = as.numeric(gwno_a)) %>% # Convert the country code to a numeric
+ucdp_con <- ucdp %>%
+  mutate(gwno_a = as.numeric(gwno_a)) %>% # Convert the Country Code to a Numeric
   filter(type_of_conflict == 3) %>% # Filter Cases of Civil War
-  mutate(civ_war = 1) %>% # Filter Civil War Variable
+  group_by(gwno_a, year) %>%
+  summarise(gwno_a = max(gwno_a)) %>% # Collapse Data to Country-Year Level
+  ungroup()
+
+# Load and Clean UCDP Georeferenced Data (GED) for Information on Deaths and Lethal Events
+load("Data/ucdp_ged_22_1.RData")
+ged <- GEDEvent_v22_1
+rm(GEDEvent_v22_1)
+
+ged <- ged %>%
+  mutate(gwnoa = as.numeric(gwnoa)) %>%
+  group_by(gwnoa, year) %>%
+  summarise(deaths = max(best),
+            events = n_distinct(id))
+
+# Merge the GED Data In With the UCDP Data
+merged_con <- left_join(ucdp_con, ged,
+                        by = c("gwno_a" = "gwnoa", "year"))
+
+# Replace NA Values for Deaths and Events With 0
+merged_con <- merged_con %>%
+  mutate_at(c('deaths', 'events'), 
+            ~replace_na(., 0))
+
+# Load Geo-PKO Data and Collapse It to the Country-Year Level
+geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
+
+geo_pko <- geo_pko %>%
+  mutate(pko = 1) %>%
+  group_by(cow_code, year) %>%
+  summarise(pko = max(pko)) %>%
+  ungroup()
+
+# Merge the Geo-PKO Data
+merged_con <- left_join(merged_con, geo_pko,
+                        by = c("gwno_a" = "cow_code", "year"))
+
+# Replace NA Values for PKO With 0
+merged_con <- merged_con %>%
+  mutate(pko = if_else(
+    is.na(pko), 0, pko
+  ))
+
+# Load and Merge V-Dem Data
+vdem <- readr::read_csv("Data/selected_vdem_v12.csv")
+
+merged_con <- left_join(merged_con, vdem,
+                    by = c("gwno_a" = "COWcode", "year"))
+
+# Create Log-Transformed Values
+merged_con <- merged_con %>%
+  mutate(lgdppc = log(e_gdppc + 1)) %>%
+  mutate(lpop = log(e_pop)) %>%
+  mutate(lnatres = log(e_total_resources_income_pc + 1)) %>%
+  select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
+            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula 
+            ))
+
+# Load, Clean, and Merge Correlates of War (COW) Data
+cow <- readr::read_csv("Data/cow_nmc_v4.csv")
+
+cow <- cow %>%
+  filter(milper != -9) %>% # Remove NA Values
+  select(c(ccode, year, milper)) # Keep Selected Columns
+
+merged_con <- left_join(merged_con, cow,
+                    by = c("gwno_a" = "ccode", "year"))
+
+# Create the Log-Transformed Value of Military Personnel per capita
+merged_con <- merged_con %>%
+  mutate(lmilper = log(milper + 1)) %>%
+  select(-c(milper))
+
+#######-------Post-Conflict Level Data-------#######
+
+# Use UCDP to Isolate Post-Conflict States
+ucdp_pcon <- ucdp %>%
+  mutate(gwno_a = as.numeric(gwno_a)) %>% # Convert the Country Code to a Numeric
+  filter(type_of_conflict == 3) %>% # Filter Cases of Civil War
+  mutate(civ_war = 1) %>% # Create Civil War Variable
   group_by(gwno_a, year) %>%
   summarise(civ_war = max(civ_war)) %>% # Collapse Data to Country-Year Level
   ungroup()
 
 # Merge This Data With COW States Data to Identify All Country-Years
-
 cow <- readr::read_csv("Data/system2016_cow.csv")
 
-prio <- left_join(cow, prio,
+ucdp_pcon <- left_join(cow, ucdp_pcon,
                   by = c("ccode" = "gwno_a", "year"))
 
 # Generate Prior War Variable So We Can Isolate Post-Conflict Cases
-# In Addition to Conflict-Cases
-
-prio <- prio %>%
+ucdp_pcon <- ucdp_pcon %>%
   arrange(ccode, year) %>%
   group_by(ccode) %>%
   mutate(ev_civwar = LOCF(civ_war)) %>%
   ungroup() %>%
   mutate(ev_civwar = if_else(
     is.na(ev_civwar), 0, ev_civwar
-  )) %>%
-  filter(ev_civwar == 1)
-
-# Load and Clean UCDP Georeferenced Data (GED)
-
-load("Data/ucdp_ged_22_1.RData")
-ged <- GEDEvent_v22_1
-rm(GEDEvent_v22_1)
-
-ged <- ged %>%
-  mutate(gwnoa = as.numeric(gwnoa))
-
-# Collapse the GED Data to State-Year Level and Get Sums and Counts of Battle Deaths and 
-# Lethal Events For Different Types of Violence 
-# (State-Based, Non-State Based, and OSV - One Sided Violence)
-
-# State-Based Violence
-sb <- ged %>%
-  group_by(gwnoa, year) %>%
-  filter(type_of_violence == 1) %>%
-  summarise(sb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
-            sb_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
-
-# Non-State Based Violence
-nsb <- ged %>%
-  group_by(gwnoa, country, year) %>%
-  filter(type_of_violence == 2) %>%
-  summarise(nsb_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
-            nsb_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
-
-# Assign COW Codes to Non-State Based Incidents
-
-nsb <- nsb %>%
-  mutate(gwnoa = countrycode(
-    nsb$country, "country.name", "gwn"
-  )) %>%
-  mutate(gwnoa = if_else(
-    country == "Serbia (Yugoslavia)", 345, gwnoa # Replace NA Values for Yugoslavia
-  ))
-
-# OSV
-osv <- ged %>%
-  group_by(gwnoa, year) %>%
-  filter(type_of_violence == 3) %>%
-  summarise(osv_death = sum(deaths_a + deaths_b + deaths_civilians, na.rm = TRUE),
-            osv_event = n_distinct(id, na.rm = TRUE)) %>%
-  ungroup()
-
-# Merge the Collapsed Data
-
-ged_col <- full_join(sb, nsb,
-                     by = c("gwnoa", "year")) %>%
-  full_join(osv,
-            by = c("gwnoa", "year"))
-
-# Replace NA Values With 0
-
-ged_col <- ged_col %>%
-  mutate_at(c('sb_death', 'sb_event', 'nsb_death', 'nsb_event',
-              'osv_death', 'osv_event'),
-            ~replace_na(.,0))
-
-# Remove Older Data Sets
-rm(sb)
-rm(nsb)
-rm(osv)
-
-# Merge the GED Data With the UCDP/PRIO Data
-
-merged <- left_join(prio, ged_col,
-                    by = c("ccode" = "gwnoa", "year"))
-
-# Load and Clean Geo-PKO Data
-
-geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
-
-# Collapse the Data to State-Year Level and Get Sums of PKO Troops
-
-geo_pko <- geo_pko %>%
-  mutate_at(c("no.troops"), as.numeric) %>% # Convert Troop Count to Numeric
-  filter(no.troops != "unknown", na.rm = TRUE) %>% # Remove Unknown Values
-  group_by(cow_code, year) %>% 
-  summarise(pko_troops = sum(no.troops, na.rm = TRUE)) %>%
-  mutate(pko = 1) %>% # Create a Variable Denoting the Presence of a PKO 
-  ungroup()
-
-# Merge the Geo-PKO Data With the UCDP GED Data
-
-merged <- left_join(merged, geo_pko,
-                    by = c("ccode" = "cow_code", "year"))
-
-# Clean Up the Merged Data
-
-merged <- merged %>%
-  mutate(pko = if_else( # Replace NA Values for PKO With 0
-    is.na(pko), 0, 1
-  )) %>%
-  mutate(pko_troops = if_else(
-    is.na(pko_troops), 0, pko_troops)) # Replace NA Value for PKO Troops With 0
-
-# Load and Merge V-Dem Data
-
-vdem <- readr::read_csv("Data/selected_vdem_v12.csv")
-
-merged <- left_join(merged, vdem,
-                    by = c("ccode" = "COWcode", "year"))
-
-# Load and Clean COW's Military Personnel Data
-
-cow <- readr::read_csv("Data/cow_nmc_v4.csv")
-
-cow <- cow %>%
-  filter(milper != -9) # Remove NA Values
-
-merged <- left_join(merged, cow,
-                    by = c("ccode", "year"))
-
-# Final Data Cleaning and Organization
-merged <- merged %>% 
-  # Generate Logged Values
-  mutate(e_gdppc = if_else( # Dealing With Values Less Than 1 For Log-Transformation
-    e_gdppc < 1, e_gdppc + 1, e_gdppc
-  )) %>%
-  mutate(lgdppc = log(e_gdppc)) %>%
-  mutate(lpop = log(e_pop)) %>%
-  mutate(milper = ifelse( 
-    milper < 1, milper + 1, milper
-  )) %>%
-  mutate(lmilper = log(milper)) %>% 
-  mutate(e_total_resources_income_pc = if_else(
-    e_total_resources_income_pc < 1, e_total_resources_income_pc + 1, e_total_resources_income_pc
-  )) %>%
-  mutate(lnatres = log(e_total_resources_income_pc)) %>%
-  # Replace NA Values for Civil War Variable With 0
+  )) %>% 
   mutate(civ_war = if_else(
     is.na(civ_war), 0, civ_war
-  )) %>%
-  # Convert Outcome Variables to Numeric
-  mutate_at(c("sb_death", "sb_event", "nsb_death", "nsb_event", "osv_death", "osv_event"),
-            as.numeric) %>%
-  # Keep Select Variables
-  select(ccode, year, sb_death, sb_event, nsb_death, nsb_event, osv_death, osv_event,
-         pko, pko_troops, lnatres, lgdppc, lpop, lmilper, civ_war) %>%
-  # Remove NA Values for Covariates With Missingness in All Variables
-  filter_at(vars(lnatres, lgdppc, lpop, lmilper, civ_war), all_vars(!is.na(.)))
+  )) %>% # Replace NA Values for Civil War Variable With 0
+  filter(ev_civwar == 1) %>%
+  filter(civ_war == 0) %>% # Remove Conflict-Level Cases
+  select(-c(civ_war, ev_civwar, version)) # Remove Unnecessary Variables
 
-# Remove Older Data Sets
-rm(prio)
-rm(ged)
-rm(ged_col)
-rm(geo_pko)
-rm(vdem)
-rm(cow)
+# Merge GED Data
+merged_pcon <- left_join(ucdp_pcon, ged,
+                        by = c("ccode" = "gwnoa", "year"))
 
-#######-------Conflict-Level Data-------#######
+# Replace NA Values for Deaths and Events With 0
+merged_pcon <- merged_pcon %>%
+  mutate_at(c('deaths', 'events'), 
+            ~replace_na(., 0))
 
-#######-------Post-Conflict Level Data-------#######
+# Merge the Geo-PKO Data
+merged_pcon <- left_join(merged_pcon, geo_pko,
+                        by = c("ccode" = "cow_code", "year"))
 
+# Replace NA Values for PKO With 0
+merged_pcon <- merged_pcon %>%
+  mutate(pko = if_else(
+    is.na(pko), 0, pko
+  ))
+
+# Merge VDEM Data and Create Log-Transformed Values
+merged_pcon <- left_join(merged_pcon, vdem,
+                        by = c("ccode" = "COWcode", "year"))
+
+merged_pcon <- merged_pcon %>%
+  mutate(lgdppc = log(e_gdppc + 1)) %>%
+  mutate(lpop = log(e_pop)) %>%
+  mutate(lnatres = log(e_total_resources_income_pc + 1)) %>%
+  select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
+            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula 
+  ))
+
+# Load, Clean, and Merge Correlates of War (COW) Data
+merged_pcon <- left_join(merged_pcon, cow,
+                        by = c("ccode", "year"))
+
+# Create the Log-Transformed Value of Military Personnel per capita
+merged_pcon <- merged_pcon %>%
+  mutate(lmilper = log(milper + 1)) %>%
+  select(-c(milper))
+
+# Remove Unnecessary Data Sets
+rm(cow, ged, geo_pko, ucdp, vdem)
