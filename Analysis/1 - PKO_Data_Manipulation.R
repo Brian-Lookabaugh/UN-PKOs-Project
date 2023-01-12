@@ -5,6 +5,7 @@
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
   "DescTools", # LOCF (Last Observation Carried Forward) Command
+  "readxl", # Importing Excel Spreadsheets
   install = FALSE
 )
 
@@ -42,7 +43,7 @@ ucdp <- ucdp %>%
   mutate(civ_war = if_else( # Re-Code Civil Wars As Not Cases of Civil War Where Coups Occurred
     coup == 1, 0, civ_war
   )) %>%
-  select(-c(e_pt_coup))
+  select(-c(e_pt_coup, coup))
 
 # Re-Code 3-Year or Less Peace Spells as Conflict Lulls
 ucdp <- ucdp %>%
@@ -107,7 +108,8 @@ ged <- ged %>%
   mutate(gwnoa = as.numeric(gwnoa)) %>%
   group_by(gwnoa, year) %>%
   summarise(deaths = max(best),
-            events = n_distinct(id))
+            events = n_distinct(id)) %>%
+  ungroup()
 
 # Merge the GED Data In With the UCDP Data
 con <- left_join(con, ged,
@@ -165,17 +167,44 @@ con <- con %>%
 # Create War Duration Variable
 con <- con %>%
   group_by(id) %>%
-  mutate(wardur = row_number())
+  mutate(wardur = row_number()) %>%
+  ungroup()
 
-# Create Ethnic War variable
+# Create Data Set With Information
+# Ethnic War, Conflict Intensity, and Military Victory
+# This Will Be Used for Conflict and Post-Conflict Cases
+ucdp_term <- read_excel("Data/ucdp-term-acd-3-2021.xlsx")
 
-# Create Conflict Intensity Variable (This Will Be Used for Post-Conflict Analysis)
+ucdp_term <- ucdp_term %>%
+  mutate(gwno_a = as.numeric(gwno_loc)) %>%
+  mutate(eth_war = if_else( # Create an Ethnic War Dummy
+    incompatibility != 2, 1, 0
+  )) %>%
+  mutate(intensity = if_else( # Create a Conflict Intensity Dummy
+    intensity_level == 2, 1, 0
+  )) %>%
+  mutate(mil_vic = if_else( # Create Military Victory Dummy
+    outcome == 3, 1, 0
+  )) %>%
+  mutate(reb_vic = if_else( # Create Rebel Military Victory Dummy
+    outcome == 4, 1, 0
+  )) %>%
+  filter(type_of_conflict == 3) %>% 
+  group_by(gwno_a, year) %>% # Collapse This Data to the Country-Year Level
+  summarise(eth_war = max(eth_war),
+            mil_vic = max(mil_vic),
+            reb_vic = max(reb_vic),
+            intensity = max(intensity)) %>% 
+  ungroup()
 
-# Create Peace Agreement Variable (This Will Be Used for Post-Conflict Analysis)
+con <- left_join(con, ucdp_term,
+                 by = c("ccode" = "gwno_a", "year"))
 
-# Remove Unnecessary Columns
-
-# Remove Observations With Missingness in the Dependent Variables
+# Create Ethnic War Variable Computed by Conflict ID
+con <- con %>%
+  group_by(id) %>%
+  mutate(eth_war = max(eth_war)) %>%
+  ungroup()
 
 #######-------Post-Conflict Level Data-------#######
 
@@ -207,7 +236,7 @@ pcon <- pcon %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
   mutate(lnatres = log(e_total_resources_income_pc + 1)) %>%
-  mutate(democracy = v2x_polyarchy)
+  mutate(democracy = v2x_polyarchy) %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy 
   ))
@@ -224,41 +253,57 @@ pcon <- pcon %>%
 # Merge Prior War Duration Variable
 wd_con <- con %>%
   group_by(id) %>%
-  summarise(pwar_dur = max(wardur))
+  summarise(pwar_dur = max(wardur)) %>%
+  ungroup()
 
 pcon <- inner_join(pcon, wd_con,
                    by = c("id"))
 
 # Create Prior Ethnic War Variable
-
-# Create Prior Conflict Intensity Variable
-ucdp2 <- readr::read_csv("Data/ucdp-prio-acd-221.csv")
-
-ucdp2 <- ucdp2 %>%
-  mutate(gwno_a = as.numeric(gwno_a)) %>%
-  filter(type_of_conflict == 3) %>% 
-  group_by(gwno_a, year) %>%
-  summarise(pintensity = max(cumulative_intensity)) %>%
-  ungroup()
-
-# Merge This Data Back Into the Conflict Data And Collapse It By ID
-intensity <- left_join(pcon, ucdp2,
-                  by = c("ccode" = "gwno_a", "year"))
-
-intensity <- intensity %>%
+eth_con <- con %>%
   group_by(id) %>%
-  summarise(pintensity = max(pintensity)) %>%
+  summarise(peth_war = max(eth_war)) %>%
   ungroup()
 
-# Merge This Data Back Into the Post-Conflict Data Set
-pcon <- left_join(pcon, intensity,
-                  by = c("id"))
+pcon <- inner_join(pcon, eth_con,
+                    by = c("id"))
 
-# Create Prior Peace Agreement Variable
+# Create Prior Intensity Variable
+int_con <- con %>%
+  group_by(id) %>%
+  summarise(pcint = max(intensity)) %>%
+  ungroup()
 
-# Remove Observations With Missingness in the Dependent Variables
+pcon <- inner_join(pcon, int_con,
+                   by = c("id"))
+
+# Create Prior Military Victory Variable
+mvic_con <- con %>%
+  group_by(id) %>%
+  summarise(pmilvic = max(mil_vic)) %>%
+  ungroup()
+
+pcon <- inner_join(pcon, mvic_con,
+                   by = c("id"))
+
+# Create Prior Rebel Victory Variable
+rvic_con <- con %>%
+  group_by(id) %>%
+  summarise(rmilvic = max(reb_vic)) %>%
+  ungroup()
+
+pcon <- inner_join(pcon, rvic_con,
+                   by = c("id"))
 
 # Remove Unnecessary Columns
+con <- con %>%
+  select(-c(version, civ_war, flag_civ_war, flead_civ_war, ev_civwar, con_fail, 
+            peace_fail, mil_vic, reb_vic, intensity))
+  
+pcon <- pcon %>%
+  select(-c(version, civ_war, flag_civ_war, flead_civ_war, ev_civwar, con_fail,
+            peace_fail))
 
 # Remove Unnecessary Data Sets
-rm(cow, milcap, ged, geo_pko, ucdp, vdem)
+rm(cow, milcap, ged, geo_pko, ucdp, vdem, eth_con, int_con, mvic_con, rvic_con, 
+   ucdp_term, wd_con)
