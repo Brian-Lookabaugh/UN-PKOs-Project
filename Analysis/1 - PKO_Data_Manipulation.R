@@ -28,12 +28,6 @@ cow <- readr::read_csv("Data/system2016_cow.csv")
 ucdp <- left_join(cow, ucdp,
                   by = c("ccode" = "gwno_a", "year"))
 
-# Replace NA Values for Civil War With 0
-ucdp <- ucdp %>%
-  mutate(civ_war = if_else(
-    is.na(civ_war), 0, civ_war
-))
-
 # Re-Code Coups as Non-Civil Conflict Cases
 vdem <- readr::read_csv("Data/selected_vdem_v12.csv") # Coup Information (Powell and Thyme 2011)
 
@@ -47,26 +41,58 @@ ucdp <- ucdp %>%
   )) %>%
   mutate(civ_war = if_else( # Re-Code Civil Wars As Not Cases of Civil War Where Coups Occurred
     coup == 1, 0, civ_war
-  ))
+  )) %>%
+  select(-c(e_pt_coup))
 
 # Re-Code 3-Year or Less Peace Spells as Conflict Lulls
 ucdp <- ucdp %>%
-
+  group_by(ccode) %>%
+  mutate(flag_civ_war = lag(civ_war, n = 1, order_by = ccode)) %>%
+  mutate(flead_civ_war = lead(civ_war, n = 1, order_by = ccode)) %>%
+  mutate(slag_civ_war = lag(civ_war, n = 2, order_by = ccode)) %>%
+  mutate(slead_civ_war = lead(civ_war, n = 2, order_by = ccode)) %>%
+  ungroup() %>%
+  mutate(civ_war = if_else(
+    flag_civ_war == 1 & flead_civ_war == 1, 1, civ_war
+  )) %>%
+  mutate(civ_war = if_else(
+    slag_civ_war == 1 & slead_civ_war == 1, 1, civ_war
+  )) %>%
+  select(-c(slag_civ_war, slead_civ_war))
+  
 # Create an "Ever Civil War" Variable to Isolate Post-Conflict Cases  
 ucdp <- ucdp %>%
   arrange(ccode, year) %>%
-  group_by(ccode, year) %>%
+  group_by(ccode) %>%
   mutate(ev_civwar = LOCF(civ_war)) %>%
   ungroup() %>%
   mutate(ev_civwar = if_else(
     is.na(ev_civwar), 0, ev_civwar
   ))
-  
+
+# Replace NA Values for Civil War and Ever Civil War With 0
+ucdp <- ucdp %>%
+  mutate(civ_war = if_else(
+    is.na(civ_war), 0, civ_war
+  ))
+
+# Create Conflict/Peace Spell Failure Variables
+ucdp <- ucdp %>%
+  group_by(ccode) %>%
+  mutate(con_fail = if_else( # Start By Creating a Conflict/Peace Termination (Failure) Variable
+    lag(civ_war == 1) & civ_war == 0, 1, 0
+  )) %>%
+  mutate(peace_fail = if_else( 
+    lag(civ_war == 0) & civ_war == 1, 1, 0
+  ))
 
 #######-------Conflict-Level Data-------#######
 
 # Include Only Conflict-Year Data
-con <- 
+con <- ucdp %>%
+  filter(civ_war == 1)
+
+# Create Conflict ID
 
 # Load and Clean UCDP Georeferenced Data (GED) for Information on Deaths and Lethal Events
 load("Data/ucdp_ged_22_1.RData")
@@ -81,7 +107,7 @@ ged <- ged %>%
 
 # Merge the GED Data In With the UCDP Data
 con <- left_join(con, ged,
-                        by = c("gwno_a" = "gwnoa", "year"))
+                        by = c("ccode" = "gwnoa", "year"))
 
 # Replace NA Values for Deaths and Events With 0
 con <- con %>%
@@ -99,7 +125,7 @@ geo_pko <- geo_pko %>%
 
 # Merge the Geo-PKO Data
 con <- left_join(con, geo_pko,
-                        by = c("gwno_a" = "cow_code", "year"))
+                        by = c("ccode" = "cow_code", "year"))
 
 # Replace NA Values for PKO With 0
 con <- con %>%
@@ -125,18 +151,23 @@ milcap <- milcap %>%
   select(c(ccode, year, milper)) # Keep Selected Columns
 
 con <- left_join(con, milcap,
-                    by = c("gwno_a" = "ccode", "year"))
+                    by = c("ccode", "year"))
 
 # Create the Log-Transformed Value of Military Personnel per capita
 con <- con %>%
   mutate(lmilper = log(milper + 1)) %>%
   select(-c(milper))
 
+# Remove Observations With Missingness in the Dependent Variables
+
 #######-------Post-Conflict Level Data-------#######
 
 # Include Only Post-Conflict-Year Data
+pcon <- ucdp %>%
+  filter(civ_war == 0 & ev_civwar == 1)
 
-pcon <- 
+# Create Peace Spell ID
+
 
 # Merge GED Data
 pcon <- left_join(pcon, ged,
@@ -175,6 +206,8 @@ pcon <- left_join(pcon, milcap,
 pcon <- pcon %>%
   mutate(lmilper = log(milper + 1)) %>%
   select(-c(milper))
+
+# Remove Observations With Missingness in the Dependent Variables
 
 # Remove Unnecessary Data Sets
 rm(cow, milcap, ged, geo_pko, ucdp, vdem)
