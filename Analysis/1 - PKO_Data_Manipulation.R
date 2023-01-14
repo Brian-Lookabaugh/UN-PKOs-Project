@@ -142,7 +142,6 @@ con <- con %>%
 con <- con %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
-  mutate(lnatres = log(e_total_resources_income_pc + 1)) %>%
   mutate(democracy = v2x_polyarchy) %>% # Rename Democracy
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy 
@@ -233,7 +232,6 @@ pcon <- pcon %>%
 pcon <- pcon %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
-  mutate(lnatres = log(e_total_resources_income_pc + 1)) %>%
   mutate(democracy = v2x_polyarchy) %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy 
