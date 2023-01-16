@@ -4,16 +4,13 @@
 
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
-  "DescTools", # LOCF (Last Observation Carried Forward) Command
-  "readxl", # Importing Excel Spreadsheets
+  "DescTools", # Last Observation Carried Forward (LOCF) Command
   install = FALSE
 )
 
 # Create the Base Data Set to Identify The Presence of Civil War and Post-Civil War
-# Load UCDP/PRIO Armed Conflict Data Set to Isolate Cases of Civil War
 ucdp <- readr::read_csv("Data/ucdp-prio-acd-221.csv")
 
-# Manipulate UCDP Data
 ucdp <- ucdp %>%
   mutate(gwno_a = as.numeric(gwno_a)) %>%
   filter(type_of_conflict == 3) %>% # Filter Cases of Civil Conflict
@@ -28,13 +25,14 @@ cow <- readr::read_csv("Data/system2016_cow.csv")
 ucdp <- left_join(cow, ucdp,
                   by = c("ccode" = "gwno_a", "year"))
 
-# Re-Code Coups as Non-Civil Conflict Cases
-vdem <- readr::read_csv("Data/selected_vdem_v12.csv") # Coup Information (Powell and Thyme 2011)
+
+# Make Coups Count As Non-Civil War Observations
+# Coup Information (Powell and Thyme 2011) Along With Confounders
+vdem <- readr::read_csv("Data/selected_vdem_v12.csv") 
 
 ucdp <- left_join(ucdp, vdem,
                   by = c("ccode" = "COWcode", "year"))
 
-# Make the Coup Variable Binary
 ucdp <- ucdp %>%
   mutate(coup = if_else(
     e_pt_coup > 0, 1, e_pt_coup
@@ -44,7 +42,7 @@ ucdp <- ucdp %>%
   )) %>%
   select(-c(e_pt_coup, coup))
 
-# Re-Code 3-Year or Less Peace Spells as Conflict Lulls
+# Re-Code 3 Years or Less of Peace As Conflict Lulls
 ucdp <- ucdp %>%
   group_by(ccode) %>%
   mutate(flag_civ_war = lag(civ_war, n = 1, order_by = ccode)) %>%
@@ -58,8 +56,8 @@ ucdp <- ucdp %>%
   mutate(civ_war = if_else(
     slag_civ_war == 1 & slead_civ_war == 1, 1, civ_war
   )) %>%
-  select(-c(slag_civ_war, slead_civ_war))
-  
+  select(-c(flag_civ_war, flead_civ_war, slag_civ_war, slead_civ_war))
+
 # Create an "Ever Civil War" Variable to Isolate Post-Conflict Cases  
 ucdp <- ucdp %>%
   arrange(ccode, year) %>%
@@ -76,7 +74,7 @@ ucdp <- ucdp %>%
     is.na(civ_war), 0, civ_war
   ))
 
-# Create Conflict/Peace Spell Failure Variables (These Will Be Used for IDs)
+# Create Spell ID Variable
 ucdp <- ucdp %>%
   group_by(ccode) %>%
   mutate(con_fail = if_else( # Start By Creating a Conflict/Peace Termination (Failure) Variable
@@ -85,20 +83,23 @@ ucdp <- ucdp %>%
   mutate(peace_fail = if_else( 
     lag(civ_war == 0) & civ_war == 1, 1, 0
   )) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(id = cumsum(peace_fail)) # The Actual ID (This Includes Non-Conflict Cases)
 
-# Create the Conflict/Peace Spell ID Variable
-# This Doubles As Both a Conflict And Peace Spell ID Once Filtered for Conflict/Post-Conflict Cases
+# Filter Non-Conflict Cases
 ucdp <- ucdp %>%
-  mutate(id = cumsum(peace_fail)) 
+  filter(ev_civwar > 0)
 
-#######-------Conflict-Level Data-------#######
+# Create the War Duration Variable
+ucdp <- ucdp %>%
+  group_by(id) %>%
+  mutate(wardur = as.numeric(row_number())) %>% # Default Is Integer
+  ungroup() %>%
+  mutate(wardur = if_else( # Replace Peace-Year Values With 0
+    civ_war == 0, 0, wardur
+  ))
 
-# Include Only Conflict-Year Data
-con <- ucdp %>%
-  filter(civ_war == 1)
-
-# Load and Clean UCDP Georeferenced Data (GED) for Information on Deaths and Lethal Events
+# Manipulate and Merge GED Data
 load("Data/ucdp_ged_22_1.RData")
 ged <- GEDEvent_v22_1
 rm(GEDEvent_v22_1)
@@ -110,16 +111,14 @@ ged <- ged %>%
             events = n_distinct(id)) %>%
   ungroup()
 
-# Merge the GED Data In With the UCDP Data
-con <- left_join(con, ged,
-                        by = c("ccode" = "gwnoa", "year"))
+ucdp <- left_join(ucdp, ged,
+                 by = c("ccode" = "gwnoa", "year"))
 
-# Replace NA Values for Deaths and Events With 0
-con <- con %>%
+ucdp <- ucdp %>% # Replace NA Values With 0
   mutate_at(c('deaths', 'events'), 
             ~replace_na(., 0))
 
-# Load Geo-PKO Data and Collapse It to the Country-Year Level
+# Merge the Geo-PKO Data
 geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
 
 geo_pko <- geo_pko %>%
@@ -128,161 +127,36 @@ geo_pko <- geo_pko %>%
   summarise(pko = max(pko)) %>%
   ungroup()
 
-# Merge the Geo-PKO Data
-con <- left_join(con, geo_pko,
-                        by = c("ccode" = "cow_code", "year"))
+ucdp <- left_join(ucdp, geo_pko,
+                 by = c("ccode" = "cow_code", "year"))
 
-# Replace NA Values for PKO With 0
-con <- con %>%
+ucdp <- ucdp %>% # Replace NA Values for PKO With 0
   mutate(pko = if_else(
     is.na(pko), 0, pko
   ))
 
-# Create Log-Transformed Values
-con <- con %>%
-  mutate(lgdppc = log(e_gdppc + 1)) %>%
-  mutate(lpop = log(e_pop)) %>%
-  mutate(democracy = v2x_polyarchy) %>% # Rename Democracy
-  select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
-            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy 
-            ))
-
-# Load, Clean, and Merge Correlates of War (COW) Data
+# Load and Clean Correlates of War (COW) Data for Military Capacity
 milcap <- readr::read_csv("Data/cow_nmc_v4.csv")
 
 milcap <- milcap %>%
   filter(milper != -9) %>% # Remove NA Values
   select(c(ccode, year, milper)) # Keep Selected Columns
 
-con <- left_join(con, milcap,
-                    by = c("ccode", "year"))
+ucdp <- left_join(ucdp, milcap,
+                 by = c("ccode", "year"))
 
-# Create the Log-Transformed Value of Military Personnel per capita
-con <- con %>%
-  mutate(lmilper = log(milper + 1)) %>%
-  select(-c(milper))
-
-# Create War Duration Variable
-con <- con %>%
-  group_by(id) %>%
-  mutate(wardur = row_number()) %>%
-  ungroup()
-
-# Create Data Set With Information
-# Ethnic War, Conflict Intensity, and Peace Agreements:
-# This Will Be Used for Conflict and Post-Conflict Cases
-ucdp_term <- read_excel("Data/ucdp-term-acd-3-2021.xlsx")
-
-ucdp_term <- ucdp_term %>%
-  mutate(gwno_a = as.numeric(gwno_loc)) %>%
-  group_by(gwno_a, year) %>%
-  mutate(eth_war = if_else( # Create an Ethnic War Dummy
-    incompatibility != 2, 1, 0
-  )) %>%
-  mutate(intensity = if_else( # Create a Conflict Intensity Dummy
-    intensity_level == 2, 1, 0
-  )) %>%
-  mutate(p_agg = if_else(
-    outcome == 1, 1, 0 # Create Peace Agreement Dummy
-  )) %>%
-  mutate(p_agg = if_else(
-    is.na(p_agg), 0, p_agg # Replace NAs With 0s
-  )) %>%
-  filter(type_of_conflict == 3) %>% 
-  summarise(eth_war = max(eth_war),
-            p_agg = max(p_agg), 
-            intensity = max(intensity)) %>% 
-  ungroup()
-
-con <- left_join(con, ucdp_term,
-                 by = c("ccode" = "gwno_a", "year"))
-
-# Create Ethnic War Variable Computed by Conflict ID
-con <- con %>%
-  group_by(id) %>%
-  mutate(eth_war = max(eth_war)) %>%
-  ungroup()
-
-#######-------Post-Conflict Level Data-------#######
-
-# Include Only Post-Conflict-Year Data
-pcon <- ucdp %>%
-  filter(civ_war == 0 & ev_civwar == 1)
-
-# Merge GED Data
-pcon <- left_join(pcon, ged,
-                        by = c("ccode" = "gwnoa", "year"))
-
-# Replace NA Values for Deaths and Events With 0
-pcon <- pcon %>%
-  mutate_at(c('deaths', 'events'), 
-            ~replace_na(., 0))
-
-# Merge the Geo-PKO Data
-pcon <- left_join(pcon, geo_pko,
-                        by = c("ccode" = "cow_code", "year"))
-
-# Replace NA Values for PKO With 0
-pcon <- pcon %>%
-  mutate(pko = if_else(
-    is.na(pko), 0, pko
-  ))
-
-# Create Log-Transformed Values
-pcon <- pcon %>%
+# Generate Log-Transformed Values
+ucdp <- ucdp %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
-  mutate(democracy = v2x_polyarchy) %>%
-  select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
-            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy 
-  ))
-
-# Load, Clean, and Merge Correlates of War (COW) Data
-pcon <- left_join(pcon, milcap,
-                        by = c("ccode", "year"))
-
-# Create the Log-Transformed Value of Military Personnel per capita
-pcon <- pcon %>%
   mutate(lmilper = log(milper + 1)) %>%
-  select(-c(milper))
-
-# Merge Prior War Duration Variable
-wd_con <- con %>%
-  group_by(id) %>%
-  summarise(pwar_dur = max(wardur)) %>%
-  ungroup()
-
-pcon <- inner_join(pcon, wd_con,
-                   by = c("id"))
-
-# To Get Further Information on Features of the Prior War, We Need to Merge the UCDP
-# Conflict Termination Data (When Merged, This Includes The First 1-2 Years of Peace)
-pcon <- left_join(pcon, ucdp_term, by = c("ccode" = "gwno_a", "year"))
-
-# Carry Forward NA Values By Peace Spell ID
-pcon <- pcon %>%
-  group_by(id) %>%
-  mutate(eth_war = LOCF(eth_war)) %>%
-  mutate(intensity = LOCF(intensity)) %>%
-  mutate(p_agg = LOCF(p_agg)) %>%
-  ungroup()
-
-# Create Max Values for Each Variable
-pcon <- pcon %>%
-  group_by(id) %>%
-  mutate(peth_war = max(eth_war)) %>%
-  mutate(p_int = max(intensity)) %>%
-  mutate(pp_agg = max(p_agg)) %>%
-  ungroup()
+  mutate(democracy = v2x_polyarchy) # Rename Democracy
 
 # Remove Unnecessary Columns
-con <- con %>%
-  select(-c(version, civ_war, flag_civ_war, flead_civ_war, ev_civwar, con_fail, 
-            peace_fail, p_agg, intensity))
-  
-pcon <- pcon %>%
-  select(-c(version, civ_war, flag_civ_war, flead_civ_war, ev_civwar, con_fail,
-            peace_fail, eth_war, intensity, p_agg))
+merged <- ucdp %>%
+  select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
+            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy, version, con_fail,
+            peace_fail, milper))
 
 # Remove Unnecessary Data Sets
-rm(cow, milcap, ged, geo_pko, ucdp, vdem, ucdp_term, wd_con)
+rm(cow, ged, geo_pko, milcap, vdem, ucdp)
