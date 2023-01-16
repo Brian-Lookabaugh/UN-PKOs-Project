@@ -150,6 +150,8 @@ ucdp <- ucdp %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
   mutate(lmilper = log(milper + 1)) %>%
+  mutate(levents = log(events + 1)) %>%
+  mutate(ldeaths = log(deaths + 1)) %>%
   mutate(democracy = v2x_polyarchy) # Rename Democracy
 
 # Remove Unnecessary Columns
