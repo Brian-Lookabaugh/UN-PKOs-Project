@@ -151,26 +151,13 @@ ucdp <- ucdp %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
   mutate(lmilper = log(milper + 1)) %>%
-  mutate(democracy = v2x_polyarchy) # Rename Democracy
-
-# Create High Intensity Dummy Variable and a Subsequent Count of Years In Which
-# High Intensity is Present
-
-merged <- merged %>%
-  mutate(death_int = if_else(
-    deaths >= 50, 1, 0
-  )) %>%
-  group_by(id, group = cumsum(
-    death_int != lag(death_int, default = 1)
-  )) %>%
-  mutate(low_years = cumsum(death_int == 0)) %>%
-  ungroup()
+  mutate(ldeaths = log(deaths + 1))
 
 # Remove Unnecessary Columns
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy, version, con_fail,
-            peace_fail, milper, group))
+            peace_fail, milper, democracy))
 
 # Remove Unnecessary Data Sets
 rm(cow, ged, geo_pko, milcap, vdem, ucdp)
