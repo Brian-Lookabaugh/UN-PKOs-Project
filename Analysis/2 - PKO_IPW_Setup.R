@@ -10,13 +10,21 @@ pacman::p_load(
 
 # Create a Treatment-Variation Plot
 
-# Create Mahalanobis Nearest-Neighbor (NN) Matched Set: No Lag to 3 Lags
+# Create Mahalanobis Nearest-Neighbor (NN) Matched Set: No Lag to 3 Lags (PKO Onset)
 
-# Create IPW Weighted Set: No Lag to 3 Lags
+# Create Mahalanobis Nearest-Neighbor (NN) Matched Set: No Lag to 3 Lags (PKO Withdrawal)
 
-# NN: Frequency Distribution of Matched Units
+# Create IPW Weighted Set: No Lag to 3 Lags (PKO Onset)
 
-# IPW: Frequency Distribution of Weighted Units
+# Create IPW Weighted Set: No Lag to 3 Lags (PKO Withdrawal)
+
+# NN: Frequency Distribution of Matched Units (PKO Onset)
+
+# NN: Frequency Distribution of Matched Units (PKO Withdrawal)
+
+# IPW: Frequency Distribution of Weighted Units (PKO Onset)
+
+# IPW: Frequency Distribution of Weighted Units (PKO Withdrawal)
 
 # NN: Covariate Balance Plot Post-Refinement
 

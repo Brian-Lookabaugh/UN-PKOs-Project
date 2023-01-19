@@ -8,17 +8,17 @@ pacman::p_load(
   install = FALSE
 )
 
-# NN: Model Estimates for Lethal Events, Up to X Matches
+# NN: Model Estimates for PKO Onset, Up to X Matches
 
-# NN: Model Estimates for Lethal Events, Up to Y Matches
+# NN: Model Estimates for PKO Onset, Up to Y Matches
 
-# NN: Model Estimates for Deaths, Up to X Matches
+# IPW: Model Estimates for PKO Onset
 
-# NN: Model Estimates for Deaths, Up to Y Matches
+# NN: Model Estimates for PKO Withdrawal, Up to X Matches
 
-# IPW: Model Estimates for Lethal Events
+# NN: Model Estimates for PKO Withdrawal, Up to Y Matches
 
-# IPW: Model Estimates for Deaths
+# IPW: Model Estimates for PKO Withdrawal
 
 # Visualize Results
 
