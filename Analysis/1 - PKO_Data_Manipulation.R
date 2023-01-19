@@ -107,16 +107,17 @@ rm(GEDEvent_v22_1)
 ged <- ged %>%
   mutate(gwnoa = as.numeric(gwnoa)) %>%
   group_by(gwnoa, year) %>%
-  summarise(deaths = max(best),
-            events = n_distinct(id)) %>%
+  summarise(deaths = max(best)) %>%
   ungroup()
 
 ucdp <- left_join(ucdp, ged,
                  by = c("ccode" = "gwnoa", "year"))
 
 ucdp <- ucdp %>% # Replace NA Values With 0
-  mutate_at(c('deaths', 'events'), 
-            ~replace_na(., 0))
+  mutate(deaths = as.numeric(deaths)) %>%
+  mutate(deaths = if_else(
+    is.na(deaths), 0, deaths
+  ))
 
 # Merge the Geo-PKO Data
 geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
@@ -150,15 +151,26 @@ ucdp <- ucdp %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
   mutate(lmilper = log(milper + 1)) %>%
-  mutate(levents = log(events + 1)) %>%
-  mutate(ldeaths = log(deaths + 1)) %>%
   mutate(democracy = v2x_polyarchy) # Rename Democracy
+
+# Create High Intensity Dummy Variable and a Subsequent Count of Years In Which
+# High Intensity is Present
+
+merged <- merged %>%
+  mutate(death_int = if_else(
+    deaths >= 50, 1, 0
+  )) %>%
+  group_by(id, group = cumsum(
+    death_int != lag(death_int, default = 1)
+  )) %>%
+  mutate(low_years = cumsum(death_int == 0)) %>%
+  ungroup()
 
 # Remove Unnecessary Columns
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy, version, con_fail,
-            peace_fail, milper))
+            peace_fail, milper, group))
 
 # Remove Unnecessary Data Sets
 rm(cow, ged, geo_pko, milcap, vdem, ucdp)
