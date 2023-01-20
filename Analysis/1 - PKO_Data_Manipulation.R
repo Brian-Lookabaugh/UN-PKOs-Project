@@ -157,7 +157,7 @@ ucdp <- ucdp %>%
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy, version, con_fail,
-            peace_fail, milper, democracy))
+            peace_fail, milper, v2x_polyarchy))
 
 # Remove Unnecessary Data Sets
 rm(cow, ged, geo_pko, milcap, vdem, ucdp)
