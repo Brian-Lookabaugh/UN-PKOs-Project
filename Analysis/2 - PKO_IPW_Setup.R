@@ -40,86 +40,231 @@ ggsave(
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/UN PKOs Project/Graphics"
 )
 
-# Create Mahalanobis Nearest-Neighbor (NN) Matched Set: 4 Lags, Up to 5 Matches
+# Covariate Balance Plot Post-Refinement
 merged <- merged %>%
   mutate(ccode = as.integer(ccode)) %>%
   select(-c(stateabb)) # PanelMatch Will Not Run With Non-Numeric/Integer Data
 
-nn_match_5 <- PanelMatch(lag = 4,
-                       time.id = "year",
-                       unit.id = "ccode",
-                       treatment = "pko",
-                       refinement.method = "mahalanobis",
-                       size.match = 5,
-                       data = merged,
-                       covs.formula = ~ 
-                         I(lag(lpop, 1:4)) +
-                         I(lag(lmilper, 1:4)) +
-                         I(lag(ldeaths, 1:4)) +
-                         I(lag(wardur, 1:4)),
-                       qoi = "att",
-                       outcome.var = "lgdppc",
-                       lead = 0:4,
-                       use.diagonal.variance.matrix = TRUE,
-                       restrict.control.period = 4)
+# NN Matching - 5 Matches - 1 Lag
+nn_match_5_1 <- PanelMatch(lag = 1,
+                         time.id = "year",
+                         unit.id = "ccode",
+                         treatment = "pko",
+                         refinement.method = "mahalanobis",
+                         size.match = 5,
+                         data = merged,
+                         covs.formula = ~ 
+                           I(lag(lpop, 1)) +
+                           I(lag(lmilper, 1)) +
+                           I(lag(ldeaths, 1)) +
+                           I(lag(wardur, 1)),
+                         qoi = "att",
+                         outcome.var = "lgdppc",
+                         lead = 0:4,
+                         use.diagonal.variance.matrix = TRUE,
+                         restrict.control.period = 1)
 
-# Create Mahalanobis Nearest-Neighbor (NN) Matched Set: 4 Lags, Up to 10 Matches
-nn_match_10 <- PanelMatch(lag = 4,
-                       time.id = "year",
-                       unit.id = "ccode",
-                       treatment = "pko",
-                       refinement.method = "mahalanobis",
-                       size.match = 10,
-                       data = merged,
-                       covs.formula = ~ 
-                         I(lag(lpop, 1:4)) +
-                         I(lag(lmilper, 1:4)) +
-                         I(lag(ldeaths, 1:4)) +
-                         I(lag(wardur, 1:4)),
-                       qoi = "att",
-                       outcome.var = "lgdppc",
-                       lead = 0:4,
-                       use.diagonal.variance.matrix = TRUE,
-                       restrict.control.period = 4)
+nn_m51_plot <- balance_scatter(nn_match_5_1,
+                               data = merged,
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"))
 
-# Create IPW Weighted Set: 4 Lags
-ipw <- PanelMatch(lag = 4,
-                        time.id = "year",
-                        unit.id = "ccode",
-                        treatment = "pko",
-                        refinement.method = "ps.weight",
-                        data = merged,
-                        covs.formula = ~
-                          I(lag(lpop, 1:4)) +
-                          I(lag(lmilper, 1:4)) +
-                          I(lag(ldeaths, 1:4)) +
-                          I(lag(wardur, 1:4)),
-                        qoi = "att",
-                        outcome.var = "lgdppc",
-                        lead = 0:4,
-                        restrict.control.period = 4)
-
-# Covariate Balance Plot Post-Refinement
-# Create a Matched Set Without Refinement
-no_ref <- PanelMatch(lag = 4,
-                     time.id = "year",
-                     unit.id = "ccode",
-                     treatment = "pko",
-                     refinement.method = "none",
-                     data = merged,
-                     covs.formula = ~
-                       I(lag(lpop, 1:4)) +
-                       I(lag(lmilper, 1:4)) +
-                       I(lag(ldeaths, 1:4)) +
-                       I(lag(wardur, 1:4)),
-                     size.match = 5,
-                     qoi = "att",
-                     outcome.var = "lgdppc",
-                     lead = 0:4,
-                     restrict.control.period = 4)
-
-balance_scatter(matched_set_list = list(nn_match_5$att, nn_match_10$att), 
+# NN Matching - 5 Matches - 2 Lags
+nn_match_5_2 <- PanelMatch(lag = 2,
+                           time.id = "year",
+                           unit.id = "ccode",
+                           treatment = "pko",
+                           refinement.method = "mahalanobis",
+                           size.match = 5,
                            data = merged,
-                           covariates = c("lpop", "lmilper", "wardur", "ldeaths"),
-                           x.axis.label = "Before Refinement",
-                           y.axis.label = "After Refinement")
+                           covs.formula = ~ 
+                             I(lag(lpop, 1:2)) +
+                             I(lag(lmilper, 1:2)) +
+                             I(lag(ldeaths, 1:2)) +
+                             I(lag(wardur, 1:2)),
+                           qoi = "att",
+                           outcome.var = "lgdppc",
+                           lead = 0:4,
+                           use.diagonal.variance.matrix = TRUE,
+                           restrict.control.period = 2)
+
+# NN Matching - 5 Matches - 3 Lags
+nn_match_5_3 <- PanelMatch(lag = 3,
+                           time.id = "year",
+                           unit.id = "ccode",
+                           treatment = "pko",
+                           refinement.method = "mahalanobis",
+                           size.match = 5,
+                           data = merged,
+                           covs.formula = ~ 
+                             I(lag(lpop, 1:3)) +
+                             I(lag(lmilper, 1:3)) +
+                             I(lag(ldeaths, 1:3)) +
+                             I(lag(wardur, 1:3)),
+                           qoi = "att",
+                           outcome.var = "lgdppc",
+                           lead = 0:4,
+                           use.diagonal.variance.matrix = TRUE,
+                           restrict.control.period = 3)
+
+# NN Matching - 5 Matches - 4 Lags
+nn_match_5_4 <- PanelMatch(lag = 4,
+                           time.id = "year",
+                           unit.id = "ccode",
+                           treatment = "pko",
+                           refinement.method = "mahalanobis",
+                           size.match = 5,
+                           data = merged,
+                           covs.formula = ~ 
+                             I(lag(lpop, 1:4)) +
+                             I(lag(lmilper, 1:4)) +
+                             I(lag(ldeaths, 1:4)) +
+                             I(lag(wardur, 1:4)),
+                           qoi = "att",
+                           outcome.var = "lgdppc",
+                           lead = 0:4,
+                           use.diagonal.variance.matrix = TRUE,
+                           restrict.control.period = 4)
+
+# NN Matching - 10 Matches - 1 Lag
+nn_match_10_1 <- PanelMatch(lag = 1,
+                          time.id = "year",
+                          unit.id = "ccode",
+                          treatment = "pko",
+                          refinement.method = "mahalanobis",
+                          size.match = 10,
+                          data = merged,
+                          covs.formula = ~ 
+                            I(lag(lpop, 1)) +
+                            I(lag(lmilper, 1)) +
+                            I(lag(ldeaths, 1)) +
+                            I(lag(wardur, 1)),
+                          qoi = "att",
+                          outcome.var = "lgdppc",
+                          lead = 0:4,
+                          use.diagonal.variance.matrix = TRUE,
+                          restrict.control.period = 1)
+
+# NN Matching - 10 Matches - 2 Lags
+nn_match_10_2 <- PanelMatch(lag = 2,
+                            time.id = "year",
+                            unit.id = "ccode",
+                            treatment = "pko",
+                            refinement.method = "mahalanobis",
+                            size.match = 10,
+                            data = merged,
+                            covs.formula = ~ 
+                              I(lag(lpop, 1:2)) +
+                              I(lag(lmilper, 1:2)) +
+                              I(lag(ldeaths, 1:2)) +
+                              I(lag(wardur, 1:2)),
+                            qoi = "att",
+                            outcome.var = "lgdppc",
+                            lead = 0:4,
+                            use.diagonal.variance.matrix = TRUE,
+                            restrict.control.period = 2)
+
+# NN Matching - 10 Matches - 3 Lags
+nn_match_10_3 <- PanelMatch(lag = 3,
+                            time.id = "year",
+                            unit.id = "ccode",
+                            treatment = "pko",
+                            refinement.method = "mahalanobis",
+                            size.match = 10,
+                            data = merged,
+                            covs.formula = ~ 
+                              I(lag(lpop, 1:3)) +
+                              I(lag(lmilper, 1:3)) +
+                              I(lag(ldeaths, 1:3)) +
+                              I(lag(wardur, 1:3)),
+                            qoi = "att",
+                            outcome.var = "lgdppc",
+                            lead = 0:4,
+                            use.diagonal.variance.matrix = TRUE,
+                            restrict.control.period = 3)
+
+# NN Matching - 10 Matches - 4 Lags
+nn_match_10_4 <- PanelMatch(lag = 4,
+                            time.id = "year",
+                            unit.id = "ccode",
+                            treatment = "pko",
+                            refinement.method = "mahalanobis",
+                            size.match = 10,
+                            data = merged,
+                            covs.formula = ~ 
+                              I(lag(lpop, 1:4)) +
+                              I(lag(lmilper, 1:4)) +
+                              I(lag(ldeaths, 1:4)) +
+                              I(lag(wardur, 1:4)),
+                            qoi = "att",
+                            outcome.var = "lgdppc",
+                            lead = 0:4,
+                            use.diagonal.variance.matrix = TRUE,
+                            restrict.control.period = 4)
+
+# IPW - 1 Lag
+ipw_1 <- PanelMatch(lag = 1,
+                  time.id = "year",
+                  unit.id = "ccode",
+                  treatment = "pko",
+                  refinement.method = "ps.weight",
+                  data = merged,
+                  covs.formula = ~
+                    I(lag(lpop, 1)) +
+                    I(lag(lmilper, 1)) +
+                    I(lag(ldeaths, 1)) +
+                    I(lag(wardur, 1)),
+                  qoi = "att",
+                  outcome.var = "lgdppc",
+                  lead = 0:4,
+                  restrict.control.period = 1)
+
+# IPW - 2 Lags
+ipw_2 <- PanelMatch(lag = 2,
+                  time.id = "year",
+                  unit.id = "ccode",
+                  treatment = "pko",
+                  refinement.method = "ps.weight",
+                  data = merged,
+                  covs.formula = ~
+                    I(lag(lpop, 1:2)) +
+                    I(lag(lmilper, 1:2)) +
+                    I(lag(ldeaths, 1:2)) +
+                    I(lag(wardur, 1:2)),
+                  qoi = "att",
+                  outcome.var = "lgdppc",
+                  lead = 0:4,
+                  restrict.control.period = 2)
+
+# IPW - 3 Lags
+ipw_3 <- PanelMatch(lag = 3,
+                  time.id = "year",
+                  unit.id = "ccode",
+                  treatment = "pko",
+                  refinement.method = "ps.weight",
+                  data = merged,
+                  covs.formula = ~
+                    I(lag(lpop, 1:3)) +
+                    I(lag(lmilper, 1:3)) +
+                    I(lag(ldeaths, 1:3)) +
+                    I(lag(wardur, 1:3)),
+                  qoi = "att",
+                  outcome.var = "lgdppc",
+                  lead = 0:4,
+                  restrict.control.period = 3)
+
+# IPW - 4 Lags
+ipw_4 <- PanelMatch(lag = 4,
+                  time.id = "year",
+                  unit.id = "ccode",
+                  treatment = "pko",
+                  refinement.method = "ps.weight",
+                  data = merged,
+                  covs.formula = ~
+                    I(lag(lpop, 1:4)) +
+                    I(lag(lmilper, 1:4)) +
+                    I(lag(ldeaths, 1:4)) +
+                    I(lag(wardur, 1:4)),
+                  qoi = "att",
+                  outcome.var = "lgdppc",
+                  lead = 0:4,
+                  restrict.control.period = 4)
