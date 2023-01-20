@@ -60,8 +60,8 @@ nn_match_5 <- PanelMatch(lag = 4,
                        qoi = "att",
                        outcome.var = "lgdppc",
                        lead = 0:4,
-                       use.diagonal.variance.matrix = TRUE
-                       )
+                       use.diagonal.variance.matrix = TRUE,
+                       restrict.control.period = 4)
 
 # Create Mahalanobis Nearest-Neighbor (NN) Matched Set: 4 Lags, Up to 10 Matches
 nn_match_10 <- PanelMatch(lag = 4,
@@ -79,7 +79,8 @@ nn_match_10 <- PanelMatch(lag = 4,
                        qoi = "att",
                        outcome.var = "lgdppc",
                        lead = 0:4,
-                       use.diagonal.variance.matrix = TRUE)
+                       use.diagonal.variance.matrix = TRUE,
+                       restrict.control.period = 4)
 
 # Create IPW Weighted Set: 4 Lags
 ipw <- PanelMatch(lag = 4,
@@ -98,7 +99,7 @@ ipw <- PanelMatch(lag = 4,
                         lead = 0:4,
                         restrict.control.period = 4)
 
-# NN: Covariate Balance Plot Post-Refinement
+# Covariate Balance Plot Post-Refinement
 # Create a Matched Set Without Refinement
 no_ref <- PanelMatch(lag = 4,
                      time.id = "year",
@@ -106,7 +107,7 @@ no_ref <- PanelMatch(lag = 4,
                      treatment = "pko",
                      refinement.method = "none",
                      data = merged,
-                     covs.formula = ~ 
+                     covs.formula = ~
                        I(lag(lpop, 1:4)) +
                        I(lag(lmilper, 1:4)) +
                        I(lag(ldeaths, 1:4)) +
@@ -114,14 +115,11 @@ no_ref <- PanelMatch(lag = 4,
                      size.match = 5,
                      qoi = "att",
                      outcome.var = "lgdppc",
-                     lead = 0:4)
+                     lead = 0:4,
+                     restrict.control.period = 4)
 
-
-
-# IPW: Covariate Balance Plot Post-Refinement
-
-# Combined Covariate Balance Plot
-
-# NN: Covariate Balance With Lagged Outcome
-
-# IPW: Covariate Balance With Lagged Outcome
+balance_scatter(matched_set_list = list(nn_match_5$att, nn_match_10$att), 
+                           data = merged,
+                           covariates = c("lpop", "lmilper", "wardur", "ldeaths"),
+                           x.axis.label = "Before Refinement",
+                           y.axis.label = "After Refinement")
