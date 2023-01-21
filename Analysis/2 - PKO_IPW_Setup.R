@@ -5,6 +5,8 @@
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
   "PanelMatch", # Matching/Weighting Set-Up With Panel Data
+  "grDevices", # Converting Base Graphics to ggplot-like Objects
+  "cowplot", # Combining Plots
   install = FALSE
 )
 
@@ -64,9 +66,14 @@ nn_match_5_1 <- PanelMatch(lag = 1,
                          use.diagonal.variance.matrix = TRUE,
                          restrict.control.period = 1)
 
-nn_m51_plot <- balance_scatter(nn_match_5_1,
+nn_5_1_plot <- balance_scatter(nn_match_5_1,
                                data = merged,
-                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"))
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               main = "One Year Lag",
+                               x.axis.label = "",
+                               y.axis.label = "Mahalanobis Matching - Up to 5 Matches")
+
+nn_5_1_plot <- recordPlot()
 
 # NN Matching - 5 Matches - 2 Lags
 nn_match_5_2 <- PanelMatch(lag = 2,
@@ -87,6 +94,15 @@ nn_match_5_2 <- PanelMatch(lag = 2,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 2)
 
+nn_5_2_plot <- balance_scatter(nn_match_5_2,
+                               data = merged,
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               main = "Two Year Lag",
+                               x.axis.label = "",
+                               y.axis.label = "")
+
+nn_5_2_plot <- recordPlot()
+
 # NN Matching - 5 Matches - 3 Lags
 nn_match_5_3 <- PanelMatch(lag = 3,
                            time.id = "year",
@@ -105,6 +121,15 @@ nn_match_5_3 <- PanelMatch(lag = 3,
                            lead = 0:4,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 3)
+
+nn_5_3_plot <- balance_scatter(nn_match_5_3,
+                               data = merged,
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               main = "Three Year Lag",
+                               x.axis.label = "",
+                               y.axis.label = "")
+
+nn_5_3_plot <- recordPlot()
 
 # NN Matching - 5 Matches - 4 Lags
 nn_match_5_4 <- PanelMatch(lag = 4,
@@ -125,6 +150,15 @@ nn_match_5_4 <- PanelMatch(lag = 4,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 4)
 
+nn_5_4_plot <- balance_scatter(nn_match_5_4,
+                               data = merged,
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               main = "Four Year Lag",
+                               x.axis.label = "",
+                               y.axis.label = "")
+
+nn_5_4_plot <- recordPlot()
+
 # NN Matching - 10 Matches - 1 Lag
 nn_match_10_1 <- PanelMatch(lag = 1,
                           time.id = "year",
@@ -143,6 +177,15 @@ nn_match_10_1 <- PanelMatch(lag = 1,
                           lead = 0:4,
                           use.diagonal.variance.matrix = TRUE,
                           restrict.control.period = 1)
+
+nn_10_1_plot <- balance_scatter(nn_match_10_1,
+                               data = merged,
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               main = "",
+                               x.axis.label = "",
+                               y.axis.label = "Mahalanobis Matching - Up to 10 Matches")
+
+nn_10_1_plot <- recordPlot()
 
 # NN Matching - 10 Matches - 2 Lags
 nn_match_10_2 <- PanelMatch(lag = 2,
@@ -163,6 +206,15 @@ nn_match_10_2 <- PanelMatch(lag = 2,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 2)
 
+nn_10_2_plot <- balance_scatter(nn_match_10_2,
+                                data = merged,
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                main = "",
+                                x.axis.label = "",
+                                y.axis.label = "")
+
+nn_10_2_plot <- recordPlot()
+
 # NN Matching - 10 Matches - 3 Lags
 nn_match_10_3 <- PanelMatch(lag = 3,
                             time.id = "year",
@@ -181,6 +233,15 @@ nn_match_10_3 <- PanelMatch(lag = 3,
                             lead = 0:4,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 3)
+
+nn_10_3_plot <- balance_scatter(nn_match_10_3,
+                                data = merged,
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                main = "",
+                                x.axis.label = "",
+                                y.axis.label = "")
+
+nn_10_3_plot <- recordPlot()
 
 # NN Matching - 10 Matches - 4 Lags
 nn_match_10_4 <- PanelMatch(lag = 4,
@@ -201,6 +262,15 @@ nn_match_10_4 <- PanelMatch(lag = 4,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 4)
 
+nn_10_4_plot <- balance_scatter(nn_match_10_4,
+                                data = merged,
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                main = "",
+                                x.axis.label = "",
+                                y.axis.label = "")
+
+nn_10_4_plot <- recordPlot()
+
 # IPW - 1 Lag
 ipw_1 <- PanelMatch(lag = 1,
                   time.id = "year",
@@ -217,6 +287,15 @@ ipw_1 <- PanelMatch(lag = 1,
                   outcome.var = "lgdppc",
                   lead = 0:4,
                   restrict.control.period = 1)
+
+ipw_1_plot <- balance_scatter(ipw_1,
+                                data = merged,
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                main = "",
+                                x.axis.label = "",
+                                y.axis.label = "Inverse Probability Weighting")
+
+ipw_1_plot <- recordPlot()
 
 # IPW - 2 Lags
 ipw_2 <- PanelMatch(lag = 2,
@@ -235,6 +314,15 @@ ipw_2 <- PanelMatch(lag = 2,
                   lead = 0:4,
                   restrict.control.period = 2)
 
+ipw_2_plot <- balance_scatter(ipw_2,
+                              data = merged,
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              main = "",
+                              x.axis.label = "",
+                              y.axis.label = "")
+
+ipw_2_plot <- recordPlot()
+
 # IPW - 3 Lags
 ipw_3 <- PanelMatch(lag = 3,
                   time.id = "year",
@@ -252,6 +340,15 @@ ipw_3 <- PanelMatch(lag = 3,
                   lead = 0:4,
                   restrict.control.period = 3)
 
+ipw_3_plot <- balance_scatter(ipw_3,
+                              data = merged,
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              main = "",
+                              x.axis.label = "",
+                              y.axis.label = "")
+
+ipw_3_plot <- recordPlot()
+
 # IPW - 4 Lags
 ipw_4 <- PanelMatch(lag = 4,
                   time.id = "year",
@@ -268,3 +365,22 @@ ipw_4 <- PanelMatch(lag = 4,
                   outcome.var = "lgdppc",
                   lead = 0:4,
                   restrict.control.period = 4)
+
+ipw_4_plot <- balance_scatter(ipw_4,
+                              data = merged,
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              main = "",
+                              x.axis.label = "",
+                              y.axis.label = "")
+
+ipw_4_plot <- recordPlot()
+
+# Create the Composite Covariate Balance Plot
+
+ggsave(
+  "covbal_plot.png",
+  width = 6,
+  height = 8,
+  path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/UN PKOs Project/Graphics"
+)
+
