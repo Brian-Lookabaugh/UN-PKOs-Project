@@ -1,6 +1,6 @@
-############################################################################
-###############------------PKO IPW/Matching Set Up-----------###############
-############################################################################
+#################################################################################
+###############---PKO Balance Assessment and Treatment Variation--###############
+#################################################################################
 
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
@@ -59,7 +59,8 @@ nn_match_5_1 <- PanelMatch(lag = 1,
                            I(lag(lpop, 1)) +
                            I(lag(lmilper, 1)) +
                            I(lag(ldeaths, 1)) +
-                           I(lag(wardur, 1)),
+                           I(lag(wardur, 1)), +
+                           I(lag(democracy, 1)),
                          qoi = "att",
                          outcome.var = "lgdppc",
                          lead = 0:4,
@@ -78,7 +79,8 @@ nn_match_5_2 <- PanelMatch(lag = 2,
                              I(lag(lpop, 1:2)) +
                              I(lag(lmilper, 1:2)) +
                              I(lag(ldeaths, 1:2)) +
-                             I(lag(wardur, 1:2)),
+                             I(lag(wardur, 1:2)) +
+                             I(lag(democracy, 1:2)),
                            qoi = "att",
                            outcome.var = "lgdppc",
                            lead = 0:4,
@@ -97,7 +99,8 @@ nn_match_5_3 <- PanelMatch(lag = 3,
                              I(lag(lpop, 1:3)) +
                              I(lag(lmilper, 1:3)) +
                              I(lag(ldeaths, 1:3)) +
-                             I(lag(wardur, 1:3)),
+                             I(lag(wardur, 1:3)) +
+                             I(lag(democracy, 1:3)),
                            qoi = "att",
                            outcome.var = "lgdppc",
                            lead = 0:4,
@@ -116,7 +119,8 @@ nn_match_5_4 <- PanelMatch(lag = 4,
                              I(lag(lpop, 1:4)) +
                              I(lag(lmilper, 1:4)) +
                              I(lag(ldeaths, 1:4)) +
-                             I(lag(wardur, 1:4)),
+                             I(lag(wardur, 1:4)) +
+                             I(lag(democacy, 1:4)),
                            qoi = "att",
                            outcome.var = "lgdppc",
                            lead = 0:4,
@@ -135,7 +139,8 @@ nn_match_10_1 <- PanelMatch(lag = 1,
                             I(lag(lpop, 1)) +
                             I(lag(lmilper, 1)) +
                             I(lag(ldeaths, 1)) +
-                            I(lag(wardur, 1)),
+                            I(lag(wardur, 1)) +
+                            I(lag(democracy, 1)),
                           qoi = "att",
                           outcome.var = "lgdppc",
                           lead = 0:4,
@@ -154,7 +159,8 @@ nn_match_10_2 <- PanelMatch(lag = 2,
                               I(lag(lpop, 1:2)) +
                               I(lag(lmilper, 1:2)) +
                               I(lag(ldeaths, 1:2)) +
-                              I(lag(wardur, 1:2)),
+                              I(lag(wardur, 1:2)) +
+                              I(lag(democracy, 1:2)),
                             qoi = "att",
                             outcome.var = "lgdppc",
                             lead = 0:4,
@@ -173,7 +179,8 @@ nn_match_10_3 <- PanelMatch(lag = 3,
                               I(lag(lpop, 1:3)) +
                               I(lag(lmilper, 1:3)) +
                               I(lag(ldeaths, 1:3)) +
-                              I(lag(wardur, 1:3)),
+                              I(lag(wardur, 1:3)) +
+                              I(lag(democracy, 1:3)),
                             qoi = "att",
                             outcome.var = "lgdppc",
                             lead = 0:4,
@@ -192,7 +199,8 @@ nn_match_10_4 <- PanelMatch(lag = 4,
                               I(lag(lpop, 1:4)) +
                               I(lag(lmilper, 1:4)) +
                               I(lag(ldeaths, 1:4)) +
-                              I(lag(wardur, 1:4)),
+                              I(lag(wardur, 1:4)) +
+                              I(lag(democracy, 1:4)),
                             qoi = "att",
                             outcome.var = "lgdppc",
                             lead = 0:4,
@@ -210,7 +218,8 @@ ipw_1 <- PanelMatch(lag = 1,
                     I(lag(lpop, 1)) +
                     I(lag(lmilper, 1)) +
                     I(lag(ldeaths, 1)) +
-                    I(lag(wardur, 1)),
+                    I(lag(wardur, 1)) +
+                    I(lag(democracy, 1)),
                   qoi = "att",
                   outcome.var = "lgdppc",
                   lead = 0:4,
@@ -227,7 +236,8 @@ ipw_2 <- PanelMatch(lag = 2,
                     I(lag(lpop, 1:2)) +
                     I(lag(lmilper, 1:2)) +
                     I(lag(ldeaths, 1:2)) +
-                    I(lag(wardur, 1:2)),
+                    I(lag(wardur, 1:2)) +
+                    I(lag(democracy, 1:2)),
                   qoi = "att",
                   outcome.var = "lgdppc",
                   lead = 0:4,
@@ -244,7 +254,8 @@ ipw_3 <- PanelMatch(lag = 3,
                     I(lag(lpop, 1:3)) +
                     I(lag(lmilper, 1:3)) +
                     I(lag(ldeaths, 1:3)) +
-                    I(lag(wardur, 1:3)),
+                    I(lag(wardur, 1:3)) +
+                    I(lag(democracy, 1:3)),
                   qoi = "att",
                   outcome.var = "lgdppc",
                   lead = 0:4,
@@ -261,7 +272,8 @@ ipw_4 <- PanelMatch(lag = 4,
                     I(lag(lpop, 1:4)) +
                     I(lag(lmilper, 1:4)) +
                     I(lag(ldeaths, 1:4)) +
-                    I(lag(wardur, 1:4)),
+                    I(lag(wardur, 1:4)) +
+                    I(lag(democracy, 1:4)),
                   qoi = "att",
                   outcome.var = "lgdppc",
                   lead = 0:4,
@@ -275,7 +287,8 @@ par(oma = c(5, 10, 1.5, 0),
 
 nn_5_1_plot <- balance_scatter(nn_match_5_1,
                                data = merged,
-                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                              "democracy"),
                                main = "",
                                x.axis.label = "",
                                y.axis.label = "")
@@ -284,7 +297,8 @@ nn_5_1_plot <- recordPlot()
 
 nn_5_2_plot <- balance_scatter(nn_match_5_2,
                                data = merged,
-                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                              "democracy"),
                                main = "",
                                x.axis.label = "",
                                y.axis.label = "")
@@ -293,7 +307,8 @@ nn_5_2_plot <- recordPlot()
 
 nn_5_3_plot <- balance_scatter(nn_match_5_3,
                                data = merged,
-                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                              "democracy"),
                                main = "",
                                x.axis.label = "",
                                y.axis.label = "")
@@ -302,7 +317,8 @@ nn_5_3_plot <- recordPlot()
 
 nn_5_4_plot <- balance_scatter(nn_match_5_4,
                                data = merged,
-                               covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                               covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                              "democracy"),
                                main = "",
                                x.axis.label = "",
                                y.axis.label = "")
@@ -311,7 +327,8 @@ nn_5_4_plot <- recordPlot()
 
 nn_10_1_plot <- balance_scatter(nn_match_10_1,
                                 data = merged,
-                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                               "democracy"),
                                 main = "",
                                 x.axis.label = "",
                                 y.axis.label = "")
@@ -320,7 +337,8 @@ nn_10_1_plot <- recordPlot()
 
 nn_10_2_plot <- balance_scatter(nn_match_10_2,
                                 data = merged,
-                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                               "democracy"),
                                 main = "",
                                 x.axis.label = "",
                                 y.axis.label = "")
@@ -329,7 +347,8 @@ nn_10_2_plot <- recordPlot()
 
 nn_10_3_plot <- balance_scatter(nn_match_10_3,
                                 data = merged,
-                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                               "democracy"),
                                 main = "",
                                 x.axis.label = "",
                                 y.axis.label = "")
@@ -338,7 +357,8 @@ nn_10_3_plot <- recordPlot()
 
 nn_10_4_plot <- balance_scatter(nn_match_10_4,
                                 data = merged,
-                                covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                                covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                               "democracy"),
                                 main = "",
                                 x.axis.label = "",
                                 y.axis.label = "")
@@ -347,7 +367,8 @@ nn_10_4_plot <- recordPlot()
 
 ipw_1_plot <- balance_scatter(ipw_1,
                               data = merged,
-                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                             "democracy"),
                               main = "",
                               x.axis.label = "",
                               y.axis.label = "")
@@ -356,7 +377,8 @@ ipw_1_plot <- recordPlot()
 
 ipw_2_plot <- balance_scatter(ipw_2,
                               data = merged,
-                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                             "democracy"),
                               main = "",
                               x.axis.label = "",
                               y.axis.label = "")
@@ -365,7 +387,8 @@ ipw_2_plot <- recordPlot()
 
 ipw_3_plot <- balance_scatter(ipw_3,
                               data = merged,
-                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                             "democracy"),
                               main = "",
                               x.axis.label = "",
                               y.axis.label = "")
@@ -374,7 +397,8 @@ ipw_3_plot <- recordPlot()
 
 ipw_4_plot <- balance_scatter(ipw_4,
                               data = merged,
-                              covariates = c("lpop", "lmilper", "ldeaths", "wardur"),
+                              covariates = c("lpop", "lmilper", "ldeaths", "wardur",
+                                             "democracy"),
                               main = "",
                               x.axis.label = "",
                               y.axis.label = "")

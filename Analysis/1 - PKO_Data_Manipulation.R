@@ -151,13 +151,14 @@ ucdp <- ucdp %>%
   mutate(lgdppc = log(e_gdppc + 1)) %>%
   mutate(lpop = log(e_pop)) %>%
   mutate(lmilper = log(milper + 1)) %>%
-  mutate(ldeaths = log(deaths + 1))
+  mutate(ldeaths = log(deaths + 1)) %>%
+  rename(democracy = v2x_polyarchy)
 
 # Remove Unnecessary Columns
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
             ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy, version, con_fail,
-            peace_fail, milper, v2x_polyarchy))
+            peace_fail, milper))
 
 # Remove Unnecessary Data Sets
 rm(cow, ged, geo_pko, milcap, vdem, ucdp)
