@@ -183,7 +183,7 @@ ucdp <- ucdp %>%
 # Remove Unnecessary Columns
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
-            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, v2x_polyarchy, version, con_fail,
+            ...6, e_pop, e_gdppc, e_wb_pop, e_mipopula, version, con_fail,
             peace_fail, milper))
 
 # Remove Unnecessary Data Sets

@@ -1,5 +1,5 @@
 #################################################################################
-###############---PKO Balance Assessment and Treatment Variation--###############
+###############------------------PKO Onset Setup------------------###############
 #################################################################################
 
 pacman::p_load(
@@ -51,7 +51,7 @@ merged <- merged %>%
 nn_match_5_1 <- PanelMatch(lag = 1,
                          time.id = "year",
                          unit.id = "ccode",
-                         treatment = "pko",
+                         treatment = "pko_onset",
                          refinement.method = "mahalanobis",
                          size.match = 5,
                          data = merged,
@@ -59,7 +59,7 @@ nn_match_5_1 <- PanelMatch(lag = 1,
                            I(lag(lpop, 1)) +
                            I(lag(lmilper, 1)) +
                            I(lag(ldeaths, 1)) +
-                           I(lag(wardur, 1)), +
+                           I(lag(wardur, 1)) +
                            I(lag(democracy, 1)),
                          qoi = "att",
                          outcome.var = "lgdppc",
@@ -71,7 +71,7 @@ nn_match_5_1 <- PanelMatch(lag = 1,
 nn_match_5_2 <- PanelMatch(lag = 2,
                            time.id = "year",
                            unit.id = "ccode",
-                           treatment = "pko",
+                           treatment = "pko_onset",
                            refinement.method = "mahalanobis",
                            size.match = 5,
                            data = merged,
@@ -91,7 +91,7 @@ nn_match_5_2 <- PanelMatch(lag = 2,
 nn_match_5_3 <- PanelMatch(lag = 3,
                            time.id = "year",
                            unit.id = "ccode",
-                           treatment = "pko",
+                           treatment = "pko_onset",
                            refinement.method = "mahalanobis",
                            size.match = 5,
                            data = merged,
@@ -111,7 +111,7 @@ nn_match_5_3 <- PanelMatch(lag = 3,
 nn_match_5_4 <- PanelMatch(lag = 4,
                            time.id = "year",
                            unit.id = "ccode",
-                           treatment = "pko",
+                           treatment = "pko_onset",
                            refinement.method = "mahalanobis",
                            size.match = 5,
                            data = merged,
@@ -120,7 +120,7 @@ nn_match_5_4 <- PanelMatch(lag = 4,
                              I(lag(lmilper, 1:4)) +
                              I(lag(ldeaths, 1:4)) +
                              I(lag(wardur, 1:4)) +
-                             I(lag(democacy, 1:4)),
+                             I(lag(democracy, 1:4)),
                            qoi = "att",
                            outcome.var = "lgdppc",
                            lead = 0:4,
@@ -131,7 +131,7 @@ nn_match_5_4 <- PanelMatch(lag = 4,
 nn_match_10_1 <- PanelMatch(lag = 1,
                           time.id = "year",
                           unit.id = "ccode",
-                          treatment = "pko",
+                          treatment = "pko_onset",
                           refinement.method = "mahalanobis",
                           size.match = 10,
                           data = merged,
@@ -151,7 +151,7 @@ nn_match_10_1 <- PanelMatch(lag = 1,
 nn_match_10_2 <- PanelMatch(lag = 2,
                             time.id = "year",
                             unit.id = "ccode",
-                            treatment = "pko",
+                            treatment = "pko_onset",
                             refinement.method = "mahalanobis",
                             size.match = 10,
                             data = merged,
@@ -171,7 +171,7 @@ nn_match_10_2 <- PanelMatch(lag = 2,
 nn_match_10_3 <- PanelMatch(lag = 3,
                             time.id = "year",
                             unit.id = "ccode",
-                            treatment = "pko",
+                            treatment = "pko_onset",
                             refinement.method = "mahalanobis",
                             size.match = 10,
                             data = merged,
@@ -191,7 +191,7 @@ nn_match_10_3 <- PanelMatch(lag = 3,
 nn_match_10_4 <- PanelMatch(lag = 4,
                             time.id = "year",
                             unit.id = "ccode",
-                            treatment = "pko",
+                            treatment = "pko_onset",
                             refinement.method = "mahalanobis",
                             size.match = 10,
                             data = merged,
@@ -211,7 +211,7 @@ nn_match_10_4 <- PanelMatch(lag = 4,
 ipw_1 <- PanelMatch(lag = 1,
                   time.id = "year",
                   unit.id = "ccode",
-                  treatment = "pko",
+                  treatment = "pko_onset",
                   refinement.method = "ps.weight",
                   data = merged,
                   covs.formula = ~
@@ -229,7 +229,7 @@ ipw_1 <- PanelMatch(lag = 1,
 ipw_2 <- PanelMatch(lag = 2,
                   time.id = "year",
                   unit.id = "ccode",
-                  treatment = "pko",
+                  treatment = "pko_onset",
                   refinement.method = "ps.weight",
                   data = merged,
                   covs.formula = ~
@@ -247,7 +247,7 @@ ipw_2 <- PanelMatch(lag = 2,
 ipw_3 <- PanelMatch(lag = 3,
                   time.id = "year",
                   unit.id = "ccode",
-                  treatment = "pko",
+                  treatment = "pko_onset",
                   refinement.method = "ps.weight",
                   data = merged,
                   covs.formula = ~
@@ -265,7 +265,7 @@ ipw_3 <- PanelMatch(lag = 3,
 ipw_4 <- PanelMatch(lag = 4,
                   time.id = "year",
                   unit.id = "ccode",
-                  treatment = "pko",
+                  treatment = "pko_onset",
                   refinement.method = "ps.weight",
                   data = merged,
                   covs.formula = ~
@@ -293,8 +293,6 @@ nn_5_1_plot <- balance_scatter(nn_match_5_1,
                                x.axis.label = "",
                                y.axis.label = "")
 
-nn_5_1_plot <- recordPlot()
-
 nn_5_2_plot <- balance_scatter(nn_match_5_2,
                                data = merged,
                                covariates = c("lpop", "lmilper", "ldeaths", "wardur",
@@ -302,8 +300,6 @@ nn_5_2_plot <- balance_scatter(nn_match_5_2,
                                main = "",
                                x.axis.label = "",
                                y.axis.label = "")
-
-nn_5_2_plot <- recordPlot()
 
 nn_5_3_plot <- balance_scatter(nn_match_5_3,
                                data = merged,
@@ -313,8 +309,6 @@ nn_5_3_plot <- balance_scatter(nn_match_5_3,
                                x.axis.label = "",
                                y.axis.label = "")
 
-nn_5_3_plot <- recordPlot()
-
 nn_5_4_plot <- balance_scatter(nn_match_5_4,
                                data = merged,
                                covariates = c("lpop", "lmilper", "ldeaths", "wardur",
@@ -322,8 +316,6 @@ nn_5_4_plot <- balance_scatter(nn_match_5_4,
                                main = "",
                                x.axis.label = "",
                                y.axis.label = "")
-
-nn_5_4_plot <- recordPlot()
 
 nn_10_1_plot <- balance_scatter(nn_match_10_1,
                                 data = merged,
@@ -333,8 +325,6 @@ nn_10_1_plot <- balance_scatter(nn_match_10_1,
                                 x.axis.label = "",
                                 y.axis.label = "")
 
-nn_10_1_plot <- recordPlot()
-
 nn_10_2_plot <- balance_scatter(nn_match_10_2,
                                 data = merged,
                                 covariates = c("lpop", "lmilper", "ldeaths", "wardur",
@@ -342,8 +332,6 @@ nn_10_2_plot <- balance_scatter(nn_match_10_2,
                                 main = "",
                                 x.axis.label = "",
                                 y.axis.label = "")
-
-nn_10_2_plot <- recordPlot()
 
 nn_10_3_plot <- balance_scatter(nn_match_10_3,
                                 data = merged,
@@ -353,8 +341,6 @@ nn_10_3_plot <- balance_scatter(nn_match_10_3,
                                 x.axis.label = "",
                                 y.axis.label = "")
 
-nn_10_3_plot <- recordPlot()
-
 nn_10_4_plot <- balance_scatter(nn_match_10_4,
                                 data = merged,
                                 covariates = c("lpop", "lmilper", "ldeaths", "wardur",
@@ -362,8 +348,6 @@ nn_10_4_plot <- balance_scatter(nn_match_10_4,
                                 main = "",
                                 x.axis.label = "",
                                 y.axis.label = "")
-
-nn_10_4_plot <- recordPlot()
 
 ipw_1_plot <- balance_scatter(ipw_1,
                               data = merged,
@@ -373,8 +357,6 @@ ipw_1_plot <- balance_scatter(ipw_1,
                               x.axis.label = "",
                               y.axis.label = "")
 
-ipw_1_plot <- recordPlot()
-
 ipw_2_plot <- balance_scatter(ipw_2,
                               data = merged,
                               covariates = c("lpop", "lmilper", "ldeaths", "wardur",
@@ -382,8 +364,6 @@ ipw_2_plot <- balance_scatter(ipw_2,
                               main = "",
                               x.axis.label = "",
                               y.axis.label = "")
-
-ipw_2_plot <- recordPlot()
 
 ipw_3_plot <- balance_scatter(ipw_3,
                               data = merged,
@@ -393,8 +373,6 @@ ipw_3_plot <- balance_scatter(ipw_3,
                               x.axis.label = "",
                               y.axis.label = "")
 
-ipw_3_plot <- recordPlot()
-
 ipw_4_plot <- balance_scatter(ipw_4,
                               data = merged,
                               covariates = c("lpop", "lmilper", "ldeaths", "wardur",
@@ -402,8 +380,6 @@ ipw_4_plot <- balance_scatter(ipw_4,
                               main = "",
                               x.axis.label = "",
                               y.axis.label = "")
-
-ipw_4_plot <- recordPlot()
 
 mtext(1,text = "Standardized Mean Difference \n Before Refinement",
       line = 3.5,
@@ -428,4 +404,11 @@ mtext("Three Year Lag",
 mtext("Four Year Lag",
       line = 0, at = .875, outer = TRUE, cex = .8)
 
-cb_plot <- recordPlot()
+cb_plot_onset <- recordPlot()
+
+# Remove Objects
+rm(ipw_1, ipw_1_plot, ipw_2, ipw_2_plot, ipw_3, ipw_3_plot, ipw_4, ipw_4_plot,
+   nn_match_5_1, nn_match_5_2, nn_match_5_3, nn_match_5_4,
+   nn_5_1_plot, nn_5_2_plot, nn_5_3_plot, nn_5_4_plot,
+   nn_match_10_1, nn_match_10_2, nn_match_10_3, nn_match_10_4,
+   nn_10_1_plot, nn_10_2_plot, nn_10_3_plot, nn_10_4_plot, cb_plot_onset)
