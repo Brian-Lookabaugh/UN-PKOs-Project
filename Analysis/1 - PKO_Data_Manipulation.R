@@ -154,21 +154,31 @@ ucdp <- ucdp %>%
   mutate(ldeaths = log(deaths + 1)) %>%
   rename(democracy = v2x_polyarchy)
 
-# Create a PKO Withdrawal Variable
+# Create a Post-PKO Variable
 ucdp <- ucdp %>%
   group_by(ccode) %>%
-  mutate(pko_wthd = if_else(
+  mutate(post_pko = if_else(
     lag(pko == 1) & pko == 0, 1, 0
   )) %>%
-  mutate(pko_wthd = na_if(pko_wthd, 0)) %>%
-  mutate(pko_wthd = LOCF(pko_wthd)) %>%
-  mutate(pko_wthd = if_else(
-    pko == 1, 0, pko_wthd
+  mutate(post_pko = na_if(post_pko, 0)) %>%
+  mutate(post_pko = LOCF(post_pko)) %>%
+  mutate(post_pko = if_else(
+    pko == 1, 0, post_pko
   )) %>%
-  mutate(pko_wthd = if_else(
-    is.na(pko_wthd), 0, pko_wthd
+  mutate(post_pko = if_else(
+    is.na(post_pko), 0, post_pko
   )) %>%
   ungroup()
+
+# Create PKO Event Variables
+ucdp <- ucdp %>%
+  mutate(pko_onset = if_else(
+    lag(pko == 0) & pko == 1, 1, 0
+  )) %>%
+  mutate(pko_term = if_else(
+    lag(pko == 1) & pko == 0, 1, 0
+  )) %>%
+  filter(ccode != 437) # Filter Ivory Coast Since It Has a PKO But No Onset/Termination
 
 # Remove Unnecessary Columns
 merged <- ucdp %>%
