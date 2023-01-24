@@ -862,7 +862,7 @@ nn_match_5_onset <- PanelMatch(lag = 4,
                                  I(lag(democracy, 1:4)),
                                qoi = "att",
                                outcome.var = "lgdppc",
-                               lead = 0:4,
+                               lead = 0:10,
                                use.diagonal.variance.matrix = TRUE,
                                restrict.control.period = 4)
 
@@ -881,7 +881,7 @@ nn_match_5_term <- PanelMatch(lag = 4,
                                 I(lag(democracy, 1:4)),
                               qoi = "att",
                               outcome.var = "lgdppc",
-                              lead = 0:4,
+                              lead = 0:10,
                               use.diagonal.variance.matrix = TRUE,
                               restrict.control.period = 4)
   
@@ -900,7 +900,7 @@ nn_match_10_onset <- PanelMatch(lag = 4,
                                   I(lag(democracy, 1:4)),
                                 qoi = "att",
                                 outcome.var = "lgdppc",
-                                lead = 0:4,
+                                lead = 0:10,
                                 use.diagonal.variance.matrix = TRUE,
                                 restrict.control.period = 4)
   
@@ -919,7 +919,7 @@ nn_match_10_term <- PanelMatch(lag = 4,
                                  I(lag(democracy, 1:4)),
                                qoi = "att",
                                outcome.var = "lgdppc",
-                               lead = 0:4,
+                               lead = 0:10,
                                use.diagonal.variance.matrix = TRUE,
                                restrict.control.period = 4)
   
@@ -937,7 +937,7 @@ ipw_onset <- PanelMatch(lag = 4,
                           I(lag(democracy, 1:4)),
                         qoi = "att",
                         outcome.var = "lgdppc",
-                        lead = 0:4,
+                        lead = 0:10,
                         restrict.control.period = 4)
   
 ipw_term <- PanelMatch(lag = 4,
@@ -954,7 +954,7 @@ ipw_term <- PanelMatch(lag = 4,
                          I(lag(democracy, 1:4)),
                        qoi = "att",
                        outcome.var = "lgdppc",
-                       lead = 0:4,
+                       lead = 0:10,
                        restrict.control.period = 4)
 
 # Begin Creating the Graphic
@@ -968,7 +968,7 @@ get_covariate_balance(nn_match_5_onset$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-2, 2),
                       ylab = "",
                       legend = FALSE)
 abline(v = 4, lty = "dotted")
@@ -977,7 +977,7 @@ get_covariate_balance(nn_match_10_onset$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-2, 2),
                       ylab = "",
                       legend = FALSE,
                       yaxt = "n")
@@ -987,7 +987,7 @@ get_covariate_balance(ipw_onset$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-2, 2),
                       ylab = "",
                       legend = FALSE,
                       yaxt = "n")
@@ -997,7 +997,7 @@ get_covariate_balance(nn_match_5_term$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-2, 2),
                       ylab = "",
                       legend = FALSE)
 abline(v = 4, lty = "dotted")
@@ -1006,7 +1006,7 @@ get_covariate_balance(nn_match_10_term$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-2, 2),
                       ylab = "",
                       legend = FALSE,
                       yaxt = "n")
@@ -1016,10 +1016,10 @@ get_covariate_balance(ipw_term$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
                       ylab = "",
-                      legend = FALSE,
-                      yaxt = "n")
+                      ylim = c(-2, 2),
+                      yaxt = "n",
+                      legend = FALSE)
 abline(v = 4, lty = "dotted")
 
 mtext(1,text = "Years Before Treatment",
@@ -1033,12 +1033,12 @@ mtext(2, text = "PKO Onset",
 mtext(2, text = "PKO Withdrawal",
       line = 1.5, at = .25, outer = TRUE,
       cex = .8)
-mtext("NN Matching - Up to 5",
-      line = -1.5, at = 0.175, outer = TRUE)
-mtext("NN Matching - Up to 10",
-      line = -1.5, at = 0.505, outer = TRUE)
-mtext("IPW",
-      line = -1.5, at = 0.825, outer = TRUE)
+mtext("NN Matching \n Up to 5",
+      line = -2, at = 0.17, outer = TRUE, cex = .8)
+mtext("NN Matching \n Up to 10",
+      line = -2, at = 0.5, outer = TRUE, cex = .8)
+mtext("IPW \n ",
+      line = -2, at = 0.83, outer = TRUE, cex = .8)
 
 trend_plot <- recordPlot()
 
