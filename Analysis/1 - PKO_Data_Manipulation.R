@@ -154,22 +154,6 @@ ucdp <- ucdp %>%
   mutate(ldeaths = log(deaths + 1)) %>%
   rename(democracy = v2x_polyarchy)
 
-# Create a Post-PKO Variable
-ucdp <- ucdp %>%
-  group_by(ccode) %>%
-  mutate(post_pko = if_else(
-    lag(pko == 1) & pko == 0, 1, 0
-  )) %>%
-  mutate(post_pko = na_if(post_pko, 0)) %>%
-  mutate(post_pko = LOCF(post_pko)) %>%
-  mutate(post_pko = if_else(
-    pko == 1, 0, post_pko
-  )) %>%
-  mutate(post_pko = if_else(
-    is.na(post_pko), 0, post_pko
-  )) %>%
-  ungroup()
-
 # Create PKO Event Variables
 ucdp <- ucdp %>%
   mutate(pko_onset = if_else(
