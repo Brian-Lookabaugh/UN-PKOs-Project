@@ -154,6 +154,22 @@ ucdp <- ucdp %>%
   mutate(ldeaths = log(deaths + 1)) %>%
   rename(democracy = v2x_polyarchy)
 
+# Create a PKO Withdrawal Variable
+ucdp <- ucdp %>%
+  group_by(ccode) %>%
+  mutate(pko_wthd = if_else(
+    lag(pko == 1) & pko == 0, 1, 0
+  )) %>%
+  mutate(pko_wthd = na_if(pko_wthd, 0)) %>%
+  mutate(pko_wthd = LOCF(pko_wthd)) %>%
+  mutate(pko_wthd = if_else(
+    pko == 1, 0, pko_wthd
+  )) %>%
+  mutate(pko_wthd = if_else(
+    is.na(pko_wthd), 0, pko_wthd
+  )) %>%
+  ungroup()
+
 # Remove Unnecessary Columns
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
