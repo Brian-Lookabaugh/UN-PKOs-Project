@@ -5,8 +5,6 @@
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
   "PanelMatch", # Matching/Weighting Set-Up With Panel Data
-  "grDevices", # Converting Base Graphics to ggplot-like Objects
-  "cowplot", # Combining Plots
   install = FALSE
 )
 
