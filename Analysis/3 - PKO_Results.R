@@ -4,7 +4,7 @@
 
 pacman::p_load(
   "tidyverse", # Data Manipulation and Visualization
-  "panelmatch", # Model Estimates From Matching/Weighting With Panel Data
+  "PanelMatch", # Model Estimates From Matching/Weighting With Panel Data
   install = FALSE
 )
 
@@ -123,9 +123,9 @@ mtext(2, text = "Estimated Effect of \n PKO Onset",
 mtext(2, text = "Estimated Effect of \n PKO Withdrawal",
       line = 2.5, at = .225, outer = TRUE,
       cex = .8)
-mtext("NN Matching \n Up to 5",
+mtext("NN Matching - Up to 5 \n",
       line = -2, at = 0.17, outer = TRUE, cex = .8)
-mtext("NN Matching \n Up to 10",
+mtext("NN Matching - Up to 10 \n",
       line = -2, at = 0.5, outer = TRUE, cex = .8)
 mtext("IPW \n ",
       line = -2, at = 0.83, outer = TRUE, cex = .8)
