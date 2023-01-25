@@ -282,6 +282,7 @@ ipw_4 <- PanelMatch(lag = 4,
                   restrict.control.period = 4)
 
 # Create the Composite Covariate Balance Plot
+plot.new()
 par(oma = c(5, 10, 1.5, 0),
     mar = c(0.8, .9, 1.5, 0.45),
     mfrow = c(3,4),
@@ -1027,9 +1028,9 @@ mtext(2, text = "PKO Onset",
 mtext(2, text = "PKO Withdrawal",
       line = 1.5, at = .25, outer = TRUE,
       cex = .8)
-mtext("NN Matching \n Up to 5",
+mtext("NN Matching - Up to 5 \n",
       line = -2, at = 0.17, outer = TRUE, cex = .8)
-mtext("NN Matching \n Up to 10",
+mtext("NN Matching - Up to 10 \n",
       line = -2, at = 0.5, outer = TRUE, cex = .8)
 mtext("IPW \n ",
       line = -2, at = 0.83, outer = TRUE, cex = .8)
