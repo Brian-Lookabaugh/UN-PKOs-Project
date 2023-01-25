@@ -447,8 +447,6 @@ mtext("Three Year Lag",
 mtext("Four Year Lag",
       line = 0, at = .875, outer = TRUE, cex = .8)
 
-cb_plot_onset <- recordPlot()
-
 dev.off()
 
 # Remove Objects
@@ -830,8 +828,6 @@ mtext("Three Year Lag",
 mtext("Four Year Lag",
       line = 0, at = .875, outer = TRUE, cex = .8)
 
-cb_plot_term <- recordPlot()
-
 dev.off()
 
 rm(ipw_1, ipw_1_plot, ipw_2, ipw_2_plot, ipw_3, ipw_3_plot, ipw_4, ipw_4_plot,
@@ -1037,7 +1033,5 @@ mtext("NN Matching \n Up to 10",
       line = -2, at = 0.5, outer = TRUE, cex = .8)
 mtext("IPW \n ",
       line = -2, at = 0.83, outer = TRUE, cex = .8)
-
-trend_plot <- recordPlot()
 
 dev.off()

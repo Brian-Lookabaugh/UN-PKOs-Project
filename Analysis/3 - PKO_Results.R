@@ -130,6 +130,4 @@ mtext("NN Matching \n Up to 10",
 mtext("IPW \n ",
       line = -2, at = 0.83, outer = TRUE, cex = .8)
 
-results <- recordPlot()
-
 dev.off()
