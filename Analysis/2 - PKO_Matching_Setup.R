@@ -17,7 +17,7 @@ merged <- merged %>%
 merged <- as.data.frame(merged)
 
 merged <- merged %>% # Drop Observations Pre-1989 and Post-2007 for Plot
-  filter(year >= 1989, year < 2008)
+  filter(year >= 1989, year < 2008) 
 
 tv_plot <- DisplayTreatment(
   unit.id = "stateabb",
@@ -693,7 +693,8 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n"
 )
 
 balance_scatter(
@@ -703,7 +704,9 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -713,7 +716,9 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -723,7 +728,9 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -733,7 +740,8 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n"
 )
 
 balance_scatter(
@@ -743,7 +751,9 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -753,7 +763,9 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -763,7 +775,9 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -783,7 +797,8 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -793,7 +808,8 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  yaxt = "n"
 )
 
 balance_scatter(
@@ -803,7 +819,8 @@ balance_scatter(
                  "democracy"),
   main = "",
   x.axis.label = "",
-  y.axis.label = ""
+  y.axis.label = "",
+  yaxt = "n"
 )
 
 mtext(1,text = "Standardized Mean Difference \n Before Refinement",
