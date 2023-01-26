@@ -117,7 +117,7 @@ abline(v = 1, lty = "dotted")
 mtext(1,text = "Years After Treatment",
       line = 3.5,
       at = 0.5, outer = TRUE, cex = 1)
-mtext(2, text = "Estimated Effect of \n PKO Onset",
+mtext(2, text = "Estimated Effect of \n PKO Deployment",
       line = 2.5, at = .725, outer = TRUE,
       cex = .8)
 mtext(2, text = "Estimated Effect of \n PKO Withdrawal",

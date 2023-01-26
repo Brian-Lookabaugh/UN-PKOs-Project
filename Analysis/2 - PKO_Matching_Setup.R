@@ -25,7 +25,7 @@ tv_plot <- DisplayTreatment(
   xlab = "Year",
   ylab = "Countries",
   y.size = 7,
-  title = "PKO Treatment Across Countries and Years",
+  title = "",
   legend.position = "bottom",
   legend.labels = c("No PKO", "PKO"),
   hide.x.tick.label = TRUE,
@@ -43,7 +43,7 @@ ggsave(
 )
 
 ################################################################################
-############# Create a Covariate Balance Scatter Plot (PKO Onset) ##############
+########## Create a Covariate Balance Scatter Plot (PKO Deployment) ############
 ################################################################################
 merged <- merged %>%
   mutate(ccode = as.integer(ccode)) %>%
@@ -1039,11 +1039,11 @@ mtext(1,text = "Years Before Treatment",
       at = 0.5, outer = TRUE, cex = 1)
 mtext(2, text = "Standardized Mean Difference",
       line = 4, outer = TRUE)
-mtext(2, text = "PKO Onset",
-      line = 1.5, at = .75, outer = TRUE,
+mtext(2, text = "PKO Deployment",
+      line = 1.5, at = .73, outer = TRUE,
       cex = .8)
 mtext(2, text = "PKO Withdrawal",
-      line = 1.5, at = .25, outer = TRUE,
+      line = 1.5, at = .23, outer = TRUE,
       cex = .8)
 mtext("NN Matching - Up to 5 \n",
       line = -2, at = 0.17, outer = TRUE, cex = .8)
