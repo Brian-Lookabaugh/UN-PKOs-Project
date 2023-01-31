@@ -83,15 +83,13 @@ abline(v = 1, lty = "dotted")
 plot(nn_10_onset_res,
      main = "",
      xlab = "",
-     ylab = "",
-     yaxt = "n")
+     ylab = "")
 abline(v = 1, lty = "dotted")
 
 plot(ipw_onset_res,
      main = "",
      xlab = "",
-     ylab = "",
-     yaxt = "n")
+     ylab = "")
 abline(v = 1, lty = "dotted")
 
 plot(nn_5_term_res,
@@ -103,15 +101,13 @@ abline(v = 1, lty = "dotted")
 plot(nn_10_term_res,
      main = "",
      xlab = "",
-     ylab = "",
-     yaxt = "n")
+     ylab = "")
 abline(v = 1, lty = "dotted")
 
 plot(ipw_term_res,
      main = "",
      xlab = "",
-     ylab = "",
-     yaxt = "n")
+     ylab = "")
 abline(v = 1, lty = "dotted")
 
 mtext(1,text = "Years After Treatment",
