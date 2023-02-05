@@ -65,7 +65,6 @@ nn_match_5_1 <- PanelMatch(lag = 1,
                            I(lag(democracy, 1)),
                          qoi = "att",
                          outcome.var = "lgdppc",
-                         lead = 0:8,
                          use.diagonal.variance.matrix = TRUE,
                          restrict.control.period = 1)
 
@@ -85,7 +84,6 @@ nn_match_5_2 <- PanelMatch(lag = 2,
                              I(lag(democracy, 1:2)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 2)
 
@@ -105,7 +103,6 @@ nn_match_5_3 <- PanelMatch(lag = 3,
                              I(lag(democracy, 1:3)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 3)
 
@@ -125,7 +122,6 @@ nn_match_5_4 <- PanelMatch(lag = 4,
                              I(lag(democracy, 1:4)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 4)
 
@@ -145,7 +141,6 @@ nn_match_10_1 <- PanelMatch(lag = 1,
                             I(lag(democracy, 1)),
                           qoi = "att",
                           outcome.var = "lgdppc",
-                          lead = 0:8,
                           use.diagonal.variance.matrix = TRUE,
                           restrict.control.period = 1)
 
@@ -165,7 +160,6 @@ nn_match_10_2 <- PanelMatch(lag = 2,
                               I(lag(democracy, 1:2)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 2)
 
@@ -185,7 +179,6 @@ nn_match_10_3 <- PanelMatch(lag = 3,
                               I(lag(democracy, 1:3)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 3)
 
@@ -205,7 +198,6 @@ nn_match_10_4 <- PanelMatch(lag = 4,
                               I(lag(democracy, 1:4)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 4)
 
@@ -224,7 +216,6 @@ ipw_1 <- PanelMatch(lag = 1,
                     I(lag(democracy, 1)),
                   qoi = "att",
                   outcome.var = "lgdppc",
-                  lead = 0:8,
                   restrict.control.period = 1)
 
 # IPW - 2 Lags
@@ -242,7 +233,6 @@ ipw_2 <- PanelMatch(lag = 2,
                     I(lag(democracy, 1:2)),
                   qoi = "att",
                   outcome.var = "lgdppc",
-                  lead = 0:8,
                   restrict.control.period = 2)
 
 # IPW - 3 Lags
@@ -260,7 +250,6 @@ ipw_3 <- PanelMatch(lag = 3,
                     I(lag(democracy, 1:3)),
                   qoi = "att",
                   outcome.var = "lgdppc",
-                  lead = 0:8,
                   restrict.control.period = 3)
 
 # IPW - 4 Lags
@@ -278,7 +267,6 @@ ipw_4 <- PanelMatch(lag = 4,
                     I(lag(democracy, 1:4)),
                   qoi = "att",
                   outcome.var = "lgdppc",
-                  lead = 0:8,
                   restrict.control.period = 4)
 
 # Create the Composite Covariate Balance Plot
@@ -475,7 +463,6 @@ nn_match_5_1 <- PanelMatch(lag = 1,
                              I(lag(democracy, 1)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 1)
 
@@ -494,7 +481,6 @@ nn_match_5_2 <- PanelMatch(lag = 2,
                              I(lag(democracy, 1:2)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 2)
 
@@ -513,7 +499,6 @@ nn_match_5_3 <- PanelMatch(lag = 3,
                              I(lag(democracy, 1:3)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 3)
 
@@ -532,7 +517,6 @@ nn_match_5_4 <- PanelMatch(lag = 4,
                              I(lag(democracy, 1:4)),
                            qoi = "att",
                            outcome.var = "lgdppc",
-                           lead = 0:8,
                            use.diagonal.variance.matrix = TRUE,
                            restrict.control.period = 4)
 
@@ -551,7 +535,6 @@ nn_match_10_1 <- PanelMatch(lag = 1,
                               I(lag(democracy, 1)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 1)
 
@@ -570,7 +553,6 @@ nn_match_10_2 <- PanelMatch(lag = 2,
                               I(lag(democracy, 1:2)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 2)
 
@@ -589,7 +571,6 @@ nn_match_10_3 <- PanelMatch(lag = 3,
                               I(lag(democracy, 1:3)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 3)
 
@@ -608,7 +589,6 @@ nn_match_10_4 <- PanelMatch(lag = 4,
                               I(lag(democracy, 1:4)),
                             qoi = "att",
                             outcome.var = "lgdppc",
-                            lead = 0:8,
                             use.diagonal.variance.matrix = TRUE,
                             restrict.control.period = 4)
 
@@ -626,7 +606,6 @@ ipw_1 <- PanelMatch(lag = 1,
                       I(lag(democracy, 1)),
                     qoi = "att",
                     outcome.var = "lgdppc",
-                    lead = 0:8,
                     restrict.control.period = 1)
 
 ipw_2 <- PanelMatch(lag = 2,
@@ -643,7 +622,6 @@ ipw_2 <- PanelMatch(lag = 2,
                       I(lag(democracy, 1:2)),
                     qoi = "att",
                     outcome.var = "lgdppc",
-                    lead = 0:8,
                     restrict.control.period = 2)
 
 ipw_3 <- PanelMatch(lag = 3,
@@ -660,7 +638,6 @@ ipw_3 <- PanelMatch(lag = 3,
                       I(lag(democracy, 1:3)),
                     qoi = "att",
                     outcome.var = "lgdppc",
-                    lead = 0:8,
                     restrict.control.period = 3)
 
 ipw_4 <- PanelMatch(lag = 4,
@@ -677,7 +654,6 @@ ipw_4 <- PanelMatch(lag = 4,
                       I(lag(democracy, 1:4)),
                     qoi = "att",
                     outcome.var = "lgdppc",
-                    lead = 0:8,
                     restrict.control.period = 4)
 
 plot.new()
