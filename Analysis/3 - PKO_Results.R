@@ -127,3 +127,31 @@ mtext("IPW \n ",
       line = -2, at = 0.83, outer = TRUE, cex = .8)
 
 dev.off()
+
+m1 <- lm(lgdppc ~ lmilper, data = merged)
+m2 <- lm(lgdppc ~ lmilper + lpop, data = merged)
+m3 <- lm(lgdppc ~ lmilper + lpop + ldeaths, data = merged)
+m4 <- lm(lgdppc ~ lmilper + lpop + ldeaths + wardur, data = merged)
+m5 <- lm(lgdppc ~ lmilper + lpop + ldeaths + wardur + pko, data = merged)
+
+models <- tribble(
+  ~model_name, ~model_results,
+  "M1", m1,
+  "M2", m2,
+  "M3", m3,
+  "M4", m4,
+  "M5", m5
+) %>%
+  mutate(tidied = map(model_results, ~tidy(., conf.int = TRUE)),
+         effect = map(tidied, ~filter(., term == "lmilper"))) %>%
+  unnest(effect) %>%
+  select(-model_results, -tidied) %>%
+  mutate(method = fct_inorder(model_name))
+
+ggplot(models, aes(x = estimate, y = fct_rev(model_name), color = model_name)) +
+  geom_vline(xintercept = 0.4, size = 1, linetype = "dashed", color = "black") +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high), size = 1) +
+  scale_color_viridis_d(option = "viridis", end = 0.9, guide = "none") +
+  labs(x = "", y = "") +
+  theme_light()
+
