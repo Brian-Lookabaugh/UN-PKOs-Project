@@ -1,0 +1,16 @@
+---
+title: "Do United Nations Peacekeeping Operations Lead to Economic Development?"
+abstract: 
+author: "Brian Lookabaugh"
+  format:
+    pdf:
+      template:
+      cite-method: biblatex
+      biblio-style: chicago-authordate
+fontsize: 12pt
+fontfamily: 
+bibliography: 
+double-spacing: true
+tbl-cap-location: top
+header-includes:
+---
