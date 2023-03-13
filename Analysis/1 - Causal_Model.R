@@ -11,22 +11,21 @@ pacman::p_load(
 
 # Introductory DAG
 node_info <- tribble(
-  ~name, ~ label, ~x, ~y, ~node_color,
-  "X", "X", 0.2, 0.5, "#008000",
-  "Y", "Y", 0.8, 0.5, "#0000FF",
-  "M", "M", 0.5, 0.5, "#808080",
-  "Z", "Z", 0.5, 0.8, "#FF0000",
-  "C", "C", 0.5, 0.2, "#808080",
-  "PX", "PX", 0.1, 0.6, "#008000",
-  "PY", "PY", 0.9, 0.6, "#0000FF"
+  ~name, ~ label, ~x, ~y,
+  "X", "X", 0.2, 0.5,
+  "Y", "Y", 0.8, 0.5,
+  "M", "M", 0.5, 0.5,
+  "Z", "Z", 0.5, 0.8,
+  "C", "C", 0.5, 0.2,
+  "PX", "PX", 0.1, 0.6,
+  "PY", "PY", 0.9, 0.6
 )
 
+## Creating a Node Labels Object
 node_labels <- node_info$label
 names(node_labels) <- node_info$name
 
-colors <- c(X = "#008000", Y = "#0000FF", M = "#808080", Z = "#FF0000",
-            C = "#808080", PX = "#008000", PY = "#0000FF")
-
+## Creating and Tidying the DAG Object
 intro_dag <- dagify(
   Y ~ M + Z + PY,
   X ~ Z + PX,
@@ -35,37 +34,30 @@ intro_dag <- dagify(
   exposure = "X",
   outcome = "Y",
   coords = node_info,
-  labels = node_labels)
+  labels = node_labels) %>%
+  tidy_dagitty()
 
-tidy_idag <- intro_dag %>%
-  tidy_dagitty() %>%
-  node_status()
+## Assigning Types to the Objects (Treatment, Outcome, etc.)
+intro_dag <- intro_dag %>%
+  mutate(
+    type = case_when(
+      name == "X" ~ 1,
+      name == "Y" ~ 2,
+      name == "Z" ~ 3,
+      name == "PY" ~ 4,
+      name %in% c("PX", "M", "C") ~ 5
+    )
+  )
 
-ggplot(tidy_idag, aes(x = x, y = y, xend = xend, yend = yend)) +
+## Creating the DAG Plot
+idag_plot <- ggplot(intro_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_edges() +
-  geom_dag_point(aes(color = colors)) +
-  geom_dag_label_repel(aes(label = label, fill = status), seed = 8373,
+  geom_dag_point(aes(color = as.factor(type))) +
+  geom_dag_label_repel(aes(label = label, fill = as.factor(type)), seed = 9002,
                        color = "white", fontface = "bold") +
-  scale_color_manual(values = node_colors, na.value = "grey20") +
-  scale_fill_manual(values = node_colors, na.value = "grey20") +
-  guides(color = FALSE, fill = FALSE) + 
-  theme_dag()
-
-idag_plot <- ggplot(
-  intro_dag,
-  aes(
-    x = x,
-    y = y,
-    xend = xend,
-    yend = yend
-  )) +
-  geom_dag_edges() +
-  geom_dag_text(
-    color = "black",
-    size = 6,
-    family = "serif"
-  ) +
-  guides(color = "none", fill = "none") +
+  scale_color_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d", "grey20")) +
+  scale_fill_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d", "grey20")) +
+  guides(color = "none", fill = "none") + 
   theme_dag()
 
 ggsave(
@@ -76,23 +68,22 @@ ggsave(
 )
 
 # PKO DAG
-pdag_coords <- list(
-  x = c(pko = 0, dev = 1, ci = 0.5, gmc = -1,
-        dem = 1, nrw = -1, eth = 0.5),
-  y = c(pko = 1.4, dev = 1.4, ci = 2.3, gmc = 2,
-        dem = 2, nrw = 0.75, eth = 0.5)
-)
-  
-pdag_labs <- list(
-  dev = "Development",
-  pko = "UN PKO",
-  ci = "Conflict Intensity",
-  gmc = "Gov. Military Capacity",
-  dem = "Democracy",
-  nrw = "Natural Resources",
-  eth = "Ethnic Contention"
+node_info2 <- tribble(
+  ~name, ~label, ~x, ~y,
+  "dev", "Development", 0.5, 1.4,
+  "pko", "UN PKO", 0, 1.4,
+  "ci", "Conflict Intensity", 0.5, 1,
+  "gmc", "Gov. Military Capacity", -0.5, 1.55,
+  "dem", "Democracy", 1, 1.5,
+  "nrw", "Natural Resources", -0.5, 1,
+  "eth", "Ethnic Contention", 0.25, 1.75
 )
 
+## Creating a Node Labels Object
+node_labels2 <- node_info2$label
+names(node_labels2) <- node_info2$name
+
+## Creating and Tidying the DAG Object
 pko_dag <- dagify(
   dev ~ pko + ci + gmc + dem + eth + nrw,
   pko ~ ci + gmc + eth + nrw,
@@ -102,39 +93,35 @@ pko_dag <- dagify(
   eth ~ nrw,
   exposure = "pko",
   outcome = "dev",
-  coords = pdag_coords,
-  labels = pdag_labs) %>%
+  coords = node_info2,
+  labels = node_labels2) %>%
   tidy_dagitty()
 
-pko_dag <- pko_dag %>% 
+## Assigning Types to the Objects (Treatment, Outcome, etc.)
+pko_dag <- pko_dag %>%
   mutate(
-    .text_color = case_when(
-      name == "pko" ~ "green",
-      name %in% c("dev", "dem") ~ "blue",
-      name %in% c("ci", "gmc", "eth", "nrw") ~ "red"
-    ) 
+    type = case_when(
+      name == "pko" ~ 1,
+      name == "dev" ~ 2,
+      name %in% c("ci", "gmc", "eth", "nrw") ~ 3,
+      name == "dem" ~ 4
+    )
   )
 
-pdag_plot <- ggplot(
-  pko_dag,
-  aes(
-    x = x,
-    y = y,
-    xend = xend,
-    yend = yend
-  )) +
+## Creating the DAG Plot
+pko_plot <- ggplot(pko_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_edges() +
-  geom_dag_text(
-    aes(label = label, color = .text_color),
-    size = 4,
-    family = "serif"
-  ) +
-  guides(color = "none", fill = "none") +
+  geom_dag_point(aes(color = as.factor(type))) +
+  geom_dag_label_repel(aes(label = label, fill = as.factor(type)),
+                           seed = 1, color = "white", fontface = "bold") +
+  scale_color_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
+  scale_fill_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
+  guides(color = "none", fill = "none") + 
   theme_dag()
 
 ggsave(
   "pko_dag.png",
-  width = 11,
-  height = 4,
+  width = 10,
+  height = 6,
   path = "C:/Users/brian/Desktop/Peacebuilding Dissertation/UN PKOs Project/Graphics"
 )
