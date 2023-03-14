@@ -28,7 +28,10 @@ ucdp <- left_join(cow, ucdp,
 
 # Make Coups Count As Non-Civil War Observations
 # Coup Information (Powell and Thyme 2011) Along With Confounders
-vdem <- readr::read_csv("Data/selected_vdem_v12.csv") 
+vdem <- readr::read_csv("Data/selected_vdem_v12.csv")
+
+vdem <- vdem %>%
+  rename(eth_con = v2xpe_exlsocgr)
 
 ucdp <- left_join(ucdp, vdem,
                   by = c("ccode" = "COWcode", "year"))
@@ -137,7 +140,7 @@ ucdp <- ucdp %>% # Replace NA Values for PKO With 0
   ))
 
 # Load and Clean Correlates of War (COW) Data for Military Capacity
-milcap <- readr::read_csv("Data/cow_nmc_v4.csv")
+milcap <- readr::read_csv("Data/nmc_cow_v6.csv")
 
 milcap <- milcap %>%
   filter(milper != -9) %>% # Remove NA Values

@@ -50,14 +50,24 @@ intro_dag <- intro_dag %>%
   )
 
 ## Creating the DAG Plot
-idag_plot <- ggplot(intro_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
+idag_plot <-
+  ggplot(intro_dag, aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
   geom_dag_edges() +
   geom_dag_point(aes(color = as.factor(type))) +
-  geom_dag_label_repel(aes(label = label, fill = as.factor(type)), seed = 9002,
-                       color = "white", fontface = "bold") +
+  geom_dag_label_repel(
+    aes(label = label, fill = as.factor(type)),
+    seed = 9002,
+    color = "white",
+    fontface = "bold"
+  ) +
   scale_color_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d", "grey20")) +
   scale_fill_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d", "grey20")) +
-  guides(color = "none", fill = "none") + 
+  guides(color = "none", fill = "none") +
   theme_dag()
 
 ggsave(
@@ -75,7 +85,6 @@ node_info2 <- tribble(
   "ci", "Conflict Intensity", 0.5, 1,
   "gmc", "Gov. Military Capacity", -0.5, 1.55,
   "dem", "Democracy", 1, 1.5,
-  "nrw", "Natural Resources", -0.5, 1,
   "eth", "Ethnic Contention", 0.25, 1.75
 )
 
@@ -85,12 +94,10 @@ names(node_labels2) <- node_info2$name
 
 ## Creating and Tidying the DAG Object
 pko_dag <- dagify(
-  dev ~ pko + ci + gmc + dem + eth + nrw,
-  pko ~ ci + gmc + eth + nrw,
-  ci ~ gmc + nrw + eth,
-  gmc ~ nrw,
-  dem ~ eth + nrw,
-  eth ~ nrw,
+  dev ~ pko + ci + gmc + dem + eth,
+  pko ~ ci + gmc + eth,
+  ci ~ gmc + eth,
+  dem ~ eth,
   exposure = "pko",
   outcome = "dev",
   coords = node_info2,
@@ -103,20 +110,30 @@ pko_dag <- pko_dag %>%
     type = case_when(
       name == "pko" ~ 1,
       name == "dev" ~ 2,
-      name %in% c("ci", "gmc", "eth", "nrw") ~ 3,
+      name %in% c("ci", "gmc", "eth") ~ 3,
       name == "dem" ~ 4
     )
   )
 
 ## Creating the DAG Plot
-pko_plot <- ggplot(pko_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
+pko_plot <-
+  ggplot(pko_dag, aes(
+    x = x,
+    y = y,
+    xend = xend,
+    yend = yend
+  )) +
   geom_dag_edges() +
   geom_dag_point(aes(color = as.factor(type))) +
-  geom_dag_label_repel(aes(label = label, fill = as.factor(type)),
-                           seed = 1, color = "white", fontface = "bold") +
+  geom_dag_label_repel(
+    aes(label = label, fill = as.factor(type)),
+    seed = 1234,
+    color = "white",
+    fontface = "bold"
+  ) +
   scale_color_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
   scale_fill_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
-  guides(color = "none", fill = "none") + 
+  guides(color = "none", fill = "none") +
   theme_dag()
 
 ggsave(
