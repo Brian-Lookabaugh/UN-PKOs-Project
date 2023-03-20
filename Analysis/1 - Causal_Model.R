@@ -80,12 +80,12 @@ ggsave(
 # PKO DAG
 node_info2 <- tribble(
   ~name, ~label, ~x, ~y,
-  "dev", "Development", 0.5, 1.4,
-  "pko", "UN PKO", 0, 1.4,
-  "ci", "Conflict Intensity", 0.5, 1,
-  "gmc", "Gov. Military Capacity", -0.5, 1.55,
-  "dem", "Democracy", 1, 1.5,
-  "eth", "Ethnic Contention", 0.25, 1.75
+  "dev", "Development", 0.7, 0.5,
+  "pko", "UN PKO", 0.3, 0.5,
+  "ci", "Conflict Intensity", 0.1,  0.7,
+  "gmc", "Gov. Military Capacity", 0.5, 0.4,
+  "dem", "Democracy", 0.9, 0.7,
+  "eth", "Ethnic Contention", 0.5, 0.8
 )
 
 ## Creating a Node Labels Object
@@ -130,7 +130,8 @@ pko_plot <-
     seed = 1234,
     color = "white",
     fontface = "bold",
-    box.padding = 2
+    box.padding = 2,
+    force = 2
   ) +
   scale_color_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
   scale_fill_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
