@@ -129,7 +129,8 @@ pko_plot <-
     aes(label = label, fill = as.factor(type)),
     seed = 1234,
     color = "white",
-    fontface = "bold"
+    fontface = "bold",
+    box.padding = 2
   ) +
   scale_color_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
   scale_fill_manual(values = c("#42be71", "#228b8d", "#471164", "#34608d")) +
