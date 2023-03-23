@@ -45,29 +45,237 @@ merged <- merged %>%
   mutate(ccode = as.integer(ccode)) %>%
   select(-c(stateabb)) # PanelMatch Will Not Run With Non-Numeric/Integer Data
 
+## NN Matching - 1 Match - 1 Lag
+nn.dep.1 <- PanelMatch(
+  lag = 1,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 1,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1)) +
+    I(lag(lmilper, 1)) +
+    I(lag(ldeaths, 1)) +
+    I(lag(democracy, 1)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 1
+)
+
+## NN Matching - 1 Match - 2 Lags
+nn.dep.2 <- PanelMatch(
+  lag = 2,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 1,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:2)) +
+    I(lag(lmilper, 1:2)) +
+    I(lag(ldeaths, 1:2)) +
+    I(lag(democracy, 1:2)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 2
+)
+
+## NN Matching - 1 Match - 3 Lags
+nn.dep.3 <- PanelMatch(
+  lag = 3,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 1,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:3)) +
+    I(lag(lmilper, 1:3)) +
+    I(lag(ldeaths, 1:3)) +
+    I(lag(democracy, 1:3)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 3
+)
+
+## NN Matching - 1 Match - 4 Lags
+nn.dep.4 <- PanelMatch(
+  lag = 4,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 1,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:4)) +
+    I(lag(lmilper, 1:4)) +
+    I(lag(ldeaths, 1:4)) +
+    I(lag(democracy, 1:4)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 4
+)
+
 ## NN Matching - 5 Matches - 1 Lag
+nn.dep.5.1 <- PanelMatch(
+  lag = 1,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 5,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1)) +
+    I(lag(lmilper, 1)) +
+    I(lag(ldeaths, 1)) +
+    I(lag(democracy, 1)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 1
+)
 
 ## NN Matching - 5 Matches - 2 Lags
+nn.dep.5.2 <- PanelMatch(
+  lag = 2,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 5,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:2)) +
+    I(lag(lmilper, 1:2)) +
+    I(lag(ldeaths, 1:2)) +
+    I(lag(democracy, 1:2)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 2
+)
 
 ## NN Matching - 5 Matches - 3 Lags
+nn.dep.5.3 <- PanelMatch(
+  lag = 3,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 5,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:3)) +
+    I(lag(lmilper, 1:3)) +
+    I(lag(ldeaths, 1:3)) +
+    I(lag(democracy, 1:3)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 3
+)
 
 ## NN Matching - 5 Matches - 4 Lags
-
-## NN Matching - 10 Matches - 1 Lag
-
-## NN Matching - 10 Matches - 2 Lags
-
-## NN Matching - 10 Matches - 3 Lags
-
-## NN Matching - 10 Matches - 4 Lags
+nn.dep.5.4 <- PanelMatch(
+  lag = 4,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "mahalanobis",
+  size.match = 5,
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:4)) +
+    I(lag(lmilper, 1:4)) +
+    I(lag(ldeaths, 1:4)) +
+    I(lag(democracy, 1:4)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  use.diagonal.variance.matrix = TRUE,
+  restrict.control.period = 4
+)
 
 ## IPW - 1 Lag
+ipw.dep.1 <- PanelMatch(
+  lag = 1,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1)) +
+    I(lag(lmilper, 1)) +
+    I(lag(ldeaths, 1)) +
+    I(lag(democracy, 1)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  restrict.control.period = 1
+)
 
 ## IPW - 2 Lags
+ipw.dep.2 <- PanelMatch(
+  lag = 2,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:2)) +
+    I(lag(lmilper, 1:2)) +
+    I(lag(ldeaths, 1:2)) +
+    I(lag(democracy, 1:2)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  restrict.control.period = 2
+)
 
 ## IPW - 3 Lags
+ipw.dep.3 <- PanelMatch(
+  lag = 3,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:3)) +
+    I(lag(lmilper, 1:3)) +
+    I(lag(ldeaths, 1:3)) +
+    I(lag(democracy, 1:3)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  restrict.control.period = 3
+)
 
 ## IPW - 4 Lags
+ipw.dep.4 <- PanelMatch(
+  lag = 4,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:4)) +
+    I(lag(lmilper, 1:4)) +
+    I(lag(ldeaths, 1:4)) +
+    I(lag(democracy, 1:4)),
+  qoi = "att",
+  outcome.var = "lgdppc",
+  restrict.control.period = 4
+)
 
 # Do the Same While Estimating the ART
 
