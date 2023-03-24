@@ -157,16 +157,6 @@ ucdp <- ucdp %>%
   mutate(ldeaths = log(deaths + 1)) %>%
   rename(democracy = v2x_polyarchy)
 
-# Create PKO Event Variables
-ucdp <- ucdp %>%
-  mutate(pko_onset = if_else(
-    lag(pko == 0) & pko == 1, 1, 0
-  )) %>%
-  mutate(pko_term = if_else(
-    lag(pko == 1) & pko == 0, 1, 0
-  )) %>%
-  filter(ccode != 437) # Filter Ivory Coast Since It Has a PKO But No Onset/Termination
-
 # Remove Unnecessary Columns
 merged <- ucdp %>%
   select(-c(e_total_fuel_income_pc, e_total_oil_income_pc, e_total_resources_income_pc,
