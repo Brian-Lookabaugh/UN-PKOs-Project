@@ -25,7 +25,7 @@ tv_plot <- DisplayTreatment(
   y.size = 7,
   title = "",
   legend.position = "bottom",
-  legend.labels = c("No PKO", "PKO"),
+  legend.labels = c("No PKO", "PKO (Troops > 0)"),
   hide.x.tick.label = TRUE,
   treatment = "pko",
   data = merged
@@ -512,6 +512,150 @@ ipw.wth.4 <- PanelMatch(
 )
 
 # Examine the Coverage of Each With TV Plots
+tv.nn.dep.1 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.1$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.2 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.2$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.3 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.3$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.4 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.4$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.5.1 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.5.1$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.5.2 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.5.2$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.5.3 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.5.3$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.dep.5.4 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.dep.5.4$att,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.1 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.1$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.2 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.2$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.3 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.3$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.4 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.4$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.5.1 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.5.1$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.5.2 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.5.2$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.5.3 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.5.3$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
+tv.nn.wth.5.4 <-
+  DisplayTreatment(
+    data = merged,
+    matched.set = nn.wth.5.4$art,
+    unit.id = "ccode",
+    time.id = "year",
+    treatment = "pko",
+    show.set.only = TRUE
+  )
 
 # Create Covariate Balance Plots
 
