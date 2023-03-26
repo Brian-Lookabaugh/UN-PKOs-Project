@@ -60,6 +60,7 @@ nn.dep.1 <- PanelMatch(
     I(lag(ldeaths, 1)) +
     I(lag(democracy, 1)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 1
@@ -80,6 +81,7 @@ nn.dep.2 <- PanelMatch(
     I(lag(ldeaths, 1:2)) +
     I(lag(democracy, 1:2)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 2
@@ -100,6 +102,7 @@ nn.dep.3 <- PanelMatch(
     I(lag(ldeaths, 1:3)) +
     I(lag(democracy, 1:3)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 3
@@ -120,6 +123,7 @@ nn.dep.4 <- PanelMatch(
     I(lag(ldeaths, 1:4)) +
     I(lag(democracy, 1:4)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 4
@@ -140,6 +144,7 @@ nn.dep.5.1 <- PanelMatch(
     I(lag(ldeaths, 1)) +
     I(lag(democracy, 1)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 1
@@ -160,6 +165,7 @@ nn.dep.5.2 <- PanelMatch(
     I(lag(ldeaths, 1:2)) +
     I(lag(democracy, 1:2)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 2
@@ -180,6 +186,7 @@ nn.dep.5.3 <- PanelMatch(
     I(lag(ldeaths, 1:3)) +
     I(lag(democracy, 1:3)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 3
@@ -200,6 +207,7 @@ nn.dep.5.4 <- PanelMatch(
     I(lag(ldeaths, 1:4)) +
     I(lag(democracy, 1:4)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 4
@@ -219,6 +227,7 @@ ipw.dep.1 <- PanelMatch(
     I(lag(ldeaths, 1)) +
     I(lag(democracy, 1)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   restrict.control.period = 1
 )
@@ -237,6 +246,7 @@ ipw.dep.2 <- PanelMatch(
     I(lag(ldeaths, 1:2)) +
     I(lag(democracy, 1:2)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   restrict.control.period = 2
 )
@@ -255,6 +265,7 @@ ipw.dep.3 <- PanelMatch(
     I(lag(ldeaths, 1:3)) +
     I(lag(democracy, 1:3)),
   qoi = "att",
+  lead = 0:3,
   outcome.var = "lgdppc",
   restrict.control.period = 3
 )
@@ -293,6 +304,7 @@ nn.wth.1 <- PanelMatch(
     I(lag(ldeaths, 1)) +
     I(lag(democracy, 1)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 1
@@ -313,6 +325,7 @@ nn.wth.2 <- PanelMatch(
     I(lag(ldeaths, 1:2)) +
     I(lag(democracy, 1:2)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 2
@@ -333,6 +346,7 @@ nn.wth.3 <- PanelMatch(
     I(lag(ldeaths, 1:3)) +
     I(lag(democracy, 1:3)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 3
@@ -354,6 +368,7 @@ nn.wth.4 <- PanelMatch(
     I(lag(ldeaths, 1:4)) +
     I(lag(democracy, 1:4)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 4
@@ -374,6 +389,7 @@ nn.wth.5.1 <- PanelMatch(
     I(lag(ldeaths, 1)) +
     I(lag(democracy, 1)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 1
@@ -394,6 +410,7 @@ nn.wth.5.2 <- PanelMatch(
     I(lag(ldeaths, 1:2)) +
     I(lag(democracy, 1:2)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 2
@@ -414,6 +431,7 @@ nn.wth.5.3 <- PanelMatch(
     I(lag(ldeaths, 1:3)) +
     I(lag(democracy, 1:3)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 3
@@ -434,6 +452,7 @@ nn.wth.5.4 <- PanelMatch(
     I(lag(ldeaths, 1:4)) +
     I(lag(democracy, 1:4)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   use.diagonal.variance.matrix = TRUE,
   restrict.control.period = 4
@@ -453,6 +472,7 @@ ipw.wth.1 <- PanelMatch(
     I(lag(ldeaths, 1)) +
     I(lag(democracy, 1)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   restrict.control.period = 1
 )
@@ -471,6 +491,7 @@ ipw.wth.2 <- PanelMatch(
     I(lag(ldeaths, 1:2)) +
     I(lag(democracy, 1:2)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   restrict.control.period = 2
 )
@@ -489,6 +510,7 @@ ipw.wth.3 <- PanelMatch(
     I(lag(ldeaths, 1:3)) +
     I(lag(democracy, 1:3)),
   qoi = "art",
+  lead = 0:3,
   outcome.var = "lgdppc",
   restrict.control.period = 3
 )
@@ -658,5 +680,223 @@ tv.nn.wth.5.4 <-
   )
 
 # Create Covariate Balance Plots
+plot.new()
+par(oma = c(5, 10, 1.5, 0),
+    mar = c(0.8, .9, 1.5, 0.45),
+    mfrow = c(3,3),
+    pty = "s")
+
+balance_scatter(
+  nn.dep.1,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  xaxt = "n"
+)
+
+balance_scatter(
+  nn.dep.2,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
+)
+
+balance_scatter(
+  nn.dep.3,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
+)
+
+balance_scatter(
+  nn.dep.5.1,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  xaxt = "n"
+)
+
+balance_scatter(
+  nn.dep.5.2,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
+)
+
+balance_scatter(
+  nn.dep.5.3,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  xaxt = "n",
+  yaxt = "n"
+)
+
+balance_scatter(
+  ipw.dep.1,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = ""
+)
+
+balance_scatter(
+  ipw.dep.2,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  yaxt = "n"
+)
+
+balance_scatter(
+  ipw.dep.3,
+  xlim = c(0, 2.5),
+  ylim = c(0, 2.5),
+  data = merged,
+  covariates = c("lmilper", "ldeaths", "eth_con", "democracy"),
+  main = "",
+  x.axis.label = "",
+  y.axis.label = "",
+  yaxt = "n"
+)
+
+mtext(1,text = "Standardized Mean Difference \n Before Refinement",
+      line = 3.5,
+      at = 0.52, outer = TRUE, cex = 1)
+mtext(2, text = "Standardized Mean Difference \n After Refinement",
+      line = 4, outer = TRUE)
+mtext(2, text = "NN Matching \n 1 Match",
+      line = 1.15, at = .82, outer = TRUE,
+      cex = .8)
+mtext(2, text = "NN Matching \n Up to 5 Matches",
+      line = 1.15, at = .5, outer = TRUE,
+      cex = .8)
+mtext(2, text = "IPW",
+      line = 1.15, at = .16, outer = TRUE,
+      cex = .8)
+mtext("One Year Lag",
+      line = 0, at = 0.17, outer = TRUE, cex = .8)
+mtext("Two Year Lag",
+      line = 0, at = 0.5, outer = TRUE, cex = .8)
+mtext("Three Year Lag",
+      line = 0, at = 0.83, outer = TRUE, cex = .8)
+
+dev.off()
 
 # Covariate Trend Plot
+plot.new()
+par(oma = c(5, 10, 1.5, 0),
+    mar = c(0.8, .9, 1.5, 0.45),
+    mfrow = c(2,3),
+    pty = "s")
+
+get_covariate_balance(nn.dep.3$att,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-1, 1),
+                      ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+get_covariate_balance(nn.dep.5.3$att,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-1, 1),
+                      ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+get_covariate_balance(ipw.dep.3$att,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-1, 1),
+                      ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+get_covariate_balance(nn.wth.3$art,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-1, 1),
+                      ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+get_covariate_balance(nn.wth.5.3$art,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-1, 1),
+                      ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+get_covariate_balance(ipw.wth.3$art,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-1, 1),
+                      ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+mtext(1,text = "Years Before Treatment",
+      line = 3.5,
+      at = 0.5, outer = TRUE, cex = 1)
+mtext(2, text = "Standardized Mean Difference",
+      line = 4, outer = TRUE)
+mtext(2, text = "PKO Deployment",
+      line = 1.5, at = .73, outer = TRUE,
+      cex = .8)
+mtext(2, text = "PKO Withdrawal",
+      line = 1.5, at = .23, outer = TRUE,
+      cex = .8)
+mtext("NN Matching - 1 Match \n",
+      line = -2, at = 0.17, outer = TRUE, cex = .8)
+mtext("NN Matching - Up to 5 \n",
+      line = -2, at = 0.5, outer = TRUE, cex = .8)
+mtext("IPW \n ",
+      line = -2, at = 0.83, outer = TRUE, cex = .8)
+
+dev.off()
