@@ -3,7 +3,6 @@
 ############################################################################
 
 pacman::p_load(
-  "tidyverse", # Data Manipulation and Visualization
   "PanelMatch", # Matching/Weighting Set-Up With Panel Data
   install = FALSE
 )
