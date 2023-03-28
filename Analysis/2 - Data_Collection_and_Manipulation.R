@@ -116,6 +116,7 @@ geo_pko <- geo_pko %>%
   mutate(pko = if_else(mission == "MINURSO", 0, pko)) %>%
   mutate(pko = if_else(mission == "UNIFIL" & year < 2006, 0, pko)) %>%
   mutate(pko = if_else(mission == "UNMOGIP", 0, pko)) %>%
+  mutate(pko = if_else(mission == "UNMEE", 0, pko)) %>%
   mutate(pko = if_else(no.troops == 0, 0, pko)) %>%
   group_by(cow_code, year) %>%
   summarise(pko = max(pko)) %>%
