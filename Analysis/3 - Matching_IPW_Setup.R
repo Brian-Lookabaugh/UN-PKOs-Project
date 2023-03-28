@@ -25,7 +25,7 @@ tv_plot <- DisplayTreatment(
   y.size = 7,
   title = "",
   legend.position = "bottom",
-  legend.labels = c("No PKO", "PKO (Troops > 0)"),
+  legend.labels = c("No PKO", "PKO"),
   hide.x.tick.label = TRUE,
   treatment = "pko",
   data = merged
@@ -679,6 +679,115 @@ tv.nn.wth.5.4 <-
     show.set.only = TRUE
   )
 
+## Create Matched Sets With Unrestricted PKO Measure After Finding Correct Lag Criteria
+alt.dep.ipw.1 <- PanelMatch(
+  lag = 1,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko2",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1)) +
+    I(lag(lmilper, 1)) +
+    I(lag(ldeaths, 1)) +
+    I(lag(democracy, 1)),
+  qoi = "att",
+  lead = 0:3,
+  outcome.var = "lgdppc",
+  restrict.control.period = 1
+)
+
+alt.dep.ipw.2 <- PanelMatch(
+  lag = 2,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko2",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:2)) +
+    I(lag(lmilper, 1:2)) +
+    I(lag(ldeaths, 1:2)) +
+    I(lag(democracy, 1:2)),
+  qoi = "att",
+  lead = 0:3,
+  outcome.var = "lgdppc",
+  restrict.control.period = 2
+)
+
+alt.dep.ipw.3 <- PanelMatch(
+  lag = 3,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko2",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:3)) +
+    I(lag(lmilper, 1:3)) +
+    I(lag(ldeaths, 1:3)) +
+    I(lag(democracy, 1:3)),
+  qoi = "att",
+  lead = 0:3,
+  outcome.var = "lgdppc",
+  restrict.control.period = 3
+)
+
+alt.wth.ipw.1 <- PanelMatch(
+  lag = 1,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko2",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1)) +
+    I(lag(lmilper, 1)) +
+    I(lag(ldeaths, 1)) +
+    I(lag(democracy, 1)),
+  qoi = "art",
+  lead = 0:3,
+  outcome.var = "lgdppc",
+  restrict.control.period = 1
+)
+
+alt.wth.ipw.2 <- PanelMatch(
+  lag = 2,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko2",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:2)) +
+    I(lag(lmilper, 1:2)) +
+    I(lag(ldeaths, 1:2)) +
+    I(lag(democracy, 1:2)),
+  qoi = "art",
+  lead = 0:3,
+  outcome.var = "lgdppc",
+  restrict.control.period = 2
+)
+
+alt.wth.ipw.3 <- PanelMatch(
+  lag = 3,
+  time.id = "year",
+  unit.id = "ccode",
+  treatment = "pko2",
+  refinement.method = "ps.weight",
+  data = merged,
+  covs.formula = ~
+    I(lag(eth_con, 1:3)) +
+    I(lag(lmilper, 1:3)) +
+    I(lag(ldeaths, 1:3)) +
+    I(lag(democracy, 1:3)),
+  qoi = "art",
+  lead = 0:3,
+  outcome.var = "lgdppc",
+  restrict.control.period = 3
+)
+
 # Create Covariate Balance Plots
 plot.new()
 par(oma = c(5, 10, 1.5, 0),
@@ -824,51 +933,26 @@ dev.off()
 plot.new()
 par(oma = c(5, 10, 1.5, 0),
     mar = c(0.8, .9, 1.5, 0.45),
-    mfrow = c(2,3),
+    mfrow = c(2,2),
     pty = "s")
-
-get_covariate_balance(nn.dep.3$att,
-                      data = merged,
-                      covariates = c("lgdppc"),
-                      plot = TRUE,
-                      ylim = c(-1, 1),
-                      ylab = "",
-                      legend = FALSE)
-abline(v = 3, lty = "dotted")
-
-get_covariate_balance(nn.dep.5.3$att,
-                      data = merged,
-                      covariates = c("lgdppc"),
-                      plot = TRUE,
-                      ylim = c(-1, 1),
-                      ylab = "",
-                      legend = FALSE)
-abline(v = 3, lty = "dotted")
 
 get_covariate_balance(ipw.dep.3$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-0.5, 0.5),
                       ylab = "",
+                      xaxt = "n",
                       legend = FALSE)
 abline(v = 3, lty = "dotted")
 
-get_covariate_balance(nn.wth.3$art,
+get_covariate_balance(alt.dep.ipw.3$att,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-0.5, 0.5),
                       ylab = "",
-                      legend = FALSE)
-abline(v = 3, lty = "dotted")
-
-get_covariate_balance(nn.wth.5.3$art,
-                      data = merged,
-                      covariates = c("lgdppc"),
-                      plot = TRUE,
-                      ylim = c(-1, 1),
-                      ylab = "",
+                      yaxt = "n",
                       legend = FALSE)
 abline(v = 3, lty = "dotted")
 
@@ -876,8 +960,18 @@ get_covariate_balance(ipw.wth.3$art,
                       data = merged,
                       covariates = c("lgdppc"),
                       plot = TRUE,
-                      ylim = c(-1, 1),
+                      ylim = c(-0.5, 0.5),
                       ylab = "",
+                      legend = FALSE)
+abline(v = 3, lty = "dotted")
+
+get_covariate_balance(alt.wth.ipw.3$art,
+                      data = merged,
+                      covariates = c("lgdppc"),
+                      plot = TRUE,
+                      ylim = c(-0.5, 0.5),
+                      ylab = "",
+                      yaxt = "n",
                       legend = FALSE)
 abline(v = 3, lty = "dotted")
 
@@ -892,11 +986,9 @@ mtext(2, text = "PKO Deployment",
 mtext(2, text = "PKO Withdrawal",
       line = 1.5, at = .23, outer = TRUE,
       cex = .8)
-mtext("NN Matching - 1 Match \n",
-      line = -2, at = 0.17, outer = TRUE, cex = .8)
-mtext("NN Matching - Up to 5 \n",
-      line = -2, at = 0.5, outer = TRUE, cex = .8)
-mtext("IPW \n ",
-      line = -2, at = 0.83, outer = TRUE, cex = .8)
+mtext("Restricted PKO \n Measure",
+      line = -1, at = 0.25, outer = TRUE, cex = .8)
+mtext("Unrestricted PKO \n Measure",
+      line = -1, at = 0.75, outer = TRUE, cex = .8)
 
 dev.off()

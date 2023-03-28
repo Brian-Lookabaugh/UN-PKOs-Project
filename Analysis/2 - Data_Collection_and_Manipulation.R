@@ -108,25 +108,34 @@ ucdp <- ucdp %>% # Replace NA Values With 0
 # Merge the Geo-PKO Data
 geo_pko <- readr::read_csv("Data/geo_pko_v.2.0.csv")
 
-geo_pko <- geo_pko %>%
+## Create PKO Dataset Omitting Interstate and No Troop Cases
+geo_pko2 <- geo_pko %>%
   mutate(pko = 1) %>%
-  # Re-code Interstate PKOs as 0
   mutate(pko = if_else(mission == "UNDOF", 0, pko)) %>%
   mutate(pko = if_else(mission == "UNTSO", 0, pko)) %>%
   mutate(pko = if_else(mission == "MINURSO", 0, pko)) %>%
   mutate(pko = if_else(mission == "UNIFIL" & year < 2006, 0, pko)) %>%
   mutate(pko = if_else(mission == "UNMOGIP", 0, pko)) %>%
   mutate(pko = if_else(mission == "UNMEE", 0, pko)) %>%
-  mutate(pko = if_else(no.troops == 0, 0, pko)) %>%
   group_by(cow_code, year) %>%
   summarise(pko = max(pko)) %>%
   ungroup()
 
-ucdp <- left_join(ucdp, geo_pko,
+geo_pko3 <- geo_pko %>%
+  mutate(pko2 = 1) %>%
+  group_by(cow_code, year) %>%
+  summarise(pko2 = max(pko2)) %>%
+  ungroup()
+
+ucdp <- left_join(ucdp, geo_pko2,
+                  by = c("ccode" = "cow_code", "year"))
+
+ucdp <- left_join(ucdp, geo_pko3,
                   by = c("ccode" = "cow_code", "year"))
 
 ucdp <- ucdp %>% # Replace NA Values for PKO With 0
-  mutate(pko = if_else(is.na(pko), 0, pko))
+  mutate(pko = if_else(is.na(pko), 0, pko)) %>%
+  mutate(pko2 = if_else(is.na(pko2), 0, pko2))
 
 # Load and Clean Correlates of War (COW) Data for Military Capacity
 milcap <- readr::read_csv("Data/nmc_cow_v6.csv")
