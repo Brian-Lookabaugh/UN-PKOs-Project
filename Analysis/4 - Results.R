@@ -8,7 +8,7 @@ pko.dep.1 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 alt.pko.dep.1 <- PanelEstimate(
@@ -16,7 +16,7 @@ alt.pko.dep.1 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 pko.dep.2 <- PanelEstimate(
@@ -24,7 +24,7 @@ pko.dep.2 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 alt.pko.dep.2 <- PanelEstimate(
@@ -32,7 +32,7 @@ alt.pko.dep.2 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 pko.dep.3 <- PanelEstimate(
@@ -40,7 +40,7 @@ pko.dep.3 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 alt.pko.dep.3 <- PanelEstimate(
@@ -48,7 +48,7 @@ alt.pko.dep.3 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 pko.wth.1 <- PanelEstimate(
@@ -56,7 +56,7 @@ pko.wth.1 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 alt.pko.wth.1 <- PanelEstimate(
@@ -64,7 +64,7 @@ alt.pko.wth.1 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 pko.wth.2 <- PanelEstimate(
@@ -72,7 +72,7 @@ pko.wth.2 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 alt.pko.wth.2 <- PanelEstimate(
@@ -80,7 +80,7 @@ alt.pko.wth.2 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 pko.wth.3 <- PanelEstimate(
@@ -88,7 +88,7 @@ pko.wth.3 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 alt.pko.wth.3 <- PanelEstimate(
@@ -96,7 +96,7 @@ alt.pko.wth.3 <- PanelEstimate(
   data = merged,
   se.method = "conditional",
   number.iterations = 500,
-  confidence.level = .95
+  confidence.level = .90
 )
 
 # Visualize Panel Data IPW Models
