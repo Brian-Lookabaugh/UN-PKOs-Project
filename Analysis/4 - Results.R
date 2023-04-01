@@ -222,3 +222,19 @@ mtext("3 Lags \n Criteria",
 
 dev.off()
 
+# Run Non-Panel Data IPW
+## Run the Logit Model to Generate Propensity Scores
+prop_model <- glm(pko ~ lmilper + ldeaths + eth_con + democracy,
+                  family = binomial(link = "logit"),
+                  data = merged)
+
+## Generate IPWs
+merged_ipw <- augment_columns(prop_model, merged,
+                              type.predict = "response") %>%
+  rename(propensity = .fitted) %>%
+  mutate(ipw = (propensity * pko) / propensity) + 
+  ((propensity * (1 - pko)) / (1 - propensity))
+
+## Run the IPW Model
+ipw_model <- lm(lgdppc ~ pko, data = merged_ipw, weights = ipw)
+
