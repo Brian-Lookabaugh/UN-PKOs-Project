@@ -2,6 +2,8 @@
 ###############-----------------PKO Results------------------###############
 ############################################################################
 
+library(broom) # For augment_columns
+
 # Run Panel Data IPW Models
 pko.dep.1 <- PanelEstimate(
   sets = ipw.dep.1,
@@ -231,9 +233,11 @@ prop_model <- glm(pko ~ lmilper + ldeaths + eth_con + democracy,
 ## Generate IPWs
 merged_ipw <- augment_columns(prop_model, merged,
                               type.predict = "response") %>%
-  rename(propensity = .fitted) %>%
-  mutate(ipw = (propensity * pko) / propensity) + 
-  ((propensity * (1 - pko)) / (1 - propensity))
+  rename(prop = .fitted) %>%
+  mutate(ipw = 
+           ((prop * pko) / prop) + 
+           ((prop * (1 - pko)) / (1 - prop))
+  )
 
 ## Run the IPW Model
 ipw_model <- lm(lgdppc ~ pko, data = merged_ipw, weights = ipw)
