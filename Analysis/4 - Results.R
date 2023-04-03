@@ -2,7 +2,11 @@
 ###############-----------------PKO Results------------------###############
 ############################################################################
 
-library(broom) # For augment_columns
+pacman::p_load(
+  "broom", # For augment_columns
+  "sensemakr", # Sensitivity Analysis
+  install = FALSE
+)
 
 # Run Panel Data IPW Models
 pko.dep.1 <- PanelEstimate(
@@ -224,7 +228,7 @@ mtext("3 Lags \n Criteria",
 
 dev.off()
 
-# Run Non-Panel Data IPW
+# Run Non-Panel Data IPW for Sensitivity Analysis
 ## Run the Logit Model to Generate Propensity Scores
 prop_model <- glm(pko ~ lmilper + ldeaths + eth_con + democracy,
                   family = binomial(link = "logit"),
@@ -239,6 +243,23 @@ merged_ipw <- augment_columns(prop_model, merged,
            ((prop * (1 - pko)) / (1 - prop))
   )
 
-## Run the IPW Model
-ipw_model <- lm(lgdppc ~ pko, data = merged_ipw, weights = ipw)
+## Label the Gov. Military Capacity Variable for Plotting
+var_label(merged_ipw$lmilper) <- "Gov. Military Capacity"
+
+## Run the IPW Model With Covariates
+ipw_model_cov <- lm(lgdppc ~ pko + lmilper + ldeaths + eth_con + democracy,
+                    data = merged_ipw, weights = ipw)
+
+## Execute the Sensitivity Analysis
+sens_results <- sensemakr(ipw_model_cov, treatment = "pko", 
+                          benchmark_covariates = "lmilper",
+                          kd = c(1, 1.5, 2))
+
+## Renaming Labels for Better Punctuation
+x_lab <- expression(Partial ~ R^2 ~ of ~ Confounders(s) ~ With ~ the ~ Outcome)
+y_lab <- expression(Partial ~ R^2 ~ of ~ Confounders(s) ~ With ~ the ~ Treatment)
+
+plot(sens_results, 
+     ylab = x_lab, 
+     xlab = y_lab)
 
