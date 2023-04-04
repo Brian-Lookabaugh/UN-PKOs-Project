@@ -253,7 +253,7 @@ ipw_model_cov <- lm(lgdppc ~ pko + lmilper + ldeaths + eth_con + democracy,
 ## Execute the Sensitivity Analysis
 sens_results <- sensemakr(ipw_model_cov, treatment = "pko", 
                           benchmark_covariates = "lmilper",
-                          kd = c(1, 1.5, 2))
+                          kd = c(1, 2, 3))
 
 ## Renaming Labels for Better Punctuation
 x_lab <- expression(Partial ~ R^2 ~ of ~ Confounders(s) ~ With ~ the ~ Outcome)
