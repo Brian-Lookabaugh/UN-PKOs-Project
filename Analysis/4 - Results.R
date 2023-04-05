@@ -158,12 +158,12 @@ mtext(2, text = "Effect of PKO \n Deployment (Restricted)",
 mtext(2, text = "Effect of PKO \n Deployment (Unrestricted)",
       line = 2.5, at = .225, outer = TRUE,
       cex = .8)
-mtext("1 Lag \n Criteria",
-      line = -2, at = 0.17, outer = TRUE, cex = .8)
-mtext("2 Lags \n Criteria",
-      line = -2, at = 0.5, outer = TRUE, cex = .8)
-mtext("3 Lags \n Criteria",
-      line = -2, at = 0.83, outer = TRUE, cex = .8)
+mtext("1 Year Lag Criteria",
+      line = -1, at = 0.17, outer = TRUE, cex = .8)
+mtext("2 Year Lag Criteria",
+      line = -1, at = 0.5, outer = TRUE, cex = .8)
+mtext("3 Year Lag Criteria",
+      line = -1, at = 0.83, outer = TRUE, cex = .8)
 
 dev.off()
 
@@ -219,12 +219,12 @@ mtext(2, text = "Effect of PKO \n Withdrawal (Restricted)",
 mtext(2, text = "Effect of PKO \n Withdrawal (Unrestricted)",
       line = 2.5, at = .225, outer = TRUE,
       cex = .8)
-mtext("1 Lag \n Criteria",
-      line = -2, at = 0.17, outer = TRUE, cex = .8)
-mtext("2 Lags \n Criteria",
-      line = -2, at = 0.5, outer = TRUE, cex = .8)
-mtext("3 Lags \n Criteria",
-      line = -2, at = 0.83, outer = TRUE, cex = .8)
+mtext("1 Year Lag Criteria",
+      line = -1, at = 0.17, outer = TRUE, cex = .8)
+mtext("2 Year Lag Criteria",
+      line = -1, at = 0.5, outer = TRUE, cex = .8)
+mtext("3 Year Lag Criteria",
+      line = -1, at = 0.83, outer = TRUE, cex = .8)
 
 dev.off()
 
