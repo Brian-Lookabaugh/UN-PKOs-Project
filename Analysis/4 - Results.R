@@ -107,6 +107,8 @@ alt.pko.wth.3 <- PanelEstimate(
 
 # Visualize Panel Data IPW Models
 ## PKO Deployments
+png("Graphics/pko_dep_res.png", width = 2700, height = 1600, res = 300)
+
 plot.new()
 par(oma = c(5, 10, 1.5, 0),
     mar = c(0.8, .9, 1.5, 0.45),
@@ -168,6 +170,8 @@ mtext("3 Year Lag Criterion",
 dev.off()
 
 ## PKO Withdrawals
+png("Graphics/pko_wth_res.png", width = 2700, height = 1600, res = 300)
+
 plot.new()
 par(oma = c(5, 10, 1.5, 0),
     mar = c(0.8, .9, 1.5, 0.45),
@@ -256,10 +260,14 @@ sens_results <- sensemakr(ipw_model_cov, treatment = "pko",
                           kd = c(1, 2, 3))
 
 ## Renaming Labels for Better Punctuation
-x_lab <- expression(Partial ~ R^2 ~ of ~ Confounders(s) ~ With ~ the ~ Outcome)
-y_lab <- expression(Partial ~ R^2 ~ of ~ Confounders(s) ~ With ~ the ~ Treatment)
+x_lab <- expression(Partial ~ R^2 ~ of ~ Confounder(s) ~ With ~ the ~ Outcome)
+y_lab <- expression(Partial ~ R^2 ~ of ~ Confounder(s) ~ With ~ the ~ Treatment)
+
+png("Graphics/sens.png", width = 1800, height = 1600, res = 300)
 
 plot(sens_results, 
      ylab = x_lab, 
      xlab = y_lab)
+
+dev.off()
 

@@ -788,6 +788,8 @@ alt.wth.ipw.3 <- PanelMatch(
 )
 
 # Create Covariate Balance Plots
+png("Graphics/cb_plot.png", width = 1600, height = 1600, res = 300)
+
 plot.new()
 par(oma = c(5, 10, 1.5, 0),
     mar = c(0.8, .9, 1.5, 0.45),
